@@ -27,12 +27,12 @@ export default function Home() {
       cell: ({ row }) => {
         const imageUrl = row.original.image_url;
         if (!imageUrl) return null;
+        console.log(imageUrl);
         return (
-          <Image
+          <img
             src={imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl}
             alt={row.original.name}
-            width={100}
-            height={100}
+            className="h-10 w-10"
           />
         );
       },
