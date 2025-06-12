@@ -12,7 +12,8 @@ export function BudgetSelector({ budget, onBudgetChange }: BudgetSelectorProps) 
     <Card className="w-full max-w-xl p-6">
       <div className="flex flex-col items-center gap-4">
         <div className="text-2xl font-bold">Budget</div>
-        <div className="text-main-accent text-4xl font-extrabold">${budget.toLocaleString()}</div>
+        <div className="neon-text text-4xl font-extrabold text-white">${budget.toLocaleString()}</div>
+
         <div className="text-muted-foreground">Total Budget</div>
         <LiquidGlassInput
           value={budget}
