@@ -1,0 +1,9 @@
+/node_modules
+/dist
+/build
+/public
+/public/locales
+/public/locales/en
+/public/locales/en/common.json
+/public/locales/en/common.json
+/py-output
