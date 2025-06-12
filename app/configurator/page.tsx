@@ -19,10 +19,11 @@ export default function Configurator() {
   const [budget, setBudget] = useState(1400);
   const [useCase, setUseCase] = useState<UseCase['key']>('gaming');
   const [showExtras, setShowExtras] = useState(false);
-  const { products, loading, error, refetch } = useRandomProducts();
+  const { products, loading, error, refetch, handleChangeManualLoading } = useRandomProducts();
   const debouncedRefetch = useDebounce(refetch, 1000);
 
   const handleBudgetChange = async (newBudget: number) => {
+    handleChangeManualLoading(true);
     setBudget(newBudget);
     await debouncedRefetch(); // Fetch new random products when budget changes
   };
@@ -35,7 +36,7 @@ export default function Configurator() {
           <UseCaseSelector selectedUseCase={useCase} onUseCaseChange={setUseCase} />
           <ExtrasPanel isOpen={showExtras} onToggle={() => setShowExtras((v) => !v)} />
         </div>
-        <PartsList parts={products} />
+        <PartsList loading={loading} error={error} parts={products} />
       </div>
     </div>
   );

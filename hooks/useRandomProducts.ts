@@ -10,6 +10,7 @@ interface UseRandomProductsResult {
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
+  handleChangeManualLoading: (loading: boolean) => void;
 }
 
 export function useRandomProducts(): UseRandomProductsResult {
@@ -37,14 +38,20 @@ export function useRandomProducts(): UseRandomProductsResult {
     }
   };
 
+  const handleChangeManualLoading = (loading: boolean) => {
+    setLoading(loading);
+  };
+
   useEffect(() => {
     fetchRandomProducts();
   }, []);
 
   return {
     products,
+
     loading,
     error,
     refetch: fetchRandomProducts,
+    handleChangeManualLoading,
   };
 }
