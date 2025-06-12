@@ -58,7 +58,7 @@ export const Card = ({ className, children }: { className?: string; children: Re
   return (
     <div
       className={cn(
-        'relative z-20 h-full w-full overflow-hidden rounded-2xl border border-transparent bg-black p-1 group-hover:border-slate-700 dark:border-white/[0.2]',
+        'inner-white-glow relative z-20 h-full w-full overflow-hidden rounded-2xl border border-transparent bg-black p-1 group-hover:border-slate-700 dark:border-white/[0.2]',
         className,
       )}
     >
