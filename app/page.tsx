@@ -10,11 +10,15 @@ import { ColumnDef } from '@tanstack/react-table';
 import { categoryColumnExtensions } from '@/models/products-table/columns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { LayoutGrid, Table } from 'lucide-react';
+import { HoverEffect } from '@/components/ui/motion-card';
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMap>('cpu');
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [viewMode, setViewMode] = useState<'table' | 'card'>('card');
 
   const { products, pagination, error } = useProducts<ProductTypeMap[typeof selectedCategory]>({
     category: selectedCategory,
@@ -66,7 +70,7 @@ export default function Home() {
       },
     },
   ];
-  console.log(selectedCategory, categoryColumnExtensions[selectedCategory]);
+
   const actualColumns = [...baseColumns, ...(categoryColumnExtensions[selectedCategory] ?? [])] as ColumnDef<
     ProductTypeMap[typeof selectedCategory]
   >[];
@@ -76,9 +80,23 @@ export default function Home() {
       <div className="z-10 w-full items-center justify-between font-mono text-sm">
         <div className="flex items-center justify-between">
           <h1 className="mb-8 text-4xl font-bold">PC Part Picker Products</h1>
-          <Link href="/configurator">
-            <Button>Configurator</Button>
-          </Link>
+          <div className="flex items-center gap-4">
+            <ToggleGroup
+              type="single"
+              value={viewMode}
+              onValueChange={(value) => value && setViewMode(value as 'table' | 'card')}
+            >
+              <ToggleGroupItem value="table" aria-label="Table view">
+                <Table className="h-4 w-4" />
+              </ToggleGroupItem>
+              <ToggleGroupItem value="card" aria-label="Card view">
+                <LayoutGrid className="h-4 w-4" />
+              </ToggleGroupItem>
+            </ToggleGroup>
+            <Link href="/configurator">
+              <Button>Configurator</Button>
+            </Link>
+          </div>
         </div>
 
         <CategoryButtons
@@ -93,12 +111,16 @@ export default function Home() {
         {selectedCategory && (
           <div className="mt-8 w-full">
             <div className="inner-white-glow rounded-2xl p-8 shadow-2xl">
-              <DataTable
-                columns={actualColumns}
-                data={products}
-                pagination={pagination}
-                onPageChange={(page) => setPage(page)}
-              />
+              {viewMode === 'table' ? (
+                <DataTable
+                  columns={actualColumns}
+                  data={products}
+                  pagination={pagination}
+                  onPageChange={(page) => setPage(page)}
+                />
+              ) : (
+                <HoverEffect products={products as BaseProduct[]} />
+              )}
             </div>
           </div>
         )}
