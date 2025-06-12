@@ -1,6 +1,9 @@
 import { BUDGET_TIERS, BUDGET_STEP, MAX_BUDGET, MIN_BUDGET } from '../constants';
 import { Card } from '@/components/ui/card';
 import { LiquidGlassInput } from './LiquidGlassInput';
+import { useRandomProducts } from '@/hooks/useRandomProducts';
+import { useEffect } from 'react';
+import useDebounce from '@/hooks/useDebounce';
 
 interface BudgetSelectorProps {
   budget: number;

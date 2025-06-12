@@ -76,3 +76,5 @@ export type ProductTypeMap = {
   power_supply: PowerSupplyProduct;
   video_card: VideoCardProduct;
 };
+
+export type ProductTypeMapArray = ProductTypeMap[keyof ProductTypeMap][];
