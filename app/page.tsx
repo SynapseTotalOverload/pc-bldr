@@ -8,6 +8,8 @@ import { useProducts } from '@/hooks/useProducts';
 import { ProductTypeMap, BaseProduct } from '@/types/product';
 import { ColumnDef } from '@tanstack/react-table';
 import { categoryColumnExtensions } from '@/models/products-table/columns';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMap>('cpu');
@@ -70,9 +72,14 @@ export default function Home() {
   >[];
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-4">
+    <main className="depth-bg flex min-h-screen flex-col items-center justify-between p-4">
       <div className="z-10 w-full items-center justify-between font-mono text-sm">
-        <h1 className="mb-8 text-4xl font-bold">PC Part Picker Products</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="mb-8 text-4xl font-bold">PC Part Picker Products</h1>
+          <Link href="/configurator">
+            <Button>Configurator</Button>
+          </Link>
+        </div>
 
         <CategoryButtons
           selectedCategory={selectedCategory}
@@ -85,7 +92,7 @@ export default function Home() {
 
         {selectedCategory && (
           <div className="mt-8 w-full">
-            <div className="inner-white-glow rounded-2xl bg-[#18181b] p-8 shadow-2xl">
+            <div className="inner-white-glow rounded-2xl p-8 shadow-2xl">
               <DataTable
                 columns={actualColumns}
                 data={products}
