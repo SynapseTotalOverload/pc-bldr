@@ -3,12 +3,19 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn('bg-card text-card-foreground inner-white-glow rounded-lg border shadow-sm', className)}
-    {...props}
-  />
+  <CardBorderGradient>
+    <div
+      ref={ref}
+      className={cn('text-card-foreground glass-gray rounded-lg border border-white shadow-sm', className)}
+      {...props}
+    />
+  </CardBorderGradient>
 ));
+const CardBorderGradient = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('glass-gray-border-wrapper h-fit', className)} {...props} />
+  ),
+);
 Card.displayName = 'Card';
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
@@ -43,5 +50,6 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
   ),
 );
 CardFooter.displayName = 'CardFooter';
+CardBorderGradient.displayName = 'CardBorderGradient';
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, CardBorderGradient };
