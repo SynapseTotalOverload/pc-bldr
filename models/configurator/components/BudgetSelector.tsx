@@ -12,12 +12,13 @@ interface BudgetSelectorProps {
 
 export function BudgetSelector({ budget, onBudgetChange }: BudgetSelectorProps) {
   return (
-    <Card className="w-full max-w-xl p-6">
+    <Card className="w-full min-w-xl p-6">
       <div className="flex flex-col items-center gap-4">
-        <div className="text-2xl font-bold">Budget</div>
-        <div className="neon-text text-4xl font-extrabold text-white">${budget.toLocaleString()}</div>
+        <div className="flex w-full flex-row items-center justify-between">
+          <div className="text-2xl font-bold">Budget</div>
+          <div className="neon-text text-2xl font-extrabold text-white">${budget.toLocaleString()}</div>
+        </div>
 
-        <div className="text-muted-foreground">Total Budget</div>
         <LiquidGlassInput
           value={budget}
           min={MIN_BUDGET}

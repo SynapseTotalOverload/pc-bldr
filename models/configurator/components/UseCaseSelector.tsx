@@ -16,13 +16,11 @@ export function UseCaseSelector({ selectedUseCase, onUseCaseChange }: UseCaseSel
           <button
             key={uc.key}
             className={`flex flex-1 flex-col items-center rounded border p-4 ${
-              selectedUseCase === uc.key ? 'inner-main-glow text-white' : 'bg-muted'
+              selectedUseCase === uc.key ? 'border-white/80 text-white' : ''
             }`}
             onClick={() => onUseCaseChange(uc.key)}
           >
-            <span className="mb-1 text-2xl">{uc.icon}</span>
             <span className="font-bold">{uc.label}</span>
-            <span className="text-xs">{uc.desc}</span>
           </button>
         ))}
       </div>
