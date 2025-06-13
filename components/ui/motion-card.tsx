@@ -1,8 +1,7 @@
 import { cn } from '@/lib/utils';
 import { BaseProduct } from '@/types/product';
 import { AnimatePresence, motion } from 'motion/react';
-import Link from 'next/link';
-
+import { Card as CardComponent } from './card';
 import { useState } from 'react';
 
 export const HoverEffect = ({ products, className }: { products: BaseProduct[]; className?: string }) => {
@@ -56,16 +55,13 @@ export const HoverEffect = ({ products, className }: { products: BaseProduct[]; 
 
 export const Card = ({ className, children }: { className?: string; children: React.ReactNode }) => {
   return (
-    <div
-      className={cn(
-        'inner-white-glow relative z-20 h-full w-full overflow-hidden rounded-2xl border border-transparent bg-black p-1 group-hover:border-slate-700 dark:border-white/[0.2]',
-        className,
-      )}
+    <CardComponent
+      className={cn('relative z-20 h-full w-full overflow-hidden rounded-2xl border border-transparent p-1', className)}
     >
       <div className="relative z-50">
         <div className="p-2">{children}</div>
       </div>
-    </div>
+    </CardComponent>
   );
 };
 export const CardTitle = ({ className, children }: { className?: string; children: React.ReactNode }) => {

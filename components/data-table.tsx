@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Card } from './ui/card';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -72,7 +73,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="w-full">
+    <Card className="w-full">
       <div className="flex items-center py-4">
         {searchKey && (
           <Input
@@ -227,6 +228,6 @@ export function DataTable<TData, TValue>({
           </Button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
