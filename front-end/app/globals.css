@@ -1,0 +1,258 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro/SFPRODISPLAYREGULAR.OTF') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro/SFPRODISPLAYMEDIUM.OTF') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro/SFPRODISPLAYBOLD.OTF') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro/SFPRODISPLAYBLACKITALIC.OTF') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro/SFPRODISPLAYHEAVYITALIC.OTF') format('opentype');
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro/SFPRODISPLAYLIGHTITALIC.OTF') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro/SFPRODISPLAYSEMIBOLDITALIC.OTF') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro/SFPRODISPLAYTHINITALIC.OTF') format('opentype');
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SFPro/SFPRODISPLAYULTRALIGHTITALIC.OTF') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-main-accent: var(--main-accent);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --main-accent: #fff;
+  /* Neutrals */
+  --background: oklch(0.98 0.005 270); /* very light cool gray */
+  --foreground: oklch(0.2 0.02 260); /* dark muted bluish gray */
+
+  /* Cards & Popovers */
+  --card: oklch(0.95 0.004 260); /* soft light gray */
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+
+  /* Primary Actions */
+  --primary: oklch(0.3 0.04 265); /* muted steel blue */
+  --primary-foreground: oklch(0.985 0.002 247.839); /* off-white */
+
+  /* Secondary Elements */
+  --secondary: oklch(0.88 0.01 260); /* light muted gray */
+  --secondary-foreground: var(--primary);
+
+  /* Muted Text */
+  --muted: var(--secondary);
+  --muted-foreground: oklch(0.5 0.02 265); /* medium soft gray-blue */
+
+  /* Accent & Alerts */
+  --accent: var(--secondary);
+  --accent-foreground: var(--primary);
+  --destructive: oklch(0.577 0.245 27.325);
+
+  /* Borders, Inputs & Rings */
+  --border: oklch(0.85 0.008 260); /* neutral border */
+  --input: var(--border);
+  --ring: oklch(0.6 0.015 260); /* subtle cool-gray ring */
+
+  /* Sidebar */
+  --sidebar: var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+.dark {
+  --background: oklch(0.2562 0 0);
+  --foreground: oklch(0.95 0.005 270); /* light gray text */
+
+  --card: oklch(0.2114 0 46.16) --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+
+  --primary: oklch(0.6 0.02 265); /* soft bluish gray */
+  --primary-foreground: var(--card);
+
+  --secondary: oklch(0.25 0.015 260); /* very muted gray */
+  --secondary-foreground: var(--foreground);
+
+  --muted: oklch(0.2851 0 260 / 77.29%);
+  --muted-foreground: oklch(0.6 0.015 260); /* cool muted text */
+
+  --accent: var(--secondary);
+  --accent-foreground: var(--foreground);
+
+  --destructive: oklch(0.704 0.191 22.216);
+
+  --border: oklch(0.3882 0 46.16);
+  --input: oklch(0.2 0.02 260 / 40%);
+  --ring: oklch(0.4 0.015 260); /* subtle bluish ring */
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  body {
+    font-family: 'SF Pro';
+  }
+
+  .inner-main-glow {
+    box-shadow:
+      0 0 8px 2px var(--main-accent) inset,
+      0 12px 32px 0 rgba(0, 0, 0, 0.55);
+  }
+
+  .glass-gray {
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(15.3px);
+    -webkit-backdrop-filter: blur(10.3px);
+    border: none;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.02) 10%, rgba(0, 0, 0, 0.15) 90%), rgba(45, 45, 45, 0.7);
+  }
+
+  .glass-gray-border-wrapper {
+    position: relative;
+
+    padding: 2px;
+    border-radius: 18px;
+  }
+  .glass-gray-border-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px; /* Same as .gradient-border padding */
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.15) 10%, rgba(45, 45, 45, 0) 60%);
+    border-radius: inherit;
+    z-index: -1;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    background-clip: border-box;
+  }
+  /* .depth-bg {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 1422 800"><g shape-rendering="crispEdges" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke="hsl(0, 0%, 16%)"><polygon points="1422,100 1244.25,0 1244.25,100"></polygon><polygon points="1244.25,0 1066.5,0 1244.25,100"></polygon><polygon points="1066.5,200 1244.25,200 1066.5,100"></polygon><polygon points="1422,100 1244.25,200 1244.25,100"></polygon><polygon points="888.75,100 888.75,0 1066.5,100"></polygon><polygon points="888.75,100 888.75,0 711,0"></polygon><polygon points="799.875,150 799.875,100 888.75,150"></polygon><polygon points="711,100 799.875,150 799.875,100"></polygon><polygon points="711,150 799.875,200 711,200"></polygon><polygon points="888.75,200 799.875,200 888.75,150"></polygon><polygon points="1066.5,100 1066.5,150 977.625,100"></polygon><polygon points="888.75,100 888.75,150 977.625,100"></polygon><polygon points="977.625,200 977.625,150 888.75,200"></polygon><polygon points="977.625,150 977.625,200 1066.5,150"></polygon><polygon points="1066.5,300 1066.5,200 888.75,300"></polygon><polygon points="888.75,200 888.75,250 799.875,250"></polygon><polygon points="711,250 711,200 799.875,250"></polygon><polygon points="799.875,250 799.875,300 711,250"></polygon><polygon points="888.75,300 799.875,250 888.75,250"></polygon><polygon points="888.75,350 888.75,300 799.875,350"></polygon><polygon points="711,350 799.875,350 711,300"></polygon><polygon points="711,350 799.875,350 711,400"></polygon><polygon points="799.875,350 888.75,350 888.75,400"></polygon><polygon points="977.625,300 1066.5,350 977.625,350"></polygon><polygon points="888.75,350 977.625,300 888.75,300"></polygon><polygon points="977.625,400 888.75,400 888.75,350"></polygon><polygon points="1066.5,350 1066.5,400 977.625,350"></polygon><polygon points="1422,200 1244.25,200 1422,300"></polygon><polygon points="1244.25,200 1066.5,300 1066.5,200"></polygon><polygon points="1155.375,300 1155.375,350 1244.25,300"></polygon><polygon points="1155.375,300 1155.375,350 1066.5,300"></polygon><polygon points="1155.375,350 1155.375,400 1066.5,400"></polygon><polygon points="1244.25,350 1155.375,350 1155.375,400"></polygon><polygon points="1422,300 1422,400 1244.25,400"></polygon><polygon points="711,0 711,100 533.25,100"></polygon><polygon points="355.5,100 533.25,0 355.5,0"></polygon><polygon points="533.25,200 533.25,100 355.5,100"></polygon><polygon points="711,100 533.25,100 711,200"></polygon><polygon points="355.5,100 177.75,0 177.75,100"></polygon><polygon points="0,100 0,0 177.75,0"></polygon><polygon points="0,100 177.75,200 0,200"></polygon><polygon points="177.75,200 355.5,100 355.5,200"></polygon><polygon points="355.5,200 355.5,250 266.625,200"></polygon><polygon points="266.625,200 177.75,200 266.625,250"></polygon><polygon points="266.625,300 266.625,250 177.75,250"></polygon><polygon points="355.5,300 266.625,300 266.625,250"></polygon><polygon points="177.75,200 177.75,300 0,200"></polygon><polygon points="177.75,400 0,400 0,300"></polygon><polygon points="355.5,350 355.5,300 266.625,300"></polygon><polygon points="266.625,350 266.625,300 177.75,350"></polygon><polygon points="177.75,400 266.625,350 177.75,350"></polygon><polygon points="355.5,350 355.5,400 266.625,400"></polygon><polygon points="711,200 622.125,200 622.125,250"></polygon><polygon points="622.125,200 622.125,250 533.25,250"></polygon><polygon points="622.125,300 622.125,250 533.25,250"></polygon><polygon points="622.125,250 711,300 622.125,300"></polygon><polygon points="355.5,200 533.25,200 533.25,300"></polygon><polygon points="444.375,350 533.25,350 444.375,300"></polygon><polygon points="444.375,300 355.5,300 444.375,350"></polygon><polygon points="444.375,350 355.5,350 444.375,400"></polygon><polygon points="533.25,400 444.375,350 533.25,350"></polygon><polygon points="622.125,350 711,350 711,300"></polygon><polygon points="533.25,300 622.125,350 622.125,300"></polygon><polygon points="533.25,400 622.125,400 533.25,350"></polygon><polygon points="711,400 711,350 622.125,400"></polygon><polygon points="622.125,400 711,400 622.125,450"></polygon><polygon points="622.125,450 622.125,400 533.25,400"></polygon><polygon points="533.25,500 622.125,450 622.125,500"></polygon><polygon points="711,500 622.125,450 711,450"></polygon><polygon points="444.375,400 533.25,450 533.25,400"></polygon><polygon points="444.375,400 444.375,450 355.5,400"></polygon><polygon points="444.375,450 444.375,500 355.5,500"></polygon><polygon points="533.25,450 444.375,450 533.25,500"></polygon><polygon points="355.5,600 533.25,500 355.5,500"></polygon><polygon points="711,500 622.125,550 622.125,500"></polygon><polygon points="533.25,500 622.125,550 622.125,500"></polygon><polygon points="622.125,600 622.125,550 533.25,600"></polygon><polygon points="711,550 711,600 622.125,550"></polygon><polygon points="355.5,400 177.75,400 177.75,500"></polygon><polygon points="177.75,400 0,400 0,500"></polygon><polygon points="177.75,500 0,600 0,500"></polygon><polygon points="177.75,500 355.5,600 177.75,600"></polygon><polygon points="0,800 355.5,600 0,600"></polygon><polygon points="711,600 533.25,700 711,700"></polygon><polygon points="444.375,600 444.375,650 533.25,650"></polygon><polygon points="355.5,650 355.5,600 444.375,600"></polygon><polygon points="444.375,650 355.5,700 355.5,650"></polygon><polygon points="444.375,700 533.25,650 444.375,650"></polygon><polygon points="355.5,800 533.25,700 355.5,700"></polygon><polygon points="711,800 533.25,700 711,700"></polygon><polygon points="1422,400 1244.25,500 1244.25,400"></polygon><polygon points="1244.25,500 1066.5,400 1244.25,400"></polygon><polygon points="1244.25,500 1066.5,600 1066.5,500"></polygon><polygon points="1244.25,600 1422,600 1244.25,500"></polygon><polygon points="1066.5,450 977.625,400 977.625,450"></polygon><polygon points="977.625,400 977.625,450 888.75,400"></polygon><polygon points="888.75,450 977.625,450 977.625,500"></polygon><polygon points="1066.5,500 1066.5,450 977.625,450"></polygon><polygon points="888.75,400 888.75,450 799.875,400"></polygon><polygon points="711,450 799.875,450 711,400"></polygon><polygon points="799.875,450 711,500 711,450"></polygon><polygon points="888.75,450 888.75,500 799.875,500"></polygon><polygon points="799.875,550 888.75,500 799.875,500"></polygon><polygon points="711,500 799.875,550 799.875,500"></polygon><polygon points="799.875,550 799.875,600 711,600"></polygon><polygon points="888.75,600 888.75,550 799.875,600"></polygon><polygon points="1066.5,500 1066.5,550 977.625,500"></polygon><polygon points="977.625,550 977.625,500 888.75,500"></polygon><polygon points="888.75,550 977.625,550 977.625,600"></polygon><polygon points="977.625,550 1066.5,600 1066.5,550"></polygon><polygon points="888.75,600 1066.5,600 1066.5,700"></polygon><polygon points="888.75,650 888.75,600 799.875,650"></polygon><polygon points="799.875,600 799.875,650 711,600"></polygon><polygon points="799.875,700 711,700 799.875,650"></polygon><polygon points="799.875,700 888.75,700 799.875,650"></polygon><polygon points="888.75,800 888.75,700 711,800"></polygon><polygon points="888.75,800 1066.5,700 1066.5,800"></polygon><polygon points="1422,600 1244.25,700 1422,700"></polygon><polygon points="1244.25,600 1066.5,600 1066.5,700"></polygon><polygon points="1066.5,700 1244.25,700 1066.5,800"></polygon><polygon points="1422,800 1422,700 1244.25,700"></polygon></g><g fill="hsl(220, 62%, 45%)" stroke-width="3" stroke="hsl(220, 43%, 13%)"></g></svg>');
+  } */
+  /* .neon-text {
+    animation: neon 1s ease infinite;
+    text-shadow:
+      0 0 0.2vw var(--main-accent),
+      0 0 0.8vw var(--main-accent),
+      0 0 2vw var(--main-accent),
+      0 0 4vw var(--main-accent),
+      0 0 0.2vw var(--main-accent),
+      0.2vw 0.2vw 0.1vw var(--main-accent);
+  } */
+}
