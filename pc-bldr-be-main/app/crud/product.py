@@ -1,7 +1,7 @@
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload, Session
 
-from app.models.category import Category
+from app.core.enums import cat_id_to_attrs_model_map
 from app.models.product import Product
 from app.schemas.product import ProductCreate, ProductUpdate
 
@@ -32,13 +32,13 @@ class CRUDProduct:
     def get_multi(self, db: Session, *, page: int = 1, page_size: int = 20, category_id: int | None = None):
         stmt = (
             select(Product)
-            .options(
-                *self._get_joinedload_attrs_option()
-            )
-            .where(Product.category_id == category_id) if category_id else None
+            .options(*self._get_joinedload_attrs_option())
             .offset((page - 1) * page_size)
             .limit(page_size)
         )
+        if category_id:
+            CatAttrTable = cat_id_to_attrs_model_map[category_id]
+            stmt = stmt.join(CatAttrTable)
         total = db.scalar(select(func.count()).select_from(Product))
         return db.scalars(stmt).all(), total
 
