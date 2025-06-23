@@ -16,7 +16,20 @@ def add_product(asin: str, db: Session = Depends(get_db)):
 def list_products(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
-    category_id: int | None = Query(None, ge=1),
+    category_id: int | None = Query(
+        None, 
+        le=8, ge=1, 
+        description=(
+            "1 - CPU;\n"
+            "2 - CPU Cooler;\n"
+            "3 - GPU;\n"
+            "4 - Motheboard;\n"
+            "5 - RAM;\n"
+            "6 - ROM;\n"
+            "7 - PSU;\n"
+            "8 - Case;\n"
+            "If None - search in all categories"),
+    ),
     db: Session = Depends(get_db),
 ):
     items, _ = product_crud.get_multi(db, page=page, page_size=page_size, category_id=category_id)
