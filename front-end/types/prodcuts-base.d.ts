@@ -23,12 +23,47 @@ export interface ProductUpdate {
   category_id?: number;
 }
 
+export interface ProductTypeMap {
+  cpu: CPU;
+  cpu_cooler: CPUCooler;
+  gpu: GPU;
+  memory: RAM;
+  motherboard: Motherboard;
+  internal_hard_drive: Storage;
+  power_supply: PowerSupply;
+  video_card: GPU;
+}
+export interface ProductTypeMapNames {
+  cpu: 'CPU';
+  cpu_cooler: 'CPU Cooler';
+  gpu: 'GPU';
+  memory: 'Memory';
+  motherboard: 'Motherboard';
+  internal_hard_drive: 'Internal Hard Drive';
+  power_supply: 'Power Supply';
+  video_card: 'Video Card';
+}
+
+export interface PaginatedInterface<T> {
+  items: T[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
 export interface ProductRead extends ProductBase {
   id: number;
   created_at: string; // ISO string from `datetime`
   category?: CategoryRead;
-  attrs: CPU | CPUCooler | Motherboard | RAM | Storage | GPU | PowerSupply | Case;
+  attrs: ProductAttrs;
 }
+
+export type ProductAttrs = CPU | CPUCooler | Motherboard | RAM | Storage | GPU | PowerSupply | Case;
+
 export interface BaseAttrs {
   brand: string;
   model: string;
@@ -42,9 +77,11 @@ export type GPU = AttributeWithLabel<GPUAttributes>;
 export type PowerSupply = AttributeWithLabel<PowerSupplyAttributes>;
 export type Case = AttributeWithLabel<CaseAttributes>;
 
-export interface AttributeWithLabel<T> extends BaseAttrs, T {}
-
+export interface AttributeWithLabel<T extends { type: string }> extends BaseAttrs, T {
+  type: T['type'];
+}
 export interface CPUAttributes {
+  type: 'cpu';
   cores: number;
   threads: number;
   socket_type: string;
@@ -60,6 +97,7 @@ export interface CPUAttributes {
 }
 
 export interface CPUCoolerAttributes {
+  type: 'cpu_cooler';
   fan_rpm_base?: number;
   fan_rpm_max?: number;
   noise_level_base?: number;
@@ -68,6 +106,7 @@ export interface CPUCoolerAttributes {
 }
 
 export interface MotherboardAttributes {
+  type: 'motherboard';
   chipset: string;
   form_factor: string;
   socket_type: string;
@@ -76,6 +115,7 @@ export interface MotherboardAttributes {
 }
 
 export interface RAMAttributes {
+  type: 'ram';
   total_memory: number;
   one_unit_memory: number;
   quantity: number;
@@ -85,6 +125,7 @@ export interface RAMAttributes {
 }
 
 export interface StorageAttributes {
+  type: 'storage';
   capacity?: number;
   mem_type: string;
   interface: string;
@@ -93,6 +134,7 @@ export interface StorageAttributes {
 }
 
 export interface GPUAttributes {
+  type: 'gpu';
   memory: number;
   mem_interface: string;
   length?: number;
@@ -104,12 +146,14 @@ export interface GPUAttributes {
 }
 
 export interface PowerSupplyAttributes {
+  type: 'power_supply';
   power?: number;
   efficiency: string;
   color: string;
 }
 
 export interface CaseAttributes {
+  type: 'case';
   side_panel: string;
   cabinet_type: string;
   color: string;

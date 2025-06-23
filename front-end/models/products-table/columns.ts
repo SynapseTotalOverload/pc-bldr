@@ -1,139 +1,127 @@
-import { ProductTypeMap } from '@/types/product';
+import { ProductRead, ProductTypeMapNames } from '@/types/prodcuts-base';
 import { ColumnDef } from '@tanstack/react-table';
 
 export const categoryColumnExtensions: {
-  [K in keyof ProductTypeMap]?: ColumnDef<ProductTypeMap[K]>[];
+  [K in keyof ProductTypeMapNames]?: ColumnDef<ProductRead>[];
 } = {
   cpu: [
     {
       header: 'Core Count',
-      accessorKey: 'core_count',
+      accessorFn: (row) => row.attrs.cores,
     },
     {
       header: 'Base Clock',
-      accessorKey: 'base_clock',
+      accessorFn: (row) => row.attrs.base_speed,
     },
     {
       header: 'Boost Clock',
-      accessorKey: 'boost_clock',
+      accessorFn: (row) => row.attrs.turbo_speed,
     },
   ],
   cpu_cooler: [
     {
-      header: 'Airflow',
-      accessorKey: 'airflow',
+      header: 'Fan RPM Max',
+      accessorFn: (row) => row.attrs.fan_rpm_max,
     },
     {
-      header: 'Noise Level',
-      accessorKey: 'noise_level',
+      header: 'Noise Level Max',
+      accessorFn: (row) => row.attrs.noise_level_max,
     },
     {
-      header: 'RPM',
-      accessorKey: 'rpm',
+      header: 'Color',
+      accessorFn: (row) => row.attrs.color,
     },
   ],
   gpu: [
     {
-      header: 'Airflow',
-      accessorKey: 'airflow',
+      header: 'Memory',
+      accessorFn: (row) => row.attrs.memory,
     },
     {
-      header: 'Noise Level',
-      accessorKey: 'noise_level',
+      header: 'Chipset',
+      accessorFn: (row) => row.attrs.chipset,
     },
     {
-      header: 'RPM',
-      accessorKey: 'rpm',
+      header: 'Core Clock',
+      accessorFn: (row) => row.attrs.base_clock,
     },
   ],
   memory: [
     {
-      header: 'Speed',
-      accessorKey: 'speed',
+      header: 'Total Memory',
+      accessorFn: (row) => row.attrs.total_memory,
     },
     {
-      header: 'Modules',
-      accessorKey: 'modules',
+      header: 'RAM Speed',
+      accessorFn: (row) => row.attrs.ram_speed,
     },
     {
-      header: 'Price per GB',
-      accessorKey: 'price_per_gb',
-    },
-    {
-      header: 'First Word Latency',
-      accessorKey: 'first_word_latency',
+      header: 'RAM Type',
+      accessorFn: (row) => row.attrs.ram_type,
     },
   ],
   motherboard: [
     {
       header: 'Socket',
-      accessorKey: 'socket',
+      accessorFn: (row) => row.attrs.socket_type,
     },
     {
       header: 'Chipset',
-      accessorKey: 'chipset',
+      accessorFn: (row) => row.attrs.chipset,
     },
     {
       header: 'Form Factor',
-      accessorKey: 'form_factor',
+      accessorFn: (row) => row.attrs.form_factor,
     },
     {
       header: 'Memory Slots',
-      accessorKey: 'memory_slots',
+      accessorFn: (row) => row.attrs.ram_slots,
     },
   ],
   internal_hard_drive: [
     {
       header: 'Capacity',
-      accessorKey: 'capacity',
+      accessorFn: (row) => row.attrs.capacity,
     },
     {
       header: 'Type',
-      accessorKey: 'type',
+      accessorFn: (row) => row.attrs.mem_type,
     },
     {
       header: 'Cache',
-      accessorKey: 'cache',
+      accessorFn: (row) => row.attrs.cache_mem,
     },
     {
       header: 'Interface',
-      accessorKey: 'interface',
+      accessorFn: (row) => row.attrs.interface,
     },
   ],
   power_supply: [
     {
       header: 'Wattage',
-      accessorKey: 'wattage',
+      accessorFn: (row) => row.attrs.power,
     },
     {
       header: 'Efficiency',
-      accessorKey: 'efficiency',
+      accessorFn: (row) => row.attrs.efficiency,
     },
     {
-      header: 'Modular',
-      accessorKey: 'modular',
-    },
-    {
-      header: 'Form Factor',
-      accessorKey: 'form_factor',
+      header: 'Color',
+      accessorFn: (row) => row.attrs.color,
     },
   ],
   video_card: [
     {
-      header: 'Chipset',
-      accessorKey: 'chipset',
+      header: 'Memory',
+      accessorFn: (row) => row.attrs.memory,
     },
     {
-      header: 'Memory',
-      accessorKey: 'memory',
+      header: 'Chipset',
+      accessorFn: (row) => row.attrs.chipset,
     },
     {
       header: 'Core Clock',
-      accessorKey: 'core_clock',
-    },
-    {
-      header: 'Boost Clock',
-      accessorKey: 'boost_clock',
+      accessorFn: (row) => row.attrs.base_clock,
     },
   ],
 };

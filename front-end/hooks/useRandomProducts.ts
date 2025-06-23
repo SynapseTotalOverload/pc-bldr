@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { BaseProduct, ProductTypeMapArray } from '@/types/product';
+import { ProductRead } from '@/types/prodcuts-base';
 
 interface RandomProductsResponse {
-  products: ProductTypeMapArray;
+  products: ProductRead[];
 }
 
 interface UseRandomProductsResult {
-  products: ProductTypeMapArray;
+  products: ProductRead[];
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
@@ -14,7 +14,7 @@ interface UseRandomProductsResult {
 }
 
 export function useRandomProducts(): UseRandomProductsResult {
-  const [products, setProducts] = useState<ProductTypeMapArray>([]);
+  const [products, setProducts] = useState<ProductRead[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +48,6 @@ export function useRandomProducts(): UseRandomProductsResult {
 
   return {
     products,
-
     loading,
     error,
     refetch: fetchRandomProducts,

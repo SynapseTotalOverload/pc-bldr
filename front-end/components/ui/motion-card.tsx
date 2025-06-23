@@ -1,17 +1,17 @@
 import { cn } from '@/lib/utils';
-import { BaseProduct } from '@/types/product';
+import { ProductRead } from '@/types/prodcuts-base';
 import { AnimatePresence, motion } from 'motion/react';
 import { Card as CardComponent } from './card';
 import { useState } from 'react';
 
-export const HoverEffect = ({ products, className }: { products: BaseProduct[]; className?: string }) => {
+export const HoverEffect = ({ products, className }: { products: ProductRead[]; className?: string }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
     <div className={cn('grid grid-cols-1 py-10 md:grid-cols-2 lg:grid-cols-4', className)}>
       {products.map((product, idx) => (
         <div
-          key={product?.link}
+          key={product?.asin}
           className="group relative block h-full w-full p-2"
           onMouseEnter={() => setHoveredIndex(idx)}
           onMouseLeave={() => setHoveredIndex(null)}
@@ -34,17 +34,9 @@ export const HoverEffect = ({ products, className }: { products: BaseProduct[]; 
             )}
           </AnimatePresence>
           <Card key={product.id} className="bg-transparent">
-            <div className="flex flex-row gap-2">
-              <div className="relative aspect-square">
-                {product.image_url && (
-                  <img
-                    src={product.image_url.startsWith('//') ? `https:${product.image_url}` : product.image_url}
-                    alt={product.name}
-                    className="rounded-lg object-cover"
-                  />
-                )}
-              </div>
-              <span className="text-foreground text-sm">{product.name}</span>
+            <div className="flex flex-col gap-2">
+              <span className="text-foreground text-sm">{product.title}</span>
+              <span className="text-foreground text-xs">{product.price?.toString()}</span>
             </div>
           </Card>
         </div>

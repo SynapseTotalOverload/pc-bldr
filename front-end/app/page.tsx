@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { CategoryButtons } from '@/components/ui/category-buttons';
 import { DataTable } from '@/components/data-table';
 import { useProducts } from '@/hooks/useProducts';
-import { ProductTypeMap, BaseProduct } from '@/types/product';
+import { ProductTypeMapNames, ProductRead } from '@/types/prodcuts-base';
 import { ColumnDef } from '@tanstack/react-table';
 import { categoryColumnExtensions } from '@/models/products-table/columns';
 import Link from 'next/link';
@@ -15,65 +15,58 @@ import { LayoutGrid, Table } from 'lucide-react';
 import { HoverEffect } from '@/components/ui/motion-card';
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMap>('cpu');
+  const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapNames>('cpu');
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [viewMode, setViewMode] = useState<'table' | 'card'>('card');
 
-  const { products, pagination, error } = useProducts<ProductTypeMap[typeof selectedCategory]>({
+  const { products, pagination, error } = useProducts<ProductRead>({
     category: selectedCategory,
     page,
     search,
   });
 
-  const baseColumns: ColumnDef<BaseProduct>[] = [
-    {
-      header: 'Image',
-      accessorKey: 'image_url',
-      cell: ({ row }) => {
-        const imageUrl = row.original.image_url;
-        if (!imageUrl) return null;
-        console.log(imageUrl);
-        return (
-          <img
-            src={imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl}
-            alt={row.original.name}
-            className="h-10 w-10"
-          />
-        );
-      },
-    },
+  const baseColumns: ColumnDef<ProductRead>[] = [
     {
       header: 'Name',
-      accessorKey: 'name',
+      accessorKey: 'title',
     },
     {
       header: 'Price',
       accessorKey: 'price',
       cell: ({ row }) => {
-        return <span className="font-bold">{row.original.price.replace('Add', '')}</span>;
+        return <span className="font-bold">{row.original.price?.toString()}</span>;
       },
     },
     {
       header: 'Rating',
-      accessorKey: 'rating_count',
+      accessorKey: 'rating',
+      cell: ({ row }) => {
+        return <span>{row.original.rating?.toString() || 'N/A'}</span>;
+      },
     },
     {
       header: 'Link',
-      accessorKey: 'link',
+      accessorKey: 'asin',
       cell: ({ row }) => {
         return (
-          <a className="text-blue-500" href={row.original.link} target="_blank" rel="noopener noreferrer">
-            Link
+          <a
+            className="text-blue-500"
+            href={`https://amazon.com/dp/${row.original.asin}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View
           </a>
         );
       },
     },
   ];
 
-  const actualColumns = [...baseColumns, ...(categoryColumnExtensions[selectedCategory] ?? [])] as ColumnDef<
-    ProductTypeMap[typeof selectedCategory]
-  >[];
+  const actualColumns = [
+    ...baseColumns,
+    ...(categoryColumnExtensions[selectedCategory] ?? []),
+  ] as ColumnDef<ProductRead>[];
 
   return (
     <main className="depth-bg flex min-h-screen flex-col items-center justify-between p-4">
@@ -102,7 +95,7 @@ export default function Home() {
         <CategoryButtons
           selectedCategory={selectedCategory}
           onSelectCategory={(category) => {
-            setSelectedCategory(category as keyof ProductTypeMap);
+            setSelectedCategory(category as keyof ProductTypeMapNames);
             setPage(1);
             setSearch('');
           }}
@@ -119,7 +112,7 @@ export default function Home() {
                   onPageChange={(page) => setPage(page)}
                 />
               ) : (
-                <HoverEffect products={products as BaseProduct[]} />
+                <HoverEffect products={products} />
               )}
             </div>
           </div>

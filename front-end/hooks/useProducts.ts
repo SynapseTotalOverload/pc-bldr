@@ -1,45 +1,14 @@
 import { useState, useEffect } from 'react';
-import {
-  BaseProduct,
-  CPUProduct,
-  CPUCoolerProduct,
-  GPUProduct,
-  MemoryProduct,
-  MotherboardProduct,
-  InternalHardDriveProduct,
-  PowerSupplyProduct,
-  VideoCardProduct,
-} from '@/types/product';
 
-type ProductTypeMap = {
-  cpu: CPUProduct;
-  cpu_cooler: CPUCoolerProduct;
-  gpu: GPUProduct;
-  memory: MemoryProduct;
-  motherboard: MotherboardProduct;
-  internal_hard_drive: InternalHardDriveProduct;
-  power_supply: PowerSupplyProduct;
-  video_card: VideoCardProduct;
-};
-
-type Category = keyof ProductTypeMap;
-
-interface ProductsResponse<T extends BaseProduct> {
-  products: T[];
-  pagination: {
-    total: number;
-    totalPages: number;
-    currentPage: number;
-  };
-}
+import { PaginatedInterface, ProductRead } from '@/types/prodcuts-base';
 
 interface UseProductsOptions {
-  category: Category;
+  category: string;
   page: number;
   search?: string;
 }
 
-interface UseProductsResult<T extends BaseProduct> {
+interface UseProductsResult<T extends ProductRead> {
   products: T[];
   pagination: {
     total: number;
@@ -51,7 +20,7 @@ interface UseProductsResult<T extends BaseProduct> {
   refetch: () => Promise<void>;
 }
 
-export function useProducts<T extends BaseProduct>({
+export function useProducts<T extends ProductRead>({
   category,
   page,
   search = '',
@@ -87,10 +56,10 @@ export function useProducts<T extends BaseProduct>({
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data: ProductsResponse<T> = await response.json();
-      setProducts(data.products);
+      const data: PaginatedInterface<ProductRead> = await response.json();
+      setProducts(data.items as unknown as T[]);
       setPagination({
-        total: data.pagination.total,
+        total: data.pagination.totalItems,
         totalPages: data.pagination.totalPages,
         currentPage: data.pagination.currentPage,
       });
