@@ -78,3 +78,6 @@ class CaseAttributesSchema(BaseAttrsSchema):
     side_panel: str = Field(..., alias="Side Panel:")
     cabinet_type: str = Field(..., alias="Cabinet Type:")
     color: str = Field(..., alias="Color:")
+
+
+
