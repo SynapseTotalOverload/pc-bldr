@@ -4,7 +4,7 @@ scoring system, and rules enforcement.
 """
 
 from typing import Optional, List
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.orm import Session
 from app.models import Product
 from app.services.pc_builder.rules import RuleBase
@@ -81,7 +81,6 @@ class ComponentSelector:
 
         candidates = self._fetch_all_products()
         candidates = self._apply_rules(candidates)
-        candidates = self._filter_by_compatibility(candidates)
 
         scored = [(product, self._score(product)) for product in candidates]
         scored.sort(key=lambda tup: tup[1], reverse=True)
@@ -90,26 +89,54 @@ class ComponentSelector:
 
     def _fetch_all_products(self) -> List[Product]:
         AttrsModel = self.component_types_to_attr_model_mapping[self.component_type]
-        result = self.session.execute(select(Product).join(AttrsModel))
+        stmt = select(Product).join(AttrsModel)
+
+        filters = []
+
+        if self.component_type == "motherboard":
+            cpu = self.selected_components.get("cpu")
+            if cpu:
+                filters.append(MotherboardAttributes.socket_type == cpu.cpu_attributes.socket_type)
+            ram = self.selected_components.get("ram")
+            if ram:
+                filters.append(MotherboardAttributes.max_ram_support <= ram.ram_attributes.total_memory)
+                filters.append(MotherboardAttributes.ram_slots <= ram.ram_attributes.quantity)
+
+        elif self.component_type == "ram":
+            cpu = self.selected_components.get("cpu")
+            mb = self.selected_components.get("motherboard")
+            if cpu:
+                filters.append(RAMAttributes.ram_type == cpu.cpu_attributes.memory_type)
+                filters.append(RAMAttributes.ram_speed <= cpu.cpu_attributes.memory_speed)
+            if mb:
+                filters.append(RAMAttributes.total_memory <= mb.motherboard_attributes.max_ram_support)
+                filters.append(RAMAttributes.quantity <= mb.motherboard_attributes.ram_slots)
+
+        elif self.component_type == "cpu":
+            mb = self.selected_components.get("motherboard")
+            if mb:
+                filters.append(CPUAttributes.socket_type == mb.motherboard_attributes.socket_type)
+
+        elif self.component_type == "case":
+            gpu = self.selected_components.get("gpu")
+            if gpu:
+                # TODO: implement
+                pass
+
+        elif self.component_type == "psu":
+            estimated_power = self._estimate_power_draw()
+            filters.append(PowerSupplyAttributes.power >= estimated_power)
+
+        if filters:
+            stmt = stmt.where(and_(*filters))
+
+        result = self.session.execute(stmt)
         return result.scalars().all()
 
     def _apply_rules(self, products: List[Product]) -> List[Product]:
         for rule in self.rules:
             products = rule.apply(products, self.component_type)
         return products
-
-    def _filter_by_compatibility(self, products: List[Product]) -> List[Product]:
-        """
-        Filter out products that are incompatible with already selected components.
-        """
-        if not self.selected_components:
-            return products
-
-        filtered = []
-        for product in products:
-            if self._is_compatible(product):
-                filtered.append(product)
-        return filtered
 
     def _is_compatible(self, product: Product) -> bool:
         try:
