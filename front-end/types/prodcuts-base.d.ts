@@ -9,6 +9,7 @@ export interface ProductBase {
   title: string;
   price?: number;
   rating?: number;
+  created_at: string; // ISO string from `datetime`
 }
 
 export interface ProductCreate extends ProductBase {
@@ -26,6 +27,7 @@ export interface ProductRead extends ProductBase {
   id: number;
   created_at: string; // ISO string from `datetime`
   category?: CategoryRead;
+  attrs: CPU | CPUCooler | Motherboard | RAM | Storage | GPU | PowerSupply | Case;
 }
 export interface BaseAttrs {
   brand: string;
