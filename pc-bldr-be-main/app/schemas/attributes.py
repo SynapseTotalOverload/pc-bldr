@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class BaseAttrsSchema(BaseModel):
-    model_config = ConfigDict(populate_by_name=True)
+    model_config = ConfigDict(populate_by_name=True, from_attributes=True)
 
     brand: str = Field(..., alias="Brand:")
     model: str = Field(..., alias="Model:")
@@ -78,6 +78,3 @@ class CaseAttributesSchema(BaseAttrsSchema):
     side_panel: str = Field(..., alias="Side Panel:")
     cabinet_type: str = Field(..., alias="Cabinet Type:")
     color: str = Field(..., alias="Color:")
-
-
-

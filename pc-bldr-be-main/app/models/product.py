@@ -38,4 +38,4 @@ class Product(Base):
     category = relationship("Category", back_populates="products")
 
     created_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
-    updated_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)       
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
