@@ -13,9 +13,15 @@ def add_product(asin: str, db: Session = Depends(get_db)):
     return product_crud.create(db, obj_in=obj_in)
 
 @router.get("/", response_model=list[ProductRead])
-def list_products(page: int = Query(1, ge=1), page_size: int = Query(20, ge=1, le=100), db: Session = Depends(get_db)):
-    items, _ = product_crud.get_multi(db, page=page, page_size=page_size)
+def list_products(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    category_id: int | None = Query(None, ge=1),
+    db: Session = Depends(get_db),
+):
+    items, _ = product_crud.get_multi(db, page=page, page_size=page_size, category_id=category_id)
     return [ProductRead.from_orm_with_attrs(i) for i in items]
+
 
 @router.get(
     "/random-per-category",
