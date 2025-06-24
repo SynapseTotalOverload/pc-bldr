@@ -5,13 +5,14 @@ import { ProductRead } from '@/types/prodcuts-base';
 
 export function PartsList({ parts, loading, error }: { parts: ProductRead[]; loading: boolean; error: string | null }) {
   const totalCost = parts.reduce((sum, part) => sum + (part.price || 0), 0);
-  console.log(loading);
+  console.log(parts);
   return (
     <Card className="h-fit w-full max-w-xl p-6">
       <div className="mb-4 flex items-center justify-between">
         <div className="text-lg font-semibold">PC Parts</div>
         <div className="text-main-accent text-xl font-bold">${totalCost.toLocaleString()}</div>
       </div>
+
       <div className="flex flex-col gap-2">
         {loading
           ? [...Array(parts.length)].map((_, index) => <Skeleton key={index} className="h-16 w-full" />)
@@ -20,7 +21,9 @@ export function PartsList({ parts, loading, error }: { parts: ProductRead[]; loa
                 <div>
                   <div className="font-semibold">{part.title}</div>
                   <div className="text-muted-foreground text-xs">
-                    {part.attrs.brand} {part.attrs.model}
+                  {/* brand model */}
+                    {/* {part.attrs?.brand} {part.attrs?.model} */}
+                    {(part.attrs as any)?.brand || ''} {(part.attrs as any)?.model || ''}
                   </div>
                 </div>
                 <div className="text-main-accent font-bold">${part.price?.toString() || '0'}</div>
