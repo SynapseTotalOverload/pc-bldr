@@ -66,6 +66,17 @@ export const ProductConstantMapIds: Record<keyof ProductTypeMapIds, number> = {
   VIDEO_CARD: 8,
 }
 
+export const FrontendToBackendCategoryMap: Record<string, keyof ProductTypeMapIds> = {
+  cpu: 'CPU',
+  cpu_cooler: 'CPU_COOLER',
+  motherboard: 'MOTHERBOARD',
+  memory: 'RAM',
+  internal_hard_drive: 'ROM',
+  video_card: 'GPU',
+  power_supply: 'PSU',
+  case: 'VIDEO_CARD', 
+};
+
 export interface PaginatedInterface<T> {
   items: T[];
   pagination: {

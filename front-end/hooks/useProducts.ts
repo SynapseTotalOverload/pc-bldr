@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { PaginatedInterface, ProductConstantMapIds, ProductRead, ProductTypeMapIds } from '@/types/prodcuts-base'
+import { FrontendToBackendCategoryMap, PaginatedInterface, ProductConstantMapIds, ProductRead, ProductTypeMapIds } from '@/types/prodcuts-base';
 import { instance } from '@/lib/axios';
 interface UseProductsOptions {
   category: string;
@@ -45,13 +45,18 @@ export function useProducts<T extends ProductRead>({
     setError(null);
 
     try {
+      const backendKey = FrontendToBackendCategoryMap[category];
+      if (!backendKey || !(backendKey in ProductConstantMapIds)) throw new Error(`Invalid category: ${category}`);
+      console.log(backendKey)
+
       const searchParams = new URLSearchParams({
-        category_id: ProductConstantMapIds[category as keyof ProductTypeMapIds].toString(),
-        page: page.toString(),
+        // category_id: ProductConstantMapIds[normalizedCategory as keyof ProductTypeMapIds]?.toString(),
+        category_id: ProductConstantMapIds[backendKey].toString(),
+        page: page?.toString(),
         ...(search && { search }),
       });
 
-      const response = await instance.get(`/products?${searchParams.toString()}`);
+      const response = await instance.get(`/products?${searchParams?.toString()}`);
 
       const data: PaginatedInterface<ProductRead> = response.data;
       setProducts(data.items as unknown as T[]);
