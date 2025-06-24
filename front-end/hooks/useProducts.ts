@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-import { PaginatedInterface, ProductRead } from '@/types/prodcuts-base';
-
+import { PaginatedInterface, ProductConstantMapIds, ProductRead, ProductTypeMapIds } from '@/types/prodcuts-base'
+import { instance } from '@/lib/axios';
 interface UseProductsOptions {
   category: string;
   page: number;
@@ -46,17 +46,14 @@ export function useProducts<T extends ProductRead>({
 
     try {
       const searchParams = new URLSearchParams({
-        category,
+        category_id: ProductConstantMapIds[category as keyof ProductTypeMapIds].toString(),
         page: page.toString(),
         ...(search && { search }),
       });
 
-      const response = await fetch(`/api/products?${searchParams.toString()}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      const response = await instance.get(`/products?${searchParams.toString()}`);
 
-      const data: PaginatedInterface<ProductRead> = await response.json();
+      const data: PaginatedInterface<ProductRead> = response.data;
       setProducts(data.items as unknown as T[]);
       setPagination({
         total: data.pagination.totalItems,

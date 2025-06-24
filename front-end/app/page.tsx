@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { CategoryButtons } from '@/components/ui/category-buttons';
 import { DataTable } from '@/components/data-table';
 import { useProducts } from '@/hooks/useProducts';
-import { ProductTypeMapNames, ProductRead } from '@/types/prodcuts-base';
+import { ProductTypeMapNames, ProductRead, ProductTypeMapIds } from '@/types/prodcuts-base';
 import { ColumnDef } from '@tanstack/react-table';
 import { categoryColumnExtensions } from '@/models/products-table/columns';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ import { LayoutGrid, Table } from 'lucide-react';
 import { HoverEffect } from '@/components/ui/motion-card';
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapNames>('cpu');
+  const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapIds>('CPU');
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [viewMode, setViewMode] = useState<'table' | 'card'>('card');
@@ -95,7 +95,7 @@ export default function Home() {
         <CategoryButtons
           selectedCategory={selectedCategory}
           onSelectCategory={(category) => {
-            setSelectedCategory(category as keyof ProductTypeMapNames);
+            setSelectedCategory(category as keyof ProductTypeMapIds);
             setPage(1);
             setSearch('');
           }}

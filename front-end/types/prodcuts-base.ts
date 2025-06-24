@@ -44,6 +44,28 @@ export interface ProductTypeMapNames {
   video_card: 'Video Card';
 }
 
+
+export interface ProductTypeMapIds {
+  CPU: 1;
+  CPU_COOLER: 2;
+  GPU: 3;
+  MOTHERBOARD: 4;
+  RAM: 5;
+  ROM: 6;
+  PSU: 7;
+  VIDEO_CARD: 8;
+}
+export const ProductConstantMapIds: Record<keyof ProductTypeMapIds, number> = {
+  CPU: 1,
+  CPU_COOLER: 2,
+  GPU: 3,
+  MOTHERBOARD: 4,
+  RAM: 5,
+  ROM: 6,
+  PSU: 7,
+  VIDEO_CARD: 8,
+}
+
 export interface PaginatedInterface<T> {
   items: T[];
   pagination: {
@@ -77,9 +99,8 @@ export type GPU = AttributeWithLabel<GPUAttributes>;
 export type PowerSupply = AttributeWithLabel<PowerSupplyAttributes>;
 export type Case = AttributeWithLabel<CaseAttributes>;
 
-export interface AttributeWithLabel<T extends { type: string }> extends BaseAttrs, T {
-  type: T['type'];
-}
+export type AttributeWithLabel<T extends { type: string }> = BaseAttrs & T;
+
 export interface CPUAttributes {
   type: 'cpu';
   cores: number;
