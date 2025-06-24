@@ -94,7 +94,6 @@ export interface ProductRead extends ProductBase {
   category?: CategoryRead;
   attrs: ProductAttrs;
 }
-
 export type ProductAttrs = CPU | CPUCooler | Motherboard | RAM | Storage | GPU | PowerSupply | Case;
 
 export interface BaseAttrs {

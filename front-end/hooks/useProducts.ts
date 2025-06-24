@@ -45,9 +45,9 @@ export function useProducts<T extends ProductRead>({
     setError(null);
 
     try {
-      const backendKey = FrontendToBackendCategoryMap[category];
+      const normalizedCategory = category.toLowerCase();
+      const backendKey = FrontendToBackendCategoryMap[normalizedCategory];
       if (!backendKey || !(backendKey in ProductConstantMapIds)) throw new Error(`Invalid category: ${category}`);
-      console.log(backendKey)
 
       const searchParams = new URLSearchParams({
         // category_id: ProductConstantMapIds[normalizedCategory as keyof ProductTypeMapIds]?.toString(),

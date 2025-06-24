@@ -5,7 +5,12 @@ import Image from 'next/image';
 import { CategoryButtons } from '@/components/ui/category-buttons';
 import { DataTable } from '@/components/data-table';
 import { useProducts } from '@/hooks/useProducts';
-import { ProductTypeMapNames, ProductRead, ProductTypeMapIds } from '@/types/prodcuts-base';
+import {
+  ProductTypeMapNames,
+  ProductRead,
+  ProductTypeMapIds,
+  FrontendToBackendCategoryMap,
+} from '@/types/prodcuts-base';
 import { ColumnDef } from '@tanstack/react-table';
 import { categoryColumnExtensions } from '@/models/products-table/columns';
 import Link from 'next/link';
@@ -63,10 +68,16 @@ export default function Home() {
     },
   ];
 
+  // const actualColumns = [
+  //   ...baseColumns,
+  //   ...(categoryColumnExtensions[selectedCategory] ?? []),
+  // ] as ColumnDef<ProductRead>[];
+
+  const backendCategoryKey = FrontendToBackendCategoryMap[selectedCategory as string];
   const actualColumns = [
     ...baseColumns,
-    ...(categoryColumnExtensions[selectedCategory] ?? []),
-  ] as ColumnDef<ProductRead>[];
+    ...(categoryColumnExtensions[backendCategoryKey as keyof typeof categoryColumnExtensions] ?? []),
+  ];
 
   return (
     <main className="depth-bg flex min-h-screen flex-col items-center justify-between p-4">

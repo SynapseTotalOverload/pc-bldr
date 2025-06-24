@@ -5,7 +5,6 @@ import { ProductRead } from '@/types/prodcuts-base';
 
 export function PartsList({ parts, loading, error }: { parts: ProductRead[]; loading: boolean; error: string | null }) {
   const totalCost = parts.reduce((sum, part) => sum + (part.price || 0), 0);
-  console.log(parts);
   return (
     <Card className="h-fit w-full max-w-xl p-6">
       <div className="mb-4 flex items-center justify-between">
@@ -21,8 +20,8 @@ export function PartsList({ parts, loading, error }: { parts: ProductRead[]; loa
                 <div>
                   <div className="font-semibold">{part.title}</div>
                   <div className="text-muted-foreground text-xs">
-                  {/* brand model */}
-                    {/* {part.attrs?.brand} {part.attrs?.model} */}
+                    {/* brand model */}
+                    {part.title} {part.category}
                     {(part.attrs as any)?.brand || ''} {(part.attrs as any)?.model || ''}
                   </div>
                 </div>
