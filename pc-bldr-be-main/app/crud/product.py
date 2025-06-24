@@ -28,18 +28,26 @@ class CRUDProduct:
 
     def get(self, db: Session, id_: int):
         return db.get(Product, id_, options=(self._get_joinedload_attrs_option()))
+    
+    def get_by_asin(self, db: Session, asin: str):
+        return db.scalar(select(Product).where(Product.asin == asin).options(*self._get_joinedload_attrs_option()))
 
     def get_multi(self, db: Session, *, page: int = 1, page_size: int = 20, category_id: int | None = None):
         stmt = (
             select(Product)
-            .options(*self._get_joinedload_attrs_option())
             .offset((page - 1) * page_size)
             .limit(page_size)
         )
         if category_id:
             CatAttrTable = cat_id_to_attrs_model_map[category_id]
             stmt = stmt.join(CatAttrTable)
-        total = db.scalar(select(func.count()).select_from(Product))
+        else:
+            stmt = stmt.options(*self._get_joinedload_attrs_option())
+        count_stmt = select(func.count()).select_from(Product)
+        if category_id:
+            CatAttrTable = cat_id_to_attrs_model_map[category_id]
+            count_stmt = count_stmt.join(CatAttrTable)
+        total = db.scalar(count_stmt)
         return db.scalars(stmt).all(), total
 
     def update(self, db: Session, *, db_obj: Product, obj_in: ProductUpdate):
