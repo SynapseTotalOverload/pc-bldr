@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.models import Product
 from app.services.pc_builder.rules import RuleBase
 from app.services.pc_builder.enums import COMPONENTS_ENUM
+from app.services.pc_builder.component_filters_builder import ComponentFiltersBuilder
 from app.models import (
     BaseAttrsModel,
     CPUAttributes,
@@ -61,7 +62,7 @@ class ComponentSelector:
         self.selected_components = selected_components or {}
 
     @property
-    def component_type(self) -> str:
+    def component_type(self) -> str|None:
         return self._component_type
 
     @component_type.setter
@@ -93,39 +94,23 @@ class ComponentSelector:
 
         filters = []
 
-        if self.component_type == "motherboard":
-            cpu = self.selected_components.get("cpu")
-            if cpu:
-                filters.append(MotherboardAttributes.socket_type == cpu.cpu_attributes.socket_type)
-            ram = self.selected_components.get("ram")
-            if ram:
-                filters.append(MotherboardAttributes.max_ram_support <= ram.ram_attributes.total_memory)
-                filters.append(MotherboardAttributes.ram_slots <= ram.ram_attributes.quantity)
-
-        elif self.component_type == "ram":
-            cpu = self.selected_components.get("cpu")
-            mb = self.selected_components.get("motherboard")
-            if cpu:
-                filters.append(RAMAttributes.ram_type == cpu.cpu_attributes.memory_type)
-                filters.append(RAMAttributes.ram_speed <= cpu.cpu_attributes.memory_speed)
-            if mb:
-                filters.append(RAMAttributes.total_memory <= mb.motherboard_attributes.max_ram_support)
-                filters.append(RAMAttributes.quantity <= mb.motherboard_attributes.ram_slots)
-
-        elif self.component_type == "cpu":
-            mb = self.selected_components.get("motherboard")
-            if mb:
-                filters.append(CPUAttributes.socket_type == mb.motherboard_attributes.socket_type)
-
-        elif self.component_type == "case":
-            gpu = self.selected_components.get("gpu")
-            if gpu:
-                # TODO: implement
-                pass
-
-        elif self.component_type == "psu":
-            estimated_power = self._estimate_power_draw()
-            filters.append(PowerSupplyAttributes.power >= estimated_power)
+        match self.component_type:
+            case "cpu":
+                filters = ComponentFiltersBuilder.form_cpu_compability_filters(self.selected_components)
+            case "cpu_cooler":
+                filters = ComponentFiltersBuilder.form_cpu_cooler_compability_filters(self.selected_components)
+            case "gpu":
+                filters = ComponentFiltersBuilder.form_gpu_compability_filters(self.selected_components)
+            case "motherboard":
+                filters = ComponentFiltersBuilder.form_motherboard_compability_filters(self.selected_components)
+            case "ram":
+                filters = ComponentFiltersBuilder.form_ram_compability_filters(self.selected_components)
+            case "storage":
+                filters = ComponentFiltersBuilder.form_storage_compability_filters(self.selected_components)
+            case "psu":
+                filters = ComponentFiltersBuilder.form_power_supply_compability_filters(self.selected_components, self.budget)
+            case "case":
+                filters = ComponentFiltersBuilder.form_case_compability_filters(self.selected_components)
 
         if filters:
             stmt = stmt.where(and_(*filters))
@@ -138,7 +123,7 @@ class ComponentSelector:
             products = rule.apply(products, self.component_type)
         return products
 
-    def _is_compatible(self, product: Product) -> bool:
+    def is_compatible(self, product: Product) -> bool:
         try:
             if self.component_type == "motherboard":
                 cpu = self.selected_components.get("cpu")
