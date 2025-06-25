@@ -55,14 +55,14 @@ export default function Home() {
       accessorKey: 'asin',
       cell: ({ row }) => {
         return (
-          <a
+          <Link
             className="text-blue-500"
-            href={`https://amazon.com/dp/${row.original.asin}`}
+            href={`/products/${row.original.id}`}
             target="_blank"
             rel="noopener noreferrer"
           >
             View
-          </a>
+          </Link>
         );
       },
     },

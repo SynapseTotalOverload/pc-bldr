@@ -44,6 +44,16 @@ export interface ProductTypeMapNames {
   video_card: 'Video Card';
 }
 
+export const PRODUCT_TYPE_NAMES: Record<keyof ProductTypeMapNames, string> = {
+  cpu: 'CPU',
+  cpu_cooler: 'CPU Cooler',
+  gpu: 'GPU',
+  memory: 'Memory',
+  motherboard: 'Motherboard',
+  internal_hard_drive: 'Internal Hard Drive',
+  power_supply: 'Power Supply',
+  video_card: 'Video Card',
+};
 
 export interface ProductTypeMapIds {
   CPU: 1;
