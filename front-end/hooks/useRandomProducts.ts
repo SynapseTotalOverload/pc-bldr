@@ -1,3 +1,4 @@
+import { instance } from '@/lib/axios';
 import { useState, useEffect } from 'react';
 import { ProductRead } from '@/types/prodcuts-base';
 
@@ -23,12 +24,9 @@ export function useRandomProducts(): UseRandomProductsResult {
     setError(null);
 
     try {
-      const response = await fetch('/api/products/random');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      const response = await instance.get('/products/random-per-category');
 
-      const data: RandomProductsResponse = await response.json();
+      const data: RandomProductsResponse = response.data;
       setProducts(data.products);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while fetching random products');

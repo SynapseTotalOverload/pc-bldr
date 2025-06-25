@@ -5,6 +5,8 @@ import { ProductRead } from '@/types/prodcuts-base';
 
 export function PartsList({ parts, loading, error }: { parts: ProductRead[]; loading: boolean; error: string | null }) {
   const totalCost = parts.reduce((sum, part) => sum + (part.price || 0), 0);
+
+  console.log(parts);
   return (
     <Card className="h-fit w-full max-w-xl p-6">
       <div className="mb-4 flex items-center justify-between">
