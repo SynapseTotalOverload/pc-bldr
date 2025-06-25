@@ -21,7 +21,7 @@ export default function Configurator() {
   const [showExtras, setShowExtras] = useState(false);
   const { products, loading, error, refetch, handleChangeManualLoading } = useRandomProducts();
   const debouncedRefetch = useDebounce(refetch, 1000);
-
+  
   const handleBudgetChange = async (newBudget: number) => {
     handleChangeManualLoading(true);
     setBudget(newBudget);
