@@ -23,7 +23,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapIds>('CPU');
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [viewMode, setViewMode] = useState<'table' | 'card'>('card');
+  const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
 
   const { products, pagination, error } = useProducts<ProductRead>({
     category: selectedCategory,

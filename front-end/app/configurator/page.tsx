@@ -5,6 +5,9 @@ import { BudgetSelector, UseCaseSelector, PartsList, ExtrasPanel } from '@/model
 import { PCPart, UseCase } from '@/models/configurator/types';
 import useDebounce from '@/hooks/useDebounce';
 import { useRandomProducts } from '@/hooks/useRandomProducts';
+import { Button } from '@/components/ui/button';
+import { ArrowLeftIcon } from 'lucide-react';
+import Link from 'next/link';
 
 const pcParts: PCPart[] = [
   { type: 'CPU', name: 'Intel Core i5-12600K', price: 279 },
@@ -30,6 +33,11 @@ export default function Configurator() {
 
   return (
     <div className="depth-bg flex h-screen flex-col items-center justify-center gap-4">
+      <Button>
+        <Link href="/">
+          <ArrowLeftIcon className="h-4 w-4" />
+        </Link>
+      </Button>
       <div className="grid h-screen grid-cols-2 gap-4 px-4 py-12">
         <div className="flex h-full flex-col gap-4">
           <BudgetSelector budget={budget} onBudgetChange={handleBudgetChange} />
