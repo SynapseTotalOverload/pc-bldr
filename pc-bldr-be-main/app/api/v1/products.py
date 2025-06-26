@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.schemas.list_products_with_pagination import ProductListWithPagination, PaginationSchema
-from app.schemas.product import ProductRead, ProductUpdate
+from app.schemas.product import ProductRead, ProductUpdate, ProductCreate
 from app.crud.product import product_crud
 from app.services.keepa import fetch_product_from_keepa
 
@@ -13,6 +13,23 @@ router = APIRouter(prefix="/products", tags=["products"])
 def add_product(asin: str, db: Session = Depends(get_db)):
     obj_in = fetch_product_from_keepa(asin, db=db)
     return product_crud.create(db, obj_in=obj_in)
+
+@router.post("/", response_model=ProductRead, status_code=status.HTTP_201_CREATED)
+def create_product_manually(product: ProductCreate, db: Session = Depends(get_db)):
+    """
+    Create a product manually with optional attributes.
+    
+    Category IDs:
+    - 1: CPU
+    - 2: CPU Cooler  
+    - 3: GPU
+    - 4: Motherboard
+    - 5: RAM
+    - 6: Storage
+    - 7: Power Supply
+    - 8: Case
+    """
+    return ProductRead.from_orm_with_attrs(product_crud.create(db, obj_in=product))
 
 @router.get("/", response_model=ProductListWithPagination)
 def list_products(
@@ -25,7 +42,7 @@ def list_products(
             "1 - CPU;\n"
             "2 - CPU Cooler;\n"
             "3 - GPU;\n"
-            "4 - Motheboard;\n"
+            "4 - Motherboard;\n"
             "5 - RAM;\n"
             "6 - ROM;\n"
             "7 - PSU;\n"
@@ -68,7 +85,7 @@ def update_product(product_id: int, item: ProductUpdate, db: Session = Depends(g
     obj = product_crud.get(db, product_id)
     if not obj:
         raise HTTPException(status_code=404, detail="Not found")
-    return product_crud.update(db, db_obj=obj, obj_in=item)
+    return ProductRead.from_orm_with_attrs(product_crud.update(db, db_obj=obj, obj_in=item))
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(product_id: int, db: Session = Depends(get_db)):

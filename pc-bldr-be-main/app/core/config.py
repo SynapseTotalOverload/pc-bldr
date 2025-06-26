@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     app_name: str = "Keepa FastAPI Service"
-    api_prefix: str = "/api/v1"
+    api_prefix: str = "/api"
 
     postgres_dsn: str = Field(..., alias="POSTGRES_DSN")
     keepa_key: str = Field(..., alias="KEEPA_API_KEY")
