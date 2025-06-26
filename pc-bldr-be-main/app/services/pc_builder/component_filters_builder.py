@@ -165,7 +165,7 @@ class ComponentFiltersBuilder:
     def _estimate_power_draw(cls, budget: int) -> int:
         """TODO: add to gpu, cpu and othe(if need) components power draw and estimate needed psu power with this data"""
         if budget < 500:
-            return 500
+            return 0
         elif budget < 800:
             return 650
         elif budget < 1200:

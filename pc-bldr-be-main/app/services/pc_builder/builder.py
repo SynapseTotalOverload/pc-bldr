@@ -1,4 +1,5 @@
 from typing import List
+import logging
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -8,6 +9,7 @@ from app.services.pc_builder.selector import ComponentSelector
 from app.crud.product import product_crud
 from app.models import Product
 
+logger = logging.getLogger(__name__)
 
 class PCBuilder:
     """
@@ -33,6 +35,7 @@ class PCBuilder:
         self.preselected_components: dict[str,str] = preselected_components or {}
         self.rules: List[RuleBase] = []
         self.selected_components: dict[str, Product] = {}
+        self.remaining_budget = budget
 
     def _load_rules(self) -> None:
         """
@@ -50,6 +53,8 @@ class PCBuilder:
             budget=self.budget,
             rules=self.rules,
             session=self.session,
+            build_type=self.purpose,
+            remaining_budget=self.remaining_budget,
         )
         required_components = COMPONENTS_ENUM.copy()
 
@@ -68,13 +73,27 @@ class PCBuilder:
                 raise Exception(f"Preselected {c_t} is not compatible with other preselected components")
 
     def _select_reqired_components(self, selector, required_components):
+        logger.info(f"Starting component selection with budget: {self.budget}, purpose: {self.purpose}")
+        
         for component_type in required_components:
+            logger.info(f"Selecting {component_type} with remaining budget: {self.remaining_budget:.2f}")
+            
             selector.component_type = component_type
             selector.selected_components = self.selected_components
+            selector.remaining_budget = self.remaining_budget
+            
             product = selector.select_best()
 
             if not product:
                 raise Exception(f"Couldn't find suitable {component_type}")
+            
+            # Update remaining budget after component selection
+            if product.price:
+                self.remaining_budget -= product.price
+                logger.info(f"Selected {component_type}: {product.title} - ${product.price:.2f}, remaining budget: {self.remaining_budget:.2f}")
+            else:
+                logger.info(f"Selected {component_type}: {product.title} - price not available")
+            
             self.selected_components[component_type] = product
 
     def _fetch_preselected_components(self, required_components):
@@ -84,5 +103,10 @@ class PCBuilder:
             
             if not product:
                 raise Exception(f"Couldn't find {component_type} with asin {self.preselected_components[component_type]}")
+            
+            # Update remaining budget for preselected components
+            if product.price:
+                self.remaining_budget -= product.price
+            
             self.selected_components[component_type] = product
             required_components.remove(component_type)

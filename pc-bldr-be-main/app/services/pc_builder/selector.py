@@ -3,12 +3,13 @@ Upgraded PC component selection engine with compatibility logic,
 scoring system, and rules enforcement.
 """
 
+import logging
 from typing import Optional, List
 from sqlalchemy import select, and_
 from sqlalchemy.orm import Session
 from app.models import Product
 from app.services.pc_builder.rules import RuleBase
-from app.services.pc_builder.enums import COMPONENTS_ENUM
+from app.services.pc_builder.enums import COMPONENTS_ENUM, get_budget_distribution
 from app.services.pc_builder.component_filters_builder import ComponentFiltersBuilder
 from app.models import (
     BaseAttrsModel,
@@ -22,6 +23,7 @@ from app.models import (
     CaseAttributes,
 )
 
+logger = logging.getLogger(__name__)
 
 class ComponentSelector:
     """
@@ -47,6 +49,8 @@ class ComponentSelector:
         session: Session,
         component_type: Optional[str] = None,
         selected_components: Optional[dict[str, Product]] = None,
+        build_type: Optional[str] = None,
+        remaining_budget: Optional[float] = None,
     ):
         """
         :param budget: Total PC budget.
@@ -54,12 +58,16 @@ class ComponentSelector:
         :param session: SQLAlchemy session.
         :param component_type: Target component type to select.
         :param selected_components: Already selected components for compatibility reference.
+        :param build_type: Type of build (gaming, office, development) for budget distribution.
+        :param remaining_budget: Remaining budget after previous component selections.
         """
         self.budget = budget
         self.rules = rules
         self.session = session
         self.component_type = component_type
         self.selected_components = selected_components or {}
+        self.build_type = build_type
+        self.remaining_budget = remaining_budget or budget
 
     @property
     def component_type(self) -> str|None:
@@ -71,6 +79,35 @@ class ComponentSelector:
             self._component_type = component_type
         else:
             raise ValueError("Incorrect component type for component selector")
+
+    def get_component_budget(self) -> float:
+        """
+        Calculate the budget for the current component based on distribution and remaining budget.
+        """
+        if not self.build_type or not self.component_type:
+            logger.info(f"Component {self.component_type}: Using remaining budget {self.remaining_budget}")
+            return self.remaining_budget
+        
+        distribution = get_budget_distribution(self.build_type)
+        component_percentage = distribution.get(self.component_type, 0)
+        
+        # Calculate base budget for this component
+        base_budget = (self.budget * component_percentage) / 100
+        
+        # If remaining budget is less than base budget, use remaining budget
+        # This ensures we don't exceed total budget
+        if self.remaining_budget < base_budget:
+            logger.info(f"Component {self.component_type}: Using remaining budget {self.remaining_budget} (base: {base_budget})")
+            return self.remaining_budget
+        
+        # If remaining budget is significantly more than base budget,
+        # we can use a bit more to get better components
+        # but still respect the distribution
+        max_additional_budget = base_budget * 0.1  # Allow up to 5% more than base
+        available_budget = min(self.remaining_budget, base_budget + max_additional_budget)
+        
+        logger.info(f"Component {self.component_type}: Budget {available_budget:.2f} (base: {base_budget:.2f}, remaining: {self.remaining_budget:.2f})")
+        return available_budget
 
     def select_best(self) -> Optional[Product]:
         """
@@ -94,23 +131,28 @@ class ComponentSelector:
 
         filters = []
 
+        # Add budget filter based on component budget
+        component_budget = self.get_component_budget()
+        if component_budget > 0:
+            filters.append(Product.price <= component_budget)
+
         match self.component_type:
             case "cpu":
-                filters = ComponentFiltersBuilder.form_cpu_compability_filters(self.selected_components)
+                filters.extend(ComponentFiltersBuilder.form_cpu_compability_filters(self.selected_components))
             case "cpu_cooler":
-                filters = ComponentFiltersBuilder.form_cpu_cooler_compability_filters(self.selected_components)
+                filters.extend(ComponentFiltersBuilder.form_cpu_cooler_compability_filters(self.selected_components))
             case "gpu":
-                filters = ComponentFiltersBuilder.form_gpu_compability_filters(self.selected_components)
+                filters.extend(ComponentFiltersBuilder.form_gpu_compability_filters(self.selected_components))
             case "motherboard":
-                filters = ComponentFiltersBuilder.form_motherboard_compability_filters(self.selected_components)
+                filters.extend(ComponentFiltersBuilder.form_motherboard_compability_filters(self.selected_components))
             case "ram":
-                filters = ComponentFiltersBuilder.form_ram_compability_filters(self.selected_components)
+                filters.extend(ComponentFiltersBuilder.form_ram_compability_filters(self.selected_components))
             case "storage":
-                filters = ComponentFiltersBuilder.form_storage_compability_filters(self.selected_components)
+                filters.extend(ComponentFiltersBuilder.form_storage_compability_filters(self.selected_components))
             case "psu":
-                filters = ComponentFiltersBuilder.form_power_supply_compability_filters(self.selected_components, self.budget)
+                filters.extend(ComponentFiltersBuilder.form_power_supply_compability_filters(self.selected_components, self.budget))
             case "case":
-                filters = ComponentFiltersBuilder.form_case_compability_filters(self.selected_components)
+                filters.extend(ComponentFiltersBuilder.form_case_compability_filters(self.selected_components))
 
         if filters:
             stmt = stmt.where(and_(*filters))
@@ -200,7 +242,6 @@ class ComponentSelector:
         Calculate weighted score for product.
         """
         score = 0
-        price_weight = 1.0 / (product.price or 1)
 
         if self.component_type == "ram":
             score += product.ram_attributes.total_memory * 2
@@ -222,5 +263,4 @@ class ComponentSelector:
         elif self.component_type == "psu":
             score += product.power_supply_attributes.power * 0.05
 
-        score *= price_weight
         return score
