@@ -2,9 +2,7 @@ import { instance } from '@/lib/axios';
 import { useState, useEffect } from 'react';
 import { ProductRead } from '@/types/prodcuts-base';
 
-interface RandomProductsResponse {
-  products: ProductRead[];
-}
+
 
 interface UseRandomProductsResult {
   products: ProductRead[];
@@ -26,8 +24,9 @@ export function useRandomProducts(): UseRandomProductsResult {
     try {
       const response = await instance.get('/products/random-per-category');
 
-      const data: RandomProductsResponse = response.data;
-      setProducts(data.products);
+      const data: ProductRead[] = response.data;
+      
+      setProducts(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while fetching random products');
       setProducts([]);

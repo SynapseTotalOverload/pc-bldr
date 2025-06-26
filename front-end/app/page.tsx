@@ -23,7 +23,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapIds>('CPU');
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [viewMode, setViewMode] = useState<'table' | 'card'>('card');
+  const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
 
   const { products, pagination, error } = useProducts<ProductRead>({
     category: selectedCategory,
@@ -55,14 +55,14 @@ export default function Home() {
       accessorKey: 'asin',
       cell: ({ row }) => {
         return (
-          <a
+          <Link
             className="text-blue-500"
-            href={`https://amazon.com/dp/${row.original.asin}`}
+            href={`/products/${row.original.id}`}
             target="_blank"
             rel="noopener noreferrer"
           >
             View
-          </a>
+          </Link>
         );
       },
     },

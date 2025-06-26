@@ -44,6 +44,16 @@ export interface ProductTypeMapNames {
   video_card: 'Video Card';
 }
 
+export const PRODUCT_TYPE_NAMES: Record<keyof ProductTypeMapNames, string> = {
+  cpu: 'CPU',
+  cpu_cooler: 'CPU Cooler',
+  gpu: 'GPU',
+  memory: 'Memory',
+  motherboard: 'Motherboard',
+  internal_hard_drive: 'Internal Hard Drive',
+  power_supply: 'Power Supply',
+  video_card: 'Video Card',
+};
 
 export interface ProductTypeMapIds {
   CPU: 1;
@@ -76,6 +86,17 @@ export const FrontendToBackendCategoryMap: Record<string, keyof ProductTypeMapId
   power_supply: 'PSU',
   case: 'VIDEO_CARD', 
 };
+
+export const FrontendToBackendCategoryIdMap: Record<string, keyof ProductTypeMapIds> = {
+  1: 'CPU',
+  2: 'CPU_COOLER',
+  3: 'GPU',
+  4: 'MOTHERBOARD',
+  5: 'RAM',
+  6: 'ROM',
+  7: 'PSU',
+  8: 'VIDEO_CARD',
+}
 
 export interface PaginatedInterface<T> {
   items: T[];
