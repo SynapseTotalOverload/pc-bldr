@@ -16,20 +16,73 @@ import { categoryColumnExtensions } from '@/models/products-table/columns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { LayoutGrid, Table } from 'lucide-react';
+import { LayoutGrid, MoreHorizontal,  Plus, Table } from 'lucide-react';
 import { HoverEffect } from '@/components/ui/motion-card';
+import { AddNewProduct } from '@/models/dialogs/add-new-product';
+import { useToast } from '@/hooks/use-toast';
+import instance from '@/lib/axios';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useBoolean } from '@/hooks/use-boolean';
+
+interface FormData {
+  category: keyof ProductTypeMapNames;
+  asin: string;
+  title: string;
+  price: string;
+  rating: string;
+  brand: string;
+  model: string;
+  [key: string]: string | number;
+}
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapIds>('CPU');
+  const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapNames>('cpu');
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
-
-  const { products, pagination, error } = useProducts<ProductRead>({
+  const { toast } = useToast();
+  const {isState, changeState, toggleState}= useBoolean();
+  const [selectedProduct, setSelectedProduct] = useState<ProductRead | null>(null);
+  const { products, pagination, error, refetch } = useProducts<ProductRead>({
     category: selectedCategory,
     page,
     search,
   });
+
+
+  const handleAddProduct = async (data: FormData) => {
+    try {
+      // Send data to API
+      if(selectedProduct){
+        await instance.put(`/products/${selectedProduct.id}`, data);
+      }else{
+        await instance.post('/products', data);
+      }
+      // Refetch products to show the new one
+      await refetch();
+    } catch (error) {
+      console.error('Error adding product:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add product",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await instance.delete(`/products/${id}`);
+      await refetch();
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete product",
+        variant: "destructive",
+      });
+    }
+  };
 
   const baseColumns: ColumnDef<ProductRead>[] = [
     {
@@ -68,15 +121,25 @@ export default function Home() {
     },
   ];
 
-  // const actualColumns = [
-  //   ...baseColumns,
-  //   ...(categoryColumnExtensions[selectedCategory] ?? []),
-  // ] as ColumnDef<ProductRead>[];
-
   const backendCategoryKey = FrontendToBackendCategoryMap[selectedCategory as string];
   const actualColumns = [
     ...baseColumns,
     ...(categoryColumnExtensions[backendCategoryKey as keyof typeof categoryColumnExtensions] ?? []),
+    {
+      header: 'Actions',
+      accessorKey: 'actions',
+      cell: ({ row }) => {
+        return <DropdownMenu>
+          <DropdownMenuTrigger asChild> 
+            <Button className="rounded-full p-[2px] aspect-square" variant="ghost"><MoreHorizontal className="h-4 w-4" /></Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={()=>{setSelectedProduct(row.original); toggleState('addNewProduct')}}>Edit</DropdownMenuItem>
+            <DropdownMenuItem onClick={()=>handleDelete(row.original.id)} className="text-red-500">Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>;
+      },  
+    } as ColumnDef<ProductRead>
   ];
 
   return (
@@ -106,7 +169,7 @@ export default function Home() {
         <CategoryButtons
           selectedCategory={selectedCategory}
           onSelectCategory={(category) => {
-            setSelectedCategory(category as keyof ProductTypeMapIds);
+            setSelectedCategory(category as keyof ProductTypeMapNames);
             setPage(1);
             setSearch('');
           }}
@@ -119,7 +182,10 @@ export default function Home() {
                 <DataTable
                   columns={actualColumns}
                   data={products}
-                  pagination={pagination}
+                  pagination={pagination} 
+                  renderActions={() => (
+                   <Button onClick={()=>toggleState('addNewProduct')}> <Plus className="h-4 w-4" /> Add new product</Button>
+                  )}
                   onPageChange={(page) => setPage(page)}
                 />
               ) : (
@@ -131,6 +197,14 @@ export default function Home() {
 
         {error && <div className="mt-4 text-red-500">Error: {error}</div>}
       </div>
+      <AddNewProduct
+        data={selectedProduct ? selectedProduct as unknown as Partial<FormData> : undefined}
+        activeCategory={selectedCategory}
+        onHandleSubmit={handleAddProduct}
+        open={isState('addNewProduct')}
+        onOpenChange={(value)=>{changeState('addNewProduct', value); setSelectedProduct(null)}}
+        productId={selectedProduct?.id}
+      />  
     </main>
   );
 }

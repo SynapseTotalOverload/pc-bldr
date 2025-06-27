@@ -1,3 +1,4 @@
+from enum import Enum
 from app.models import (
     BaseAttrsModel,
     CPUAttributes,
@@ -21,3 +22,9 @@ cat_id_to_attrs_model_map: dict[int,type[BaseAttrsModel]] = {
     7: PowerSupplyAttributes,
     8: CaseAttributes,
 }
+
+class BuildTypeEnum(Enum):
+    GAMING = "gaming"
+    OFFICE = "office"
+    DEVELOPMENT = "development"
+    OTHER = "other"

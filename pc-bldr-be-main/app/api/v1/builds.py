@@ -1,0 +1,88 @@
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy.orm import Session
+from typing import List
+
+from app.db.session import get_db
+from app.crud.build import build_crud
+from app.schemas.build import BuildCreate, BuildUpdate, BuildRead
+
+
+router = APIRouter(prefix="/builds", tags=["builds"])
+
+
+@router.post("/", response_model=BuildRead, status_code=status.HTTP_201_CREATED)
+def create_build(
+    *,
+    db: Session = Depends(get_db),
+    build_in: BuildCreate,
+) -> BuildRead:
+    """
+    Create a new PC build with compatibility check.
+    """
+    build = build_crud.create(db=db, obj_in=build_in)
+    return BuildRead.model_validate(build)
+
+
+@router.get("/", response_model=List[BuildRead])
+def read_builds(
+    db: Session = Depends(get_db),
+    skip: int = Query(0, ge=0, description="Number of records to skip"),
+    limit: int = Query(100, ge=1, le=1000, description="Number of records to return"),
+) -> List[BuildRead]:
+    """
+    Retrieve builds with pagination.
+    """
+    builds, total = build_crud.get_multi(db=db, skip=skip, limit=limit)
+    return [BuildRead.model_validate(build) for build in builds]
+
+
+@router.get("/{build_id}", response_model=BuildRead)
+def read_build(
+    *,
+    db: Session = Depends(get_db),
+    build_id: int,
+) -> BuildRead:
+    """
+    Get build by ID.
+    """
+    build = build_crud.get(db=db, id_=build_id)
+    if not build:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Build not found"
+        )
+    return BuildRead.model_validate(build)
+
+
+@router.put("/{build_id}", response_model=BuildRead)
+def update_build(
+    *,
+    db: Session = Depends(get_db),
+    build_id: int,
+    build_in: BuildUpdate,
+) -> BuildRead:
+    """
+    Update build with compatibility check.
+    """
+    build = build_crud.get(db=db, id_=build_id)
+    if not build:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Build not found"
+        )
+    build = build_crud.update(db=db, db_obj=build, obj_in=build_in)
+    return BuildRead.model_validate(build)
+
+
+@router.delete("/{build_id}", response_model=BuildRead)
+def delete_build(
+    *,
+    db: Session = Depends(get_db),
+    build_id: int,
+) -> BuildRead:
+    """
+    Delete build.
+    """
+    build = build_crud.remove(db=db, id_=build_id)
+    return BuildRead.model_validate(build)
+

@@ -1,18 +1,19 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.models.product import Product
 from app.schemas.attributes import (
-    CPUAttributesSchema,
-    CPUCoolerAttributesSchema,
-    GPUAttributesSchema,
-    MotherboardAttributesSchema,
-    RAMAttributesSchema,
-    StorageAttributesSchema,
-    PowerSupplyAttributesSchema,
-    CaseAttributesSchema,
+    AttributesUpdateUnion,
+    CPUAttributesUpdateSchema,
+    CPUCoolerAttributesUpdateSchema,
+    GPUAttributesUpdateSchema,
+    MotherboardAttributesUpdateSchema,
+    RAMAttributesUpdateSchema,
+    StorageAttributesUpdateSchema,
+    PowerSupplyAttributesUpdateSchema,
+    CaseAttributesUpdateSchema,
 )
 from .category import CategoryRead
 
@@ -29,6 +30,14 @@ class ProductBase(BaseModel):
 
 class ProductCreate(ProductBase):
     category_id: Optional[int] = None
+    attrs: Optional[AttributesUpdateUnion] = None
+
+    @field_validator('category_id')
+    @classmethod
+    def validate_category_id(cls, v):
+        if v is not None and (v < 1 or v > 8):
+            raise ValueError('category_id must be between 1 and 8')
+        return v
 
 
 class ProductUpdate(BaseModel):
@@ -36,6 +45,14 @@ class ProductUpdate(BaseModel):
     price: Optional[float] = None
     rating: Optional[float] = None
     category_id: Optional[int] = None
+    attrs: Optional[AttributesUpdateUnion] = None
+
+    @field_validator('category_id')
+    @classmethod
+    def validate_category_id(cls, v):
+        if v is not None and (v < 1 or v > 8):
+            raise ValueError('category_id must be between 1 and 8')
+        return v
 
     class Config:
         from_attributes = True
@@ -53,15 +70,21 @@ class ProductRead(ProductBase):
         Construct ProductRead instance with resolved attrs field.
         """
 
+        if obj.category: 
+            category = CategoryRead.model_validate(obj.category)
+            del obj.category
+        else:
+            category = None
+
         mapping: list[tuple[str, BaseModel]] = [
-            ("cpu_attributes", CPUAttributesSchema),
-            ("cpu_cooler_attributes", CPUCoolerAttributesSchema),
-            ("gpu_attributes", GPUAttributesSchema),
-            ("motherboard_attributes", MotherboardAttributesSchema),
-            ("ram_attributes", RAMAttributesSchema),
-            ("storage_attributes", StorageAttributesSchema),
-            ("power_supply_attributes", PowerSupplyAttributesSchema),
-            ("case_attributes", CaseAttributesSchema),
+            ("cpu_attributes", CPUAttributesUpdateSchema),
+            ("cpu_cooler_attributes", CPUCoolerAttributesUpdateSchema),
+            ("gpu_attributes", GPUAttributesUpdateSchema),
+            ("motherboard_attributes", MotherboardAttributesUpdateSchema),
+            ("ram_attributes", RAMAttributesUpdateSchema),
+            ("storage_attributes", StorageAttributesUpdateSchema),
+            ("power_supply_attributes", PowerSupplyAttributesUpdateSchema),
+            ("case_attributes", CaseAttributesUpdateSchema),
         ]
 
         for attr_name, schema in mapping:
@@ -69,7 +92,8 @@ class ProductRead(ProductBase):
             if attrs_model:
                 return cls(
                     **obj.__dict__,
+                    category=category,
                     attrs=schema.model_validate(attrs_model).model_dump()
                 )
 
-        return cls(**obj.__dict__, attrs=None)
+        return cls(**obj.__dict__, category=category, attrs=None)

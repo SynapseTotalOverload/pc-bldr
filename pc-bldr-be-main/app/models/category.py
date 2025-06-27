@@ -6,7 +6,6 @@ from app.db.base import Base
 
 class Category(Base):
     id = Column(BigInteger, primary_key=True, index=True)
-    keepa_id = Column(BigInteger, unique=True, nullable=False)
     name = Column(String, nullable=False)
 
     products = relationship("Product", back_populates="category")

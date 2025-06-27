@@ -12,7 +12,6 @@ class CategoryCreate(CategoryBase):
 
 class CategoryRead(BaseModel):
     id: int
-    keepa_id: int
     name: str
 
     class Config:

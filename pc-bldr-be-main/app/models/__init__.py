@@ -1,5 +1,6 @@
 from .category import Category
 from .product import Product
+from .build import Build
 from .attributes import (
     CPUAttributes,
     CPUCoolerAttributes,
@@ -15,6 +16,7 @@ from .attributes import (
 __all__ = [
     "Category", 
     "Product",
+    "Build",
     "CPUAttributes",
     "CPUCoolerAttributes",
     "GPUAttributes",
