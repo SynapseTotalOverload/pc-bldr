@@ -379,7 +379,7 @@ def simulate_dev_workflow(cycles=10):
     print("💡 Press Ctrl+C to quit the simulation at any time.")
     
     # Try to auto-focus on IDE window
-    focus_ide_window()
+  
     
     time.sleep(5)
 

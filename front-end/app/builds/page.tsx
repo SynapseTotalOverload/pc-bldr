@@ -10,6 +10,13 @@ import { BuildRead } from '@/types/prodcuts-base';
 import { Plus, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function Builds() {
   const [page, setPage] = useState(1);
@@ -88,30 +95,8 @@ export default function Builds() {
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search builds..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-8"
-          />
-        </div>
-        <select
-          value={buildType}
-          onChange={(e) => {
-            setBuildType(e.target.value);
-            setPage(1);
-          }}
-          className="px-3 py-2 border border-input bg-background rounded-md"
-        >
-          <option value="">All Types</option>
-          <option value="gaming">Gaming</option>
-          <option value="office">Office</option>
-          <option value="workstation">Workstation</option>
-          <option value="budget">Budget</option>
-          <option value="high-end">High-End</option>
-        </select>
+      
+      
       </div>
 
       <DataTable

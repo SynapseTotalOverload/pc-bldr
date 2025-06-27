@@ -41,12 +41,13 @@ export function useBuilds({
     setError(null);
 
     try {
+    
       const searchParams = new URLSearchParams({
         skip: ((page - 1) * limit).toString(),
         limit: limit.toString(),
         return_models: 'true',
-        ...(buildType && { build_type: buildType }),
         ...(search && { search }),
+        ...(buildType && buildType !== 'all' && { build_type: buildType }),
       });
 
       const response = await instance.get(`/builds?${searchParams.toString()}`);
