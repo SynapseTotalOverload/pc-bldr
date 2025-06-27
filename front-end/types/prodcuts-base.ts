@@ -16,6 +16,8 @@ export interface ProductCreate extends ProductBase {
   category_id?: number;
 }
 
+
+
 export interface ProductUpdate {
   title?: string;
   price?: number;
@@ -115,6 +117,30 @@ export interface ProductRead extends ProductBase {
   category?: CategoryRead;
   attrs: ProductAttrs;
 }
+export interface ProductGenericRead<T extends ProductAttrs>{
+  id: number;
+  created_at: string; // ISO string from `datetime`
+  category?: CategoryRead;
+  attrs: T;
+}
+export interface BuildRead{
+  name: string;
+  build_type: string;
+  build_price: number;
+  cpu: ProductGenericRead<CPU>;
+  cpu_cooler: ProductGenericRead<CPUCooler>;
+  gpu: ProductGenericRead<GPU>;
+  motherboard: ProductGenericRead<Motherboard>;
+  ram: ProductGenericRead<RAM>;
+  storage: ProductGenericRead<Storage>;
+  psu: ProductGenericRead<PowerSupply>;
+  case: ProductGenericRead<Case>;
+  id: number;
+  created_at: string; // ISO string from `datetime`
+  updated_at: string; // ISO string from `datetime`
+}
+
+
 export type ProductAttrs = CPU | CPUCooler | Motherboard | RAM | Storage | GPU | PowerSupply | Case;
 
 export interface BaseAttrs {

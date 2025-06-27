@@ -160,6 +160,9 @@ export default function Home() {
                 <LayoutGrid className="h-4 w-4" />
               </ToggleGroupItem>
             </ToggleGroup>
+            <Link href="/builds">
+              <Button>Builds</Button>
+            </Link>
             <Link href="/configurator">
               <Button>Configurator</Button>
             </Link>
