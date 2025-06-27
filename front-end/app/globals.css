@@ -121,11 +121,11 @@
   --popover-foreground: var(--foreground);
 
   /* Primary Actions */
-  --primary: oklch(0.3 0.04 265); /* muted steel blue */
+  --primary:  oklch(0.0512 0.01 260);
   --primary-foreground: oklch(0.985 0.002 247.839); /* off-white */
 
   /* Secondary Elements */
-  --secondary: oklch(0.88 0.01 260); /* light muted gray */
+  --secondary: oklch(0.0512 0.01 260);
   --secondary-foreground: var(--primary);
 
   /* Muted Text */
@@ -161,10 +161,10 @@
   --popover: var(--card);
   --popover-foreground: var(--foreground);
 
-  --primary: oklch(0.6 0.02 265); /* soft bluish gray */
+  --primary: oklch(0.3429 0 265);
   --primary-foreground: var(--card);
 
-  --secondary: oklch(0.25 0.015 260); /* very muted gray */
+  --secondary:oklch(0.2039 0 0);
   --secondary-foreground: var(--foreground);
 
   --muted: oklch(0.2851 0 260 / 77.29%);

@@ -31,6 +31,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchKey?: string;
   searchPlaceholder?: string;
+  renderActions?: () => React.ReactNode;
   pagination: {
     total: number;
     totalPages: number;
@@ -44,6 +45,7 @@ export function DataTable<TData, TValue>({
   data,
   searchKey,
   searchPlaceholder = 'Search...',
+  renderActions,
   pagination,
   onPageChange,
 }: DataTableProps<TData, TValue>) {
@@ -76,7 +78,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <Card className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 px-4 gap-4">
         {searchKey && (
           <Input
             placeholder={searchPlaceholder}
@@ -85,6 +87,7 @@ export function DataTable<TData, TValue>({
             className="max-w-sm"
           />
         )}
+        {renderActions && renderActions()}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
