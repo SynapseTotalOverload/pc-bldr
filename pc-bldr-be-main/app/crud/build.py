@@ -136,8 +136,15 @@ class CRUDBuild:
         update_data = obj_in.model_dump(exclude_unset=True)
         
         # Update fields
-        for field, value in update_data.items():
-            setattr(db_obj, field, value)
+        try:
+            for field, value in update_data.items():
+                    setattr(db_obj, field, value)
+                    db.flush((db_obj,))
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"There is no {field.replace('_id', '')} with id {value}"
+            )
         
         # Check compatibility if components were updated
         if any([
