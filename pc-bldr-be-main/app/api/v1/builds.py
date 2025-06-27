@@ -4,7 +4,7 @@ from typing import List
 
 from app.db.session import get_db
 from app.crud.build import build_crud
-from app.schemas.build import BuildCreate, BuildUpdate, BuildRead
+from app.schemas.build import BuildCreate, BuildUpdate, BuildRead, BuildTypeEnum
 
 
 router = APIRouter(prefix="/builds", tags=["builds"])
@@ -28,12 +28,23 @@ def read_builds(
     db: Session = Depends(get_db),
     skip: int = Query(0, ge=0, description="Number of records to skip"),
     limit: int = Query(100, ge=1, le=1000, description="Number of records to return"),
+    build_type: BuildTypeEnum = Query(None, description="Build type"),
+    return_models: bool = Query(False, description="Return models of components instead of ids")
 ) -> List[BuildRead]:
     """
     Retrieve builds with pagination.
     """
-    builds, total = build_crud.get_multi(db=db, skip=skip, limit=limit)
-    return [BuildRead.model_validate(build) for build in builds]
+    builds, total = build_crud.get_multi(
+        db=db, 
+        skip=skip, 
+        limit=limit, 
+        build_type=build_type.value if build_type else None, 
+        return_models=return_models
+    )
+    if return_models:
+        return [BuildRead.from_orm_with_attrs(build) for build in builds]
+    else:
+        return [BuildRead.model_validate(build) for build in builds]
 
 
 @router.get("/{build_id}", response_model=BuildRead)

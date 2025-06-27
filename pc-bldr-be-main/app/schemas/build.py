@@ -3,6 +3,7 @@ from typing import Optional, Annotated
 from pydantic import BaseModel, Field, field_validator
 from app.models.build import Build
 from app.core.enums import BuildTypeEnum
+from app.schemas.product import ProductRead
 
 
 class BuildBase(BaseModel):
@@ -11,14 +12,14 @@ class BuildBase(BaseModel):
     build_price: Optional[float] = None
     
     # Component IDs (nullable)
-    cpu_id: Optional[int] = None
-    cpu_cooler_id: Optional[int] = None
-    gpu_id: Optional[int] = None
-    motherboard_id: Optional[int] = None
-    ram_id: Optional[int] = None
-    storage_id: Optional[int] = None
-    psu_id: Optional[int] = None
-    case_id: Optional[int] = None
+    cpu: Optional[int|ProductRead] = None
+    cpu_cooler: Optional[int|ProductRead] = None
+    gpu: Optional[int|ProductRead] = None
+    motherboard: Optional[int|ProductRead] = None
+    ram: Optional[int|ProductRead] = None
+    storage: Optional[int|ProductRead] = None
+    psu: Optional[int|ProductRead] = None
+    case: Optional[int|ProductRead] = None
 
     @field_validator('build_type', mode='after')
     @classmethod
@@ -39,6 +40,16 @@ class BuildBase(BaseModel):
 
 
 class BuildCreate(BuildBase):
+    # Component IDs (nullable)
+    cpu_id: Optional[int] = None
+    cpu_cooler_id: Optional[int] = None
+    gpu_id: Optional[int] = None
+    motherboard_id: Optional[int] = None
+    ram_id: Optional[int] = None
+    storage_id: Optional[int] = None
+    psu_id: Optional[int] = None
+    case_id: Optional[int] = None
+
     @field_validator('build_price')
     @classmethod
     def validate_build_price(cls, v):
@@ -94,3 +105,27 @@ class BuildRead(BuildBase):
 
     class Config:
         from_attributes = True 
+
+    @classmethod
+    def from_orm_with_attrs(cls, obj: Build) -> "BuildRead":
+        """
+        Construct BuildRead instance with resolved component ProductRead objects.
+        """
+        # Create a copy of the object's dict to avoid modifying the original
+        build_data = obj.__dict__.copy()
+        
+        # Convert component relationships to ProductRead objects
+        component_fields = [
+            'cpu', 'cpu_cooler', 'gpu', 'motherboard', 
+            'ram', 'storage', 'psu', 'case'
+        ]
+        
+        for field in component_fields:
+            component = getattr(obj, field, None)
+            if component:
+                # Use ProductRead.from_orm_with_attrs to convert the component
+                build_data[field] = ProductRead.from_orm_with_attrs(component)
+            else:
+                build_data[field] = None
+        
+        return cls(**build_data) 

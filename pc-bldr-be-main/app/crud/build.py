@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from app.models.build import Build
 from app.models.product import Product
-from app.schemas.build import BuildCreate, BuildUpdate
+from app.schemas.build import BuildCreate, BuildUpdate, BuildTypeEnum
 from app.services.pc_builder.selector import ComponentSelector
 from app.services.pc_builder.rules import get_rules_for_purpose
 
@@ -99,7 +99,9 @@ class CRUDBuild:
         db: Session, 
         *, 
         skip: int = 0, 
-        limit: int = 100
+        limit: int = 100,
+        build_type: BuildTypeEnum = None,
+        return_models: bool = False
     ) -> tuple[List[Build], int]:
         """Get multiple builds with pagination"""
         # Get total count
@@ -112,6 +114,19 @@ class CRUDBuild:
             .offset(skip)
             .limit(limit)
         )
+        if build_type:
+            stmt = stmt.where(Build.build_type == build_type)
+        if return_models:
+            stmt = stmt.options(
+                joinedload(Build.cpu), 
+                joinedload(Build.cpu_cooler), 
+                joinedload(Build.gpu), 
+                joinedload(Build.motherboard), 
+                joinedload(Build.ram), 
+                joinedload(Build.storage), 
+                joinedload(Build.psu), 
+                joinedload(Build.case)
+            )
         builds = db.scalars(stmt).all()
         
         return builds, total
