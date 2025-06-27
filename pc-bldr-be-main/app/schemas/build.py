@@ -1,11 +1,13 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Annotated
 from pydantic import BaseModel, Field, field_validator
 from app.models.build import Build
+from app.core.enums import BuildTypeEnum
 
 
 class BuildBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
+    build_type: Annotated[Optional[BuildTypeEnum], Field(None, description="The type of build")] = None
     build_price: Optional[float] = None
     
     # Component IDs (nullable)
@@ -17,6 +19,20 @@ class BuildBase(BaseModel):
     storage_id: Optional[int] = None
     psu_id: Optional[int] = None
     case_id: Optional[int] = None
+
+    @field_validator('build_type', mode='after')
+    @classmethod
+    def convert_build_type_to_string(cls, v):
+        if v is not None:
+            if isinstance(v, BuildTypeEnum):
+                return v.value
+            elif isinstance(v, str):
+                # Validate string value
+                valid_values = [e.value for e in BuildTypeEnum]
+                if v not in valid_values:
+                    raise ValueError(f'build_type must be one of: {", ".join(valid_values)}')
+                return v
+        return v
 
     class Config:
         from_attributes = True
@@ -33,6 +49,7 @@ class BuildCreate(BuildBase):
 
 class BuildUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=255)
+    build_type: Annotated[Optional[BuildTypeEnum], Field(None, description="The type of build")] = None
     build_price: Optional[float] = None
     
     # Component IDs (nullable)
@@ -44,6 +61,20 @@ class BuildUpdate(BaseModel):
     storage_id: Optional[int] = None
     psu_id: Optional[int] = None
     case_id: Optional[int] = None
+
+    @field_validator('build_type', mode='after')
+    @classmethod
+    def convert_build_type_to_string(cls, v):
+        if v is not None:
+            if isinstance(v, BuildTypeEnum):
+                return v.value
+            elif isinstance(v, str):
+                # Validate string value
+                valid_values = [e.value for e in BuildTypeEnum]
+                if v not in valid_values:
+                    raise ValueError(f'build_type must be one of: {", ".join(valid_values)}')
+                return v
+        return v
 
     @field_validator('build_price')
     @classmethod

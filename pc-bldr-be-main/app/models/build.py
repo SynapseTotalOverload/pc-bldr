@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class Build(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
+    build_type = Column(String, nullable=True)  # gaming, office, etc.
     build_price = Column(Float, nullable=True)
     
     # Foreign keys to products (nullable)
