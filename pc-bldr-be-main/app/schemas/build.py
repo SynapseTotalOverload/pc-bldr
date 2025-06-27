@@ -107,25 +107,31 @@ class BuildRead(BuildBase):
         from_attributes = True 
 
     @classmethod
-    def from_orm_with_attrs(cls, obj: Build) -> "BuildRead":
+    def from_orm_with_attrs(cls, obj: Build, return_models: bool = False) -> "BuildRead":
         """
         Construct BuildRead instance with resolved component ProductRead objects.
         """
         # Create a copy of the object's dict to avoid modifying the original
         build_data = obj.__dict__.copy()
-        
         # Convert component relationships to ProductRead objects
         component_fields = [
             'cpu', 'cpu_cooler', 'gpu', 'motherboard', 
             'ram', 'storage', 'psu', 'case'
         ]
-        
-        for field in component_fields:
-            component = getattr(obj, field, None)
-            if component:
-                # Use ProductRead.from_orm_with_attrs to convert the component
-                build_data[field] = ProductRead.from_orm_with_attrs(component)
-            else:
-                build_data[field] = None
+        if not return_models: # ids instead of models
+            for field in component_fields:
+                component_id = getattr(obj, f"{field}_id", None)
+                if component_id:
+                    build_data[field] = component_id
+                else:
+                    build_data[field] = None
+        else: 
+            for field in component_fields:
+                component = getattr(obj, field, None)
+                if component:
+                    # Use ProductRead.from_orm_with_attrs to convert the component
+                    build_data[field] = ProductRead.from_orm_with_attrs(component)
+                else:
+                    build_data[field] = None
         
         return cls(**build_data) 

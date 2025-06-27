@@ -41,10 +41,7 @@ def read_builds(
         build_type=build_type.value if build_type else None, 
         return_models=return_models
     )
-    if return_models:
-        return [BuildRead.from_orm_with_attrs(build) for build in builds]
-    else:
-        return [BuildRead.model_validate(build) for build in builds]
+    return [BuildRead.from_orm_with_attrs(build, return_models=return_models) for build in builds]
 
 
 @router.get("/{build_id}", response_model=BuildRead)
