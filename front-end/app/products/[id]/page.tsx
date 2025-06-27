@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { PRODUCT_TYPE_NAMES } from '@/types/prodcuts-base';
+import { Input } from '@/components/ui/input';
 
 const categoryIcons = {
   cpu: Cpu,
