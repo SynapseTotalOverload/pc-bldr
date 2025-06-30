@@ -1,0 +1,96 @@
+name: Backend CI/CD
+
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
+  GCP_INSTANCE_NAME: ${{ secrets.GCP_INSTANCE_NAME }}
+  GCP_INSTANCE_ZONE: ${{ secrets.GCP_INSTANCE_ZONE }}
+  IMAGE_NAME: backend
+  GCR_REGISTRY: gcr.io
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Auth to GCP
+    - name: Auth to GCP
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    # Setting GCP SDK
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+    # Auth to GCR
+    - name: Docker auth
+      run: gcloud auth configure-docker --quiet
+
+    # Build and push image
+    - name: Build and push Docker image
+      working-directory: ./backend
+      run: |
+        docker build -t ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+        docker push ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+    # Deploy on instance
+    - name: Deploy to GCP instance
+      env:
+        POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+        POSTGRES_DSN: ${{ secrets.POSTGRES_DSN }}
+        KEEPA_API_KEY: ${{ secrets.KEEPA_API_KEY }}
+      run: |
+        FULL_IMAGE_NAME="${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+        
+        gcloud compute ssh ${{ env.GCP_INSTANCE_NAME }} \
+          --zone ${{ env.GCP_INSTANCE_ZONE }} \
+          --command="
+            
+            # Auth to GCR
+            gcloud auth configure-docker --quiet
+            
+            #Delete old images
+            docker image prune -af
+            
+            #Pulling new image
+            docker pull $FULL_IMAGE_NAME 
+            
+            # Stop and deleting old conatainer
+            docker stop ${{ env.IMAGE_NAME }} || true
+            docker rm ${{ env.IMAGE_NAME }} || true
+            
+            
+            # Create new container
+            docker run -d \\
+              --name  ${{ env.IMAGE_NAME }} \\
+              --restart=always \\
+              -p 8000:8000 \\
+              -e POSTGRES_HOST=$POSTGRES_HOST \\
+              -e POSTGRES_DSN=$ESCAPED_POSTGRES_DSN \\
+              -e KEEPA_API_KEY=$ESCAPED_KEEPA_API_KEY \\
+              $FULL_IMAGE_NAME
+
+            
+            # Wait for container to start
+            sleep 5
+            # Check status and logs
+            docker ps -a | grep backend
+            
+            echo "--- Container logs ---"
+            docker logs ${{ env.IMAGE_NAME }} --tail 50 || true
+            echo "----------------------"
+          "
