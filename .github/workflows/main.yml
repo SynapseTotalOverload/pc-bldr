@@ -86,8 +86,4 @@ jobs:
             sleep 5
             # Check status and logs
             docker ps -a | grep backend
-            
-            echo "--- Container logs ---"
-            docker logs ${{ env.IMAGE_NAME }} --tail 50 || true
-            echo "----------------------"
           "
