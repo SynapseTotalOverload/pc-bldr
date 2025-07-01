@@ -39,7 +39,7 @@ jobs:
 
     # Build and push image
     - name: Build and push Docker image
-      working-directory: ./backend
+      working-directory: ./pc-bldr-be-main
       run: |
         docker build -t ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
         docker push ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
