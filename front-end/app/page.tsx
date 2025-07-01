@@ -182,6 +182,13 @@ export default function Home() {
                 <DataTable
                   columns={actualColumns}
                   data={products}
+                  searchKey="title"
+                  searchPlaceholder="Search products..."
+                  searchValue={search}
+                  onSearchChange={(value) => {
+                    setSearch(value);
+                    setPage(1);
+                  }}
                   pagination={pagination} 
                   renderActions={() => (
                    <Button onClick={()=>toggleState('addNewProduct')}> <Plus className="h-4 w-4" /> Add new product</Button>

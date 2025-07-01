@@ -7,6 +7,7 @@ interface UseBuildsOptions {
   limit?: number;
   buildType?: string;
   search?: string;
+  autoFetchOnSearchChange?: boolean;
 }
 
 interface UseBuildsResult {
@@ -19,6 +20,7 @@ interface UseBuildsResult {
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
+  refetchWithOptions: (overrides?: Partial<UseBuildsOptions>) => Promise<void>;
 }
 
 export function useBuilds({
@@ -26,6 +28,7 @@ export function useBuilds({
   limit = 10,
   buildType,
   search = '',
+  autoFetchOnSearchChange = true,
 }: UseBuildsOptions): UseBuildsResult {
   const [builds, setBuilds] = useState<BuildRead[]>([]);
   const [pagination, setPagination] = useState({
@@ -36,25 +39,38 @@ export function useBuilds({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchBuilds = async () => {
+  const fetchBuilds = async (overrides?: Partial<UseBuildsOptions>) => {
     setLoading(true);
     setError(null);
 
+    const currentPage = overrides?.page ?? page;
+    const currentLimit = overrides?.limit ?? limit;
+    const currentSearch = overrides?.search ?? search;
+    const currentBuildType = overrides?.buildType ?? buildType;
+
     try {
-    
       const searchParams = new URLSearchParams({
-        skip: ((page - 1) * limit).toString(),
-        limit: limit.toString(),
+        skip: ((currentPage - 1) * currentLimit).toString(),
+        limit: currentLimit.toString(),
         return_models: 'true',
-        ...(search && { search }),
-        ...(buildType && buildType !== 'all' && { build_type: buildType }),
+        ...(currentSearch && { search: currentSearch }),
+        ...(currentBuildType && currentBuildType !== 'all' && { build_type: currentBuildType }),
+        query: currentSearch,
       });
 
       const response = await instance.get(`/builds?${searchParams.toString()}`);
       const data = response.data;
 
-      // Handle both array and paginated response
-      if (Array.isArray(data)) {
+      // Backend now returns paginated response with items and pagination
+      if (data.items && data.pagination) {
+        setBuilds(data.items);
+        setPagination({
+          total: data.pagination.totalItems,
+          totalPages: data.pagination.totalPages,
+          currentPage: data.pagination.currentPage,
+        });
+      } else if (Array.isArray(data)) {
+        // Fallback for simple array response
         setBuilds(data);
         setPagination({
           total: data.length,
@@ -62,11 +78,11 @@ export function useBuilds({
           currentPage: page,
         });
       } else {
-        // If it's a paginated response
-        setBuilds(data.items || data);
+        // Other fallback
+        setBuilds(data.items || data || []);
         setPagination({
-          total: data.total || data.length,
-          totalPages: data.totalPages || Math.ceil((data.total || data.length) / limit),
+          total: data.total || data.length || 0,
+          totalPages: data.totalPages || Math.ceil((data.total || data.length || 0) / limit),
           currentPage: page,
         });
       }
@@ -81,14 +97,15 @@ export function useBuilds({
 
   useEffect(() => {
     fetchBuilds();
-  }, [page, limit, buildType, search]);
+  }, [page, limit, buildType, ...(autoFetchOnSearchChange ? [search] : [])]);
 
   return {
     builds,
     pagination,
     loading,
     error,
-    refetch: fetchBuilds,
+    refetch: () => fetchBuilds(),
+    refetchWithOptions: fetchBuilds,
   };
 }
 
@@ -101,7 +118,7 @@ export function useBuild() {
     setLoading(true);
     setError(null);
     try {
-      const response = await instance.post('/builds/', buildData);
+      const response = await instance.post('builds/', buildData);
       return response.data;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create build';
@@ -116,7 +133,7 @@ export function useBuild() {
     setLoading(true);
     setError(null);
     try {
-      const response = await instance.put(`/builds/${id}`, buildData);
+      const response = await instance.put(`builds/${id}`, buildData);
       return response.data;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update build';

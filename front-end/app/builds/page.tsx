@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button';
 import { createBuildColumns } from '@/models/builds-table';
 import { useBuilds } from '@/hooks/useBuilds';
 import { BuildDialog, DeleteBuildDialog } from '@/models/dialogs';
+import BuildViewer from '@/models/dialogs/build-viewer';
 import { BuildRead, ProductRead } from '@/types/prodcuts-base';
 import { Plus, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { DataTable } from '@/components/data-table';
 import {
   Select,
   SelectContent,
@@ -24,36 +26,35 @@ export default function Builds() {
   const [buildType, setBuildType] = useState<string>('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [selectedBuild, setSelectedBuild] = useState<BuildRead | null>(null);
   const [editingBuild, setEditingBuild] = useState<BuildRead | null>(null);
+  const [viewingBuild, setViewingBuild] = useState<BuildRead | null>(null);
 
-  // const { builds, pagination, loading, error, refetch } = useBuilds({
-  //   page,
-  //   limit: 10,
-  //   buildType: buildType || undefined,
-  //   search: search || undefined,
-  // });
+  const { builds, pagination, loading, error, refetch, refetchWithOptions } = useBuilds({
+    page,
+    limit: 10,
+    buildType: buildType || undefined,
+    search: search || undefined,
+    autoFetchOnSearchChange: false, 
+  });
 
-  // const { toast } = useToast();
+  const { toast } = useToast();
 
   const handleEdit = (build: BuildRead) => {
-  //   setEditingBuild(build);
-  //   setDialogOpen(true);
+    setEditingBuild(build);
+    setDialogOpen(true);
   };
 
   const handleDelete = (build: BuildRead) => {
-  //   setSelectedBuild(build);
-  //   setDeleteDialogOpen(true);
+    setSelectedBuild(build);
+    setDeleteDialogOpen(true);
   };
 
-  // const handleView = (build: BuildRead) => {
-  //   // For now, just show a toast with build details
-  //   toast({
-  //     title: 'Build Details',
-  //     description: `Viewing build: ${build.name}`,
-  //   });
-  //   // TODO: Implement detailed view modal or navigation to build detail page
-  // };
+  const handleView = (build: BuildRead) => {
+    setViewingBuild(build);
+    setViewDialogOpen(true);
+  };
 
   const handleCreate = () => {
     setEditingBuild(null);
@@ -61,25 +62,31 @@ export default function Builds() {
   };
 
   const handleSuccess = () => {
-  //   refetch();
+    refetch();
   };
 
-  // const columns = createBuildColumns({
-  //   onEdit: handleEdit,
-  //   onDelete: handleDelete,
-  //   onView: handleView,
-  // });
+  const handleSearch = (value: string) => {
+    setSearch(value);
+    setPage(1);
+    refetchWithOptions({ search: value, page: 1 });
+  };
 
-  // if (error) {
-  //   return (
-  //     <div className="flex items-center justify-center h-64">
-  //       <div className="text-center">
-  //         <p className="text-red-500 mb-4">Error: {error}</p>
-  //         <Button onClick={refetch}>Retry</Button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  const columns = createBuildColumns({
+    onEdit: handleEdit,
+    onDelete: handleDelete,
+    onView: handleView,
+  });
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">Error: {error}</p>
+          <Button onClick={refetch}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -99,11 +106,13 @@ export default function Builds() {
       
       </div>
 
-      {/* <DataTable
+      <DataTable
         columns={columns}
         data={builds}
         searchKey="name"
         searchPlaceholder="Search builds..."
+        searchValue={search}
+        onSearchChange={handleSearch}
         pagination={{
           total: pagination.total,
           totalPages: pagination.totalPages,
@@ -115,7 +124,7 @@ export default function Builds() {
             {loading && <div className="text-sm text-muted-foreground">Loading...</div>}
           </div>
         )}
-      /> */}
+      />
 
       {/* Create/Edit Build Dialog */}
       <BuildDialog
@@ -131,6 +140,13 @@ export default function Builds() {
         onOpenChange={setDeleteDialogOpen}
         build={selectedBuild}
         onSuccess={handleSuccess}
+      />
+
+      {/* Build Viewer Dialog */}
+      <BuildViewer
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+        build={viewingBuild}
       />
     </div>
   );

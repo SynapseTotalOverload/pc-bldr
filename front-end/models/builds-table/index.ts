@@ -1,1 +1,1 @@
-export { createBuildColumns } from './columns.tsx'; 
+export { createBuildColumns } from './columns'; 

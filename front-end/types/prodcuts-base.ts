@@ -122,7 +122,7 @@ export interface ProductRead extends ProductBase {
   category?: CategoryRead;
   attrs: ProductAttrs;
 }
-export interface ProductGenericRead<T extends ProductAttrs>{
+export interface ProductGenericRead<T extends ProductAttrs> extends ProductBase {
   id: number;
   created_at: string; // ISO string from `datetime`
   category?: CategoryRead;

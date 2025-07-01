@@ -2,18 +2,16 @@
 
 import {
   type ColumnDef,
-  type ColumnFiltersState,
   type SortingState,
   type VisibilityState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { ChevronDown, Search } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -31,6 +29,8 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchKey?: string;
   searchPlaceholder?: string;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
   renderActions?: () => React.ReactNode;
   pagination: {
     total: number;
@@ -45,28 +45,46 @@ export function DataTable<TData, TValue>({
   data,
   searchKey,
   searchPlaceholder = 'Search...',
+  searchValue = '',
+  onSearchChange,
   renderActions,
   pagination,
   onPageChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [localSearchValue, setLocalSearchValue] = useState(searchValue);
+
+  // Sync localSearchValue with searchValue prop
+  useEffect(() => {
+    setLocalSearchValue(searchValue);
+  }, [searchValue]);
+
+  // Handle search on Enter key press
+  const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && onSearchChange) {
+      onSearchChange(localSearchValue);
+    }
+  };
+
+  // Handle search button click
+  const handleSearchClick = () => {
+    if (onSearchChange) {
+      onSearchChange(localSearchValue);
+    }
+  };
 
   const table = useReactTable({
     data,
     columns,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
       sorting,
-      columnFilters,
       columnVisibility,
       rowSelection,
     },
@@ -80,12 +98,26 @@ export function DataTable<TData, TValue>({
     <Card className="w-full">
       <div className="flex items-center py-4 px-4 gap-4">
         {searchKey && (
-          <Input
-            placeholder={searchPlaceholder}
-            value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
-            onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
-            className="max-w-sm"
-          />
+          <>
+            <div className="relative max-w-sm">
+              <Input
+                placeholder={searchPlaceholder}
+                value={localSearchValue}
+                onChange={(event) => setLocalSearchValue(event.target.value)}
+                onKeyPress={handleSearchKeyPress}
+                className="pr-10"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0"
+                onClick={handleSearchClick}
+              >
+                <Search className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+              </Button>
+            </div>
+          </>
         )}
         {renderActions && renderActions()}
         <DropdownMenu>
@@ -152,87 +184,96 @@ export function DataTable<TData, TValue>({
           Showing {data.length} of {pagination.total} results
         </div>
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPageChange(pagination.currentPage - 1)}
-            disabled={pagination.currentPage === 1}
-          >
-            Previous
-          </Button>
-          <div className="flex items-center space-x-1">
-            {(() => {
-              const pages = [];
-              const totalPages = pagination.totalPages;
-              const currentPage = pagination.currentPage;
+          {pagination.totalPages > 1 && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange(pagination.currentPage - 1)}
+                disabled={pagination.currentPage === 1}
+              >
+                Previous
+              </Button>
+              <div className="flex items-center space-x-1">
+                {(() => {
+                  const pages = [];
+                  const totalPages = pagination.totalPages;
+                  const currentPage = pagination.currentPage;
 
-              // Always show first page
-              pages.push(
-                <Button
-                  key={1}
-                  variant={currentPage === 1 ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => onPageChange(1)}
-                >
-                  1
-                </Button>,
-              );
+                  // Don't show pagination if there's only one page or no pages
+                  if (totalPages <= 1) {
+                    return null;
+                  }
 
-              // Calculate start and end of page range
-              const start = Math.max(2, currentPage - 1);
-              const end = Math.min(totalPages - 1, currentPage + 1);
+                  // Always show first page
+                  pages.push(
+                    <Button
+                      key={1}
+                      variant={currentPage === 1 ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => onPageChange(1)}
+                    >
+                      1
+                    </Button>,
+                  );
 
-              // Add ellipsis after first page if needed
-              if (start > 2) {
-                pages.push(<span key="ellipsis1">...</span>);
-              }
+                  // Calculate start and end of page range
+                  const start = Math.max(2, currentPage - 1);
+                  const end = Math.min(totalPages - 1, currentPage + 1);
 
-              // Add middle pages
-              for (let i = start; i <= end; i++) {
-                pages.push(
-                  <Button
-                    key={i}
-                    variant={currentPage === i ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => onPageChange(i)}
-                  >
-                    {i}
-                  </Button>,
-                );
-              }
+                  // Add ellipsis after first page if needed
+                  if (start > 2) {
+                    pages.push(<span key="ellipsis1">...</span>);
+                  }
 
-              // Add ellipsis before last page if needed
-              if (end < totalPages - 1) {
-                pages.push(<span key="ellipsis2">...</span>);
-              }
+                  // Add middle pages
+                  for (let i = start; i <= end; i++) {
+                    pages.push(
+                      <Button
+                        key={i}
+                        variant={currentPage === i ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => onPageChange(i)}
+                      >
+                        {i}
+                      </Button>,
+                    );
+                  }
 
-              // Always show last page if there is more than one page
-              if (totalPages > 1) {
-                pages.push(
-                  <Button
-                    key={totalPages}
-                    variant={currentPage === totalPages ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => onPageChange(totalPages)}
-                  >
-                    {totalPages}
-                  </Button>,
-                );
-              }
+                  // Add ellipsis before last page if needed
+                  if (end < totalPages - 1) {
+                    pages.push(<span key="ellipsis2">...</span>);
+                  }
 
-              return pages;
-            })()}
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPageChange(pagination.currentPage + 1)}
-            disabled={pagination.currentPage === pagination.totalPages}
-          >
-            Next
-          </Button>
+                  // Always show last page if there is more than one page
+                  if (totalPages > 1) {
+                    pages.push(
+                      <Button
+                        key={totalPages}
+                        variant={currentPage === totalPages ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => onPageChange(totalPages)}
+                      >
+                        {totalPages}
+                      </Button>,
+                    );
+                  }
+
+                  return pages;
+                })()}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange(pagination.currentPage + 1)}
+                disabled={pagination.currentPage === pagination.totalPages}
+              >
+                Next
+              </Button>
+            </>
+          )}
         </div>
-      </div>
+      </div> 
     </Card>
   );
 }
