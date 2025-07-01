@@ -41,13 +41,18 @@ jobs:
       run: gcloud auth configure-docker --quiet
 
     # Build and push image
-    - name: Build and push Docker image
-      working-directory: ./pc-bldr-be-main
-      run: |
-        docker buildx build -t ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}  .
-          
-        docker push ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./pc-bldr-be-main/
+        push: true
+        tags: ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        
     # Deploy on instance
     - name: Deploy to GCP instance
       env:
