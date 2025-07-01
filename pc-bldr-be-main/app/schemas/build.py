@@ -39,7 +39,10 @@ class BuildBase(BaseModel):
         from_attributes = True
 
 
-class BuildCreate(BuildBase):
+class BuildCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=255)
+    build_type: Annotated[Optional[BuildTypeEnum], Field(None, description="The type of build")] = None
+    build_price: Optional[float] = None
     # Component IDs (nullable)
     cpu_id: Optional[int] = None
     cpu_cooler_id: Optional[int] = None
@@ -56,6 +59,23 @@ class BuildCreate(BuildBase):
         if v is not None and v < 0:
             raise ValueError('build_price cannot be negative')
         return v
+    
+    @field_validator('build_type', mode='after')
+    @classmethod
+    def convert_build_type_to_string(cls, v):
+        if v is not None:
+            if isinstance(v, BuildTypeEnum):
+                return v.value
+            elif isinstance(v, str):
+                # Validate string value
+                valid_values = [e.value for e in BuildTypeEnum]
+                if v not in valid_values:
+                    raise ValueError(f'build_type must be one of: {", ".join(valid_values)}')
+                return v
+        return v
+    
+    class Config:
+        from_attributes = True
 
 
 class BuildUpdate(BaseModel):

@@ -97,3 +97,32 @@ class ProductRead(ProductBase):
                 )
 
         return cls(**obj.__dict__, category=category, attrs=None)
+
+
+class ProductCompatibilityRequest(BaseModel):
+    """Schema for POST request to get compatible products"""
+    selected_components: Optional[Dict[str, int]] = Field(
+        None, 
+        description="Dictionary of selected component types and their IDs. Keys: cpu, cpu_cooler, gpu, motherboard, ram, storage, psu, case"
+    )
+    page: int = Field(1, ge=1, description="Page number")
+    page_size: int = Field(20, ge=1, le=100, description="Items per page")
+    category_id: Optional[int] = Field(
+        None, 
+        ge=1, 
+        le=8, 
+        description="Filter by category ID (1-CPU, 2-CPU Cooler, 3-GPU, 4-Motherboard, 5-RAM, 6-Storage, 7-PSU, 8-Case)"
+    )
+    budget: Optional[int] = Field(None, description="Budget for power supply estimation")
+
+    query: Optional[str] = Field(None, description="Query string for filtering products")
+
+    @field_validator('category_id')
+    @classmethod
+    def validate_category_id(cls, v):
+        if v is not None and (v < 1 or v > 8):
+            raise ValueError('category_id must be between 1 and 8')
+        return v
+
+    class Config:
+        from_attributes = True

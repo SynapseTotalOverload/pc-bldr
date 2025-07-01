@@ -26,5 +26,7 @@ cat_id_to_attrs_model_map: dict[int,type[BaseAttrsModel]] = {
 class BuildTypeEnum(Enum):
     GAMING = "gaming"
     OFFICE = "office"
-    DEVELOPMENT = "development"
+    WORKSTATION = "workstation"
+    BUDGET = "budget"
+    HIGH_END = "high-end"
     OTHER = "other"

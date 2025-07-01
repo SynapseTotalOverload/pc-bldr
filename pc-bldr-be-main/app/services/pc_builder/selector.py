@@ -3,7 +3,6 @@ Upgraded PC component selection engine with compatibility logic,
 scoring system, and rules enforcement.
 """
 
-import logging
 from typing import Optional, List
 from sqlalchemy import select, and_
 from sqlalchemy.orm import Session
@@ -23,7 +22,6 @@ from app.models import (
     CaseAttributes,
 )
 
-logger = logging.getLogger(__name__)
 
 class ComponentSelector:
     """
@@ -85,7 +83,7 @@ class ComponentSelector:
         Calculate the budget for the current component based on distribution and remaining budget.
         """
         if not self.build_type or not self.component_type:
-            logger.info(f"Component {self.component_type}: Using remaining budget {self.remaining_budget}")
+            print(f"Component {self.component_type}: Using remaining budget {self.remaining_budget}")
             return self.remaining_budget
         
         distribution = get_budget_distribution(self.build_type)
@@ -97,7 +95,7 @@ class ComponentSelector:
         # If remaining budget is less than base budget, use remaining budget
         # This ensures we don't exceed total budget
         if self.remaining_budget < base_budget:
-            logger.info(f"Component {self.component_type}: Using remaining budget {self.remaining_budget} (base: {base_budget})")
+            print(f"Component {self.component_type}: Using remaining budget {self.remaining_budget} (base: {base_budget})")
             return self.remaining_budget
         
         # If remaining budget is significantly more than base budget,
@@ -106,7 +104,7 @@ class ComponentSelector:
         max_additional_budget = base_budget * 0.1  # Allow up to 5% more than base
         available_budget = min(self.remaining_budget, base_budget + max_additional_budget)
         
-        logger.info(f"Component {self.component_type}: Budget {available_budget:.2f} (base: {base_budget:.2f}, remaining: {self.remaining_budget:.2f})")
+        print(f"Component {self.component_type}: Budget {available_budget:.2f} (base: {base_budget:.2f}, remaining: {self.remaining_budget:.2f})")
         return available_budget
 
     def select_best(self) -> Optional[Product]:
@@ -168,26 +166,31 @@ class ComponentSelector:
     def is_compatible(self, product: Product) -> bool:
         try:
             if self.component_type == "motherboard":
+                print(f"Checking motherboard compatibility for {product.title}")
                 cpu = self.selected_components.get("cpu")
                 if cpu and product.motherboard_attributes.socket_type != cpu.cpu_attributes.socket_type:
+                    print(f"Motherboard {product.title} with socket {product.motherboard_attributes.socket_type} is not compatible with CPU {cpu.title} with socket {cpu.cpu_attributes.socket_type}")
                     return False
 
             elif self.component_type == "ram":
+                print(f"Checking ram compatibility for {product.title}")
                 cpu = self.selected_components.get("cpu")
                 mb = self.selected_components.get("motherboard")
                 if cpu and product.ram_attributes.ram_type != cpu.cpu_attributes.memory_type:
-                    return False
-                if cpu and product.ram_attributes.ram_speed > cpu.cpu_attributes.memory_speed:
+                    print(f"Ram {product.title} with type {product.ram_attributes.ram_type} is not compatible with CPU {cpu.title} with type {cpu.cpu_attributes.memory_type}")
                     return False
                 if mb:
                     if product.ram_attributes.total_memory > mb.motherboard_attributes.max_ram_support:
+                        print(f"Ram {product.title} with total memory {product.ram_attributes.total_memory} is not compatible with motherboard {mb.title} with max ram support {mb.motherboard_attributes.max_ram_support}")
                         return False
                     if product.ram_attributes.quantity > mb.motherboard_attributes.ram_slots:
+                        print(f"Ram {product.title} with quantity {product.ram_attributes.quantity} is not compatible with motherboard {mb.title} with ram slots {mb.motherboard_attributes.ram_slots}")
                         return False
 
             elif self.component_type == "cpu":
                 mb = self.selected_components.get("motherboard")
                 if mb and product.cpu_attributes.socket_type != mb.motherboard_attributes.socket_type:
+                    print(f"CPU {product.title} with socket {product.cpu_attributes.socket_type} is not compatible with motherboard {mb.title} with socket {mb.motherboard_attributes.socket_type}")
                     return False
 
             elif self.component_type == "case":
@@ -195,15 +198,18 @@ class ComponentSelector:
                 if gpu and product.case_attributes.cabinet_type:
                     case_limit = self._get_case_gpu_length_limit(product.case_attributes.cabinet_type)
                     if gpu.gpu_attributes.length > case_limit:
+                        print(f"GPU {gpu.title} with length {gpu.gpu_attributes.length} is not compatible with case {product.title} with cabinet type {product.case_attributes.cabinet_type}")
                         return False
 
             # PSU compatibility can use mocked logic for now:
             elif self.component_type == "psu":
                 est_power = self._estimate_power_draw()
                 if product.power_supply_attributes.power < est_power:
+                    print(f"Power supply {product.title} with power {product.power_supply_attributes.power} is not compatible with estimated power {est_power}")
                     return False
 
         except Exception:
+            print(f"Error checking compatibility for {product.title}", exc_info=True)
             return False
 
         return True

@@ -3,11 +3,52 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.schemas.list_products_with_pagination import ProductListWithPagination, PaginationSchema
-from app.schemas.product import ProductRead, ProductUpdate, ProductCreate
+from app.schemas.product import ProductRead, ProductUpdate, ProductCreate, ProductCompatibilityRequest
 from app.crud.product import product_crud
 from app.services.keepa import fetch_product_from_keepa
 
 router = APIRouter(prefix="/products", tags=["products"])
+
+@router.post("/compatible", response_model=ProductListWithPagination)
+def get_compatible_products(
+    request: ProductCompatibilityRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Get products compatible with selected components.
+    
+    Accepts a JSON body with selected components and returns only compatible products
+    using the ComponentFiltersBuilder class to apply compatibility rules.
+    
+    Example request body:
+    {
+        "selected_components": {
+            "cpu": 1,
+            "motherboard": 5
+        },
+        "category_id": 1,
+        "page": 1,
+        "page_size": 20,
+        "budget": 1000
+    }
+    """
+    items, count = product_crud.get_compatible(
+        db, 
+        selected_components=request.selected_components,
+        page=request.page,
+        page_size=request.page_size,
+        category_id=request.category_id,
+        budget=request.budget,
+        query=request.query,
+    )
+    items = [ProductRead.from_orm_with_attrs(i) for i in items]
+    pagination = PaginationSchema(
+        currentPage=request.page,
+        totalPages=ceil(count/request.page_size),
+        totalItems=count,
+        itemsPerPage=request.page_size,
+    )
+    return ProductListWithPagination(items=items, pagination=pagination)
 
 @router.post("/{asin}", response_model=ProductRead, status_code=status.HTTP_201_CREATED)
 def add_product(asin: str, db: Session = Depends(get_db)):

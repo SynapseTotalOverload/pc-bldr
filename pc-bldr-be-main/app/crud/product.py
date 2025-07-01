@@ -201,6 +201,80 @@ class CRUDProduct:
         db.refresh(db_obj)
         return db_obj
 
+    def get_compatible(
+            self, 
+            db: Session,
+            *, 
+            selected_components: dict, 
+            page: int = 1, 
+            page_size: int = 20, 
+            category_id: int | None = None, 
+            budget: int | None = None,
+            query: str | None = None
+        ):
+        """Get products compatible with selected components using ComponentFiltersBuilder"""
+        from app.services.pc_builder.component_filters_builder import ComponentFiltersBuilder
+        
+        # Get selected component products from database
+        selected_products = {}
+        if selected_components:
+            for component_type, component_id in selected_components.items():
+                product = self.get(db, component_id)
+                if product:
+                    selected_products[component_type] = product
+        
+        # Build compatibility filters based on category
+        filters = []
+        if category_id:
+            if category_id == 1:  # CPU
+                filters = ComponentFiltersBuilder.form_cpu_compability_filters(selected_products)
+            elif category_id == 2:  # CPU Cooler
+                filters = ComponentFiltersBuilder.form_cpu_cooler_compability_filters(selected_products)
+            elif category_id == 3:  # GPU
+                filters = ComponentFiltersBuilder.form_gpu_compability_filters(selected_products)
+            elif category_id == 4:  # Motherboard
+                filters = ComponentFiltersBuilder.form_motherboard_compability_filters(selected_products)
+            elif category_id == 5:  # RAM
+                filters = ComponentFiltersBuilder.form_ram_compability_filters(selected_products)
+            elif category_id == 6:  # Storage
+                filters = ComponentFiltersBuilder.form_storage_compability_filters(selected_products)
+            elif category_id == 7:  # Power Supply
+                filters = ComponentFiltersBuilder.form_power_supply_compability_filters(selected_products, budget or 0)
+            elif category_id == 8:  # Case
+                filters = ComponentFiltersBuilder.form_case_compability_filters(selected_products)
+        
+        # Build query
+        stmt = (
+            select(Product)
+            .offset((page - 1) * page_size)
+            .limit(page_size)
+        )
+        
+        # Apply category filter
+        if category_id:
+            CatAttrTable = cat_id_to_attrs_model_map[category_id]
+            stmt = stmt.join(CatAttrTable)
+            
+            # Apply compatibility filters
+            if filters:
+                stmt = stmt.where(*filters)
+        else:
+            stmt = stmt.options(*self._get_joinedload_attrs_option())
+
+        if query:
+            stmt = stmt.where(Product.title.ilike(f"%{query}%"))
+        
+        # Count query
+        count_stmt = select(func.count()).select_from(Product)
+        if category_id:
+            CatAttrTable = cat_id_to_attrs_model_map[category_id]
+            count_stmt = count_stmt.join(CatAttrTable)
+            if filters:
+                count_stmt = count_stmt.where(*filters)
+        
+        total = db.scalar(count_stmt)
+        return db.scalars(stmt).all(), total
+
     def remove(self, db: Session, *, id_: int):
         obj = db.get(Product, id_)
         if obj:

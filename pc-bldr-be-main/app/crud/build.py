@@ -9,6 +9,10 @@ from app.schemas.build import BuildCreate, BuildUpdate, BuildTypeEnum
 from app.services.pc_builder.selector import ComponentSelector
 from app.services.pc_builder.rules import get_rules_for_purpose
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class CRUDBuild:
     def _get_component_mapping(self, build: Build) -> dict[str, Optional[Product]]:
@@ -101,11 +105,16 @@ class CRUDBuild:
         skip: int = 0, 
         limit: int = 100,
         build_type: BuildTypeEnum = None,
-        return_models: bool = False
+        return_models: bool = False,
+        query: str = None
     ) -> tuple[List[Build], int]:
         """Get multiple builds with pagination"""
         # Get total count
-        count_stmt = select(func.count()).select_from(Build)
+        count_stmt = (
+            select(func.count())
+            .select_from(Build)
+            .where(Build.name.ilike(f"%{query}%"))
+        )
         total = db.scalar(count_stmt)
         
         # Get builds with pagination
@@ -113,9 +122,12 @@ class CRUDBuild:
             select(Build)
             .offset(skip)
             .limit(limit)
+            .order_by(Build.updated_at.desc())
         )
         if build_type:
             stmt = stmt.where(Build.build_type == build_type)
+        if query:
+            stmt = stmt.where(Build.name.ilike(f"%{query}%"))
         if return_models:
             stmt = stmt.options(
                 joinedload(Build.cpu), 
