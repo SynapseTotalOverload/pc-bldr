@@ -44,11 +44,7 @@ jobs:
     - name: Build and push Docker image
       working-directory: ./pc-bldr-be-main
       run: |
-        ls
-        docker buildx build \       
-          --cache-from=type=registry,ref=${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}-cache \
-          --cache-to=type=registry,ref=${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}-cache,mode=max \
-          -t ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}  .
+        docker buildx build -t ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}  .
           
         docker push ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
