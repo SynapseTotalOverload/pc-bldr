@@ -1,0 +1,74 @@
+name: Frontend CI/CD
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'front-end/**'
+
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
+  NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+  GCP_INSTANCE_NAME: ${{ secrets.GCP_FRONTEND_INSTANCE_NAME }}
+  GCP_INSTANCE_ZONE: ${{ secrets.GCP_FRONTEND_INSTANCE_ZONE }}
+  IMAGE_NAME: frontend
+  GCR_REGISTRY: gcr.io
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Auth to GCP
+    - name: Auth to GCP
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    # Setting GCP SDK
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+    # Auth to GCR
+    - name: Docker auth
+      run: gcloud auth configure-docker --quiet
+
+    # Build and push image
+    - name: Build and push Docker image
+      working-directory: ./front-end
+      run: |
+        echo "NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }}" > .env
+        docker build -t ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+        docker push ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+    # Deploy on instance
+    - name: Deploy to GCP instance
+      env:
+        POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+        POSTGRES_DSN: ${{ secrets.POSTGRES_DSN }}
+        KEEPA_API_KEY: ${{ secrets.KEEPA_API_KEY }}
+      run: |
+
+        FULL_IMAGE_NAME="${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+        
+        gcloud compute ssh ${{ env.GCP_INSTANCE_NAME }} \
+          --zone ${{ env.GCP_INSTANCE_ZONE }} \
+          --tunnel-through-iap \
+          --command="
+            docker pull $FULL_IMAGE_NAME
+            docker stop ${{ env.IMAGE_NAME }} || true
+            docker rm ${{ env.IMAGE_NAME }} || true
+            docker run -d \
+              --name ${{ env.IMAGE_NAME }} \
+              --restart=always \
+              -p 3000:3000 \
+              $FULL_IMAGE_NAME
+          "
