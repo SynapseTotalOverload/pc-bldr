@@ -44,7 +44,10 @@ jobs:
     - name: Build and push Docker image
       working-directory: ./pc-bldr-be-main
       run: |
-        docker build -t ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+        docker buildx build \       
+          --cache-from=type=registry,ref={{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}-cache \
+          --cache-to=type=registry,ref={{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}-cache,mode=max \
+          -t ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
         docker push ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
     # Deploy on instance
@@ -72,4 +75,8 @@ jobs:
               -e POSTGRES_DSN=\"$ESCAPED_POSTGRES_DSN\" \
               -e KEEPA_API_KEY=\"$ESCAPED_KEEPA_API_KEY\" \
               $FULL_IMAGE_NAME
-          "
+        PUBLIC_IP=$(gcloud compute instances describe ${{ env.GCP_FRONTEND_INSTANCE_NAME }} \
+          --zone=${{ env.GCP_FRONTEND_INSTANCE_ZONE }} \
+          --format="get(networkInterfaces[0].accessConfigs[0].natIP)")
+    
+        echo "ip: $PUBLIC_IP:8000"
