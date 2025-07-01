@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
-from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, text
 from sqlalchemy.orm import relationship, Mapped
 from app.db.base import Base
 
@@ -34,5 +33,5 @@ class Build(Base):
     psu: Mapped["Product"] = relationship("Product", foreign_keys=[psu_id], lazy="joined")
     case: Mapped["Product"] = relationship("Product", foreign_keys=[case_id], lazy="joined")
     
-    created_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
-    updated_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False) 
+    created_at = Column(DateTime, server_default=text("timezone('UTC', now())"), nullable=False)
+    updated_at = Column(DateTime, server_default=text("timezone('UTC', now())"), server_onupdate=text("timezone('UTC', now())"), nullable=False)

@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload, Session
 from fastapi import HTTPException, status
@@ -196,7 +197,7 @@ class CRUDProduct:
                 # Create new attributes record
                 new_attrs = attrs_model(product_id=db_obj.id, **attrs_dict)
                 db.add(new_attrs)
-        
+        db_obj.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(db_obj)
         return db_obj

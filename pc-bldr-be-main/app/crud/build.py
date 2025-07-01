@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload, Session
 from fastapi import HTTPException, status
@@ -122,7 +123,6 @@ class CRUDBuild:
             select(Build)
             .offset(skip)
             .limit(limit)
-            .order_by(Build.updated_at.desc())
         )
         if build_type:
             stmt = stmt.where(Build.build_type == build_type)
@@ -139,7 +139,7 @@ class CRUDBuild:
                 joinedload(Build.psu), 
                 joinedload(Build.case)
             )
-        builds = db.scalars(stmt).all()
+        builds = db.scalars(stmt.order_by(Build.updated_at.desc())).all()
         
         return builds, total
 
@@ -150,32 +150,23 @@ class CRUDBuild:
         # Update fields
         try:
             for field, value in update_data.items():
-                    setattr(db_obj, field, value)
-                    db.flush((db_obj,))
+                setattr(db_obj, field, value)
+            db.flush((db_obj,))
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"There is no {field.replace('_id', '')} with id {value}"
             )
         
-        # Check compatibility if components were updated
-        if any([
-            'cpu_id', 'cpu_cooler_id', 'gpu_id', 'motherboard_id',
-            'ram_id', 'storage_id', 'psu_id', 'case_id'
-        ]) in update_data:
-            if not self._check_compatibility(db, db_obj):
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Selected components are not compatible with each other"
-                )
+
+        if not self._check_compatibility(db, db_obj):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Selected components are not compatible with each other"
+            )
+        db_obj.build_price = self._calculate_build_price(db_obj)
         
-        # Recalculate build price if components were updated
-        if any([
-            'cpu_id', 'cpu_cooler_id', 'gpu_id', 'motherboard_id',
-            'ram_id', 'storage_id', 'psu_id', 'case_id'
-        ]) in update_data:
-            db_obj.build_price = self._calculate_build_price(db_obj)
-        
+        db_obj.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(db_obj)
         return db_obj

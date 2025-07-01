@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING
-from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, BigInteger
+from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, BigInteger, func, text
 from sqlalchemy.orm import relationship, Mapped
 from app.db.base import Base
-from datetime import datetime, timezone
 
 
 if TYPE_CHECKING:
@@ -37,5 +36,5 @@ class Product(Base):
     category_id = Column(BigInteger, ForeignKey("category.id", ondelete="SET NULL"))
     category = relationship("Category", back_populates="products")
 
-    created_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
-    updated_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
+    created_at = Column(DateTime, server_default=text("timezone('UTC', now())"), nullable=False)
+    updated_at = Column(DateTime, server_default=text("timezone('UTC', now())"), server_onupdate=text("timezone('UTC', now())"), nullable=False)
