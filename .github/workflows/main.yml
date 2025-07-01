@@ -51,39 +51,28 @@ jobs:
         POSTGRES_DSN: ${{ secrets.POSTGRES_DSN }}
         KEEPA_API_KEY: ${{ secrets.KEEPA_API_KEY }}
       run: |
+
+        ESCAPED_POSTGRES_DSN=$(echo "$POSTGRES_DSN" | sed 's/"/\\"/g')
+        echo "DB Host: $ESCAPED_POSTGRES_DSN"
+        ESCAPED_KEEPA_API_KEY=$(echo "$KEEPA_API_KEY" | sed 's/"/\\"/g')
+        echo "Database IP: ${{ env.POSTGRES_HOST || secrets.POSTGRES_HOST }}"
         FULL_IMAGE_NAME="${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
         
         gcloud compute ssh ${{ env.GCP_INSTANCE_NAME }} \
           --zone ${{ env.GCP_INSTANCE_ZONE }} \
+          --tunnel-through-iap \
           --command="
-            
-            # Auth to GCR
-            gcloud auth configure-docker --quiet
-            
-            #Delete old images
-            docker image prune -af
-            
-            #Pulling new image
-            docker pull $FULL_IMAGE_NAME 
-            
-            # Stop and deleting old conatainer
+            docker pull $FULL_IMAGE_NAME
             docker stop ${{ env.IMAGE_NAME }} || true
             docker rm ${{ env.IMAGE_NAME }} || true
-            
-            
-            # Create new container
-            docker run -d \\
-              --name  ${{ env.IMAGE_NAME }} \\
-              --restart=always \\
-              -p 8000:8000 \\
-              -e POSTGRES_HOST=$POSTGRES_HOST \\
-              -e POSTGRES_DSN=$ESCAPED_POSTGRES_DSN \\
-              -e KEEPA_API_KEY=$ESCAPED_KEEPA_API_KEY \\
+            docker run -d \
+              --name ${{ env.IMAGE_NAME }} \
+              --restart=always \
+              -p 8000:8000 \
+              -e POSTGRES_HOST=\"$POSTGRES_HOST\" \
+              -e POSTGRES_DSN=\"$ESCAPED_POSTGRES_DSN\" \
+              -e KEEPA_API_KEY=\"$ESCAPED_KEEPA_API_KEY\" \
               $FULL_IMAGE_NAME
-
-            
-            # Wait for container to start
             sleep 5
-            # Check status and logs
-            docker ps -a | grep backend
+            docker logs ${{ env.IMAGE_NAME }} --tail 20
           "
