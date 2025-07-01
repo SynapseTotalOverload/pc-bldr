@@ -80,8 +80,8 @@ jobs:
               -e KEEPA_API_KEY=\"$ESCAPED_KEEPA_API_KEY\" \
               $FULL_IMAGE_NAME 
             "
-        gcloud compute ssh ${{ env.GCP_FRONTEND_INSTANCE_NAME }} \
-          --zone ${{ env.GCP_FRONTEND_INSTANCE_ZONE }} \
+        gcloud compute ssh ${{ secrets.GCP_FRONTEND_INSTANCE_NAME }} \
+          --zone ${{ secrets.GCP_FRONTEND_INSTANCE_ZONE }} \
           --tunnel-through-iap \
           --command="
             docker pull $FULL_IMAGE_NAME
