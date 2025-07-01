@@ -62,7 +62,7 @@ jobs:
       run: |
         ESCAPED_POSTGRES_DSN=$(echo "$POSTGRES_DSN" | sed 's/"/\\"/g')
         ESCAPED_KEEPA_API_KEY=$(echo "$KEEPA_API_KEY" | sed 's/"/\\"/g')
-        FULL_IMAGE_NAME="${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+        FULL_IMAGE_NAME="${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest"
         
         gcloud compute ssh ${{ env.GCP_INSTANCE_NAME }} \
           --zone ${{ env.GCP_INSTANCE_ZONE }} \
