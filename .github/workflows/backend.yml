@@ -75,8 +75,8 @@ jobs:
               $FULL_IMAGE_NAME 
             "
         
-        PUBLIC_IP=$(gcloud compute instances describe ${{ env.GCP_FRONTEND_INSTANCE_NAME }} \
-          --zone=${{ env.GCP_FRONTEND_INSTANCE_ZONE }} \
+        PUBLIC_IP=$(gcloud compute instances describe ${{ secrets.GCP_FRONTEND_INSTANCE_NAME }} \
+          --zone=${{ secrets.GCP_FRONTEND_INSTANCE_ZONE }} \
           --format="get(networkInterfaces[0].accessConfigs[0].natIP)")
     
         echo "ip: $PUBLIC_IP:8000" 
