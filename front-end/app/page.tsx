@@ -52,11 +52,66 @@ export default function Home() {
 
   const handleAddProduct = async (data: FormData) => {
     try {
+      // Transform data to match backend ProductCreate schema
+      const getCategoryId = (category: keyof ProductTypeMapNames): number => {
+        const categoryMap: Record<keyof ProductTypeMapNames, number> = {
+          cpu: 1,
+          cpu_cooler: 2,
+          gpu: 3,
+          motherboard: 4,
+          memory: 5,
+          internal_hard_drive: 6,
+          power_supply: 7,
+          case: 8,
+        };
+        return categoryMap[category];
+      };
+
+      // Extract base fields (defined in ProductBase schema)
+      const baseFields = ['asin', 'title', 'price', 'rating'];
+      const categoryId = getCategoryId(data.category);
+      
+      // Validate category_id
+      if (!categoryId || categoryId < 1 || categoryId > 8) {
+        throw new Error(`Invalid category: ${data.category}`);
+      }
+      
+      const transformedData: any = {
+        category_id: categoryId,
+      };
+
+      // Add base fields
+      baseFields.forEach(field => {
+        if (data[field]) {
+          if (field === 'price' || field === 'rating') {
+            transformedData[field] = parseFloat(data[field] as string);
+          } else {
+            transformedData[field] = data[field];
+          }
+        }
+      });
+
+      // Extract attributes (all fields except base fields and category)
+      const attrs: any = {};
+      Object.keys(data).forEach(key => {
+        if (!baseFields.includes(key) && key !== 'category') {
+          const value = data[key];
+          attrs[key] = value;
+        }
+      });
+
+      // Only add attrs if there are any attributes
+      if (Object.keys(attrs).length > 0) {
+        transformedData.attrs = attrs;
+      }
+
+      console.log('Transformed data:', transformedData);
+
       // Send data to API
       if(selectedProduct){
-        await instance.put(`/products/${selectedProduct.id}`, data);
+        await instance.put(`/products/${selectedProduct.id}`, transformedData);
       }else{
-        await instance.post('/products', data);
+        await instance.post('/products', transformedData);
       }
       // Refetch products to show the new one
       await refetch();
@@ -160,6 +215,9 @@ export default function Home() {
                 <LayoutGrid className="h-4 w-4" />
               </ToggleGroupItem>
             </ToggleGroup>
+            <Link href="/builds">
+                <Button>Builds</Button>
+              </Link>
             <Link href="/configurator">
               <Button>Configurator</Button>
             </Link>

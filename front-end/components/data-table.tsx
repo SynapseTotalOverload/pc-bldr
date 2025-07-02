@@ -92,7 +92,6 @@ export function DataTable<TData, TValue>({
     pageCount: pagination.totalPages,
   });
 
-  // console.log(data)
 
   return (
     <Card className="w-full">

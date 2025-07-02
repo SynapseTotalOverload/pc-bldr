@@ -1,7 +1,8 @@
 import { useState, useEffect, ButtonHTMLAttributes } from 'react';
 
 import { FrontendToBackendCategoryMap, PaginatedInterface, ProductConstantMapIds, ProductRead, ProductTypeMapIds } from '@/types/prodcuts-base';
-import { instance } from '@/lib/axios';
+import { getCompatibleProducts } from '@/lib/products-api';
+
 interface UseProductsOptions {
   category: string;
   page: number;
@@ -49,16 +50,15 @@ export function useProducts<T extends ProductRead>({
       const backendKey = FrontendToBackendCategoryMap[normalizedCategory];
       if (!backendKey || !(backendKey in ProductConstantMapIds)) throw new Error(`Invalid category: ${category}`);
 
-      const searchParams = new URLSearchParams({
-        // category_id: ProductConstantMapIds[normalizedCategory as keyof ProductTypeMapIds]?.toString(),
-        category_id: ProductConstantMapIds[backendKey].toString(),
-        page: page?.toString(),
-        ...(search && { search }),
+      // Use getCompatibleProducts API which supports search via query parameter
+      const data = await getCompatibleProducts({
+        selected_components: {}, 
+        category_id: ProductConstantMapIds[backendKey],
+        page: page,
+        page_size: 20,
+        ...(search && search.trim() && { query: search.trim() }),
       });
 
-      const response = await instance.get(`/products?${searchParams?.toString()}`);
-
-      const data: PaginatedInterface<ProductRead> = response.data;
       setProducts(data.items as unknown as T[]);
       setPagination({
         total: data.pagination.totalItems,

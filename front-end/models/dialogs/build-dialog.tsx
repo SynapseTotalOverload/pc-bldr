@@ -219,14 +219,14 @@ export function BuildDialog({ open, onOpenChange, build, onSuccess }: BuildDialo
         "name": formData.name.trim(),
         "build_type": formData.build_type || undefined,
         "build_price": formData.build_price ? parseFloat(formData.build_price) : undefined,
-        "cpu_id": (formData.cpu_id && formData.cpu_id !== 'none') ? parseInt(formData.cpu_id) : undefined,
-        "cpu_cooler_id": (formData.cpu_cooler_id && formData.cpu_cooler_id !== 'none') ? parseInt(formData.cpu_cooler_id) : undefined,
-        "gpu_id": (formData.video_card_id && formData.video_card_id !== 'none') ? parseInt(formData.video_card_id) : undefined,
-        "motherboard_id": (formData.motherboard_id && formData.motherboard_id !== 'none') ? parseInt(formData.motherboard_id) : undefined,
-        "ram_id": (formData.memory_id && formData.memory_id !== 'none') ? parseInt(formData.memory_id) : undefined,
-        "storage_id": (formData.storage_id && formData.storage_id !== 'none') ? parseInt(formData.storage_id) : undefined,
-        "psu_id": (formData.power_supply_id && formData.power_supply_id !== 'none') ? parseInt(formData.power_supply_id) : undefined,
-        "case_id": (formData.case_id && formData.case_id !== 'none') ? parseInt(formData.case_id) : undefined
+        "cpu_id": (formData.cpu_id && formData.cpu_id !== 'none') ? parseInt(formData.cpu_id) : null,
+        "cpu_cooler_id": (formData.cpu_cooler_id && formData.cpu_cooler_id !== 'none') ? parseInt(formData.cpu_cooler_id) : null,
+        "gpu_id": (formData.video_card_id && formData.video_card_id !== 'none') ? parseInt(formData.video_card_id) : null,
+        "motherboard_id": (formData.motherboard_id && formData.motherboard_id !== 'none') ? parseInt(formData.motherboard_id) : null,
+        "ram_id": (formData.memory_id && formData.memory_id !== 'none') ? parseInt(formData.memory_id) : null,
+        "storage_id": (formData.storage_id && formData.storage_id !== 'none') ? parseInt(formData.storage_id) : null,
+        "psu_id": (formData.power_supply_id && formData.power_supply_id !== 'none') ? parseInt(formData.power_supply_id) : null,
+        "case_id": (formData.case_id && formData.case_id !== 'none') ? parseInt(formData.case_id) : null
       };
 
       console.log("submitData", submitData);

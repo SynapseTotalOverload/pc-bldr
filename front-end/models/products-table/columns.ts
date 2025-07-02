@@ -155,19 +155,5 @@ export const categoryColumnExtensions: {
       header: 'Color',
       accessorFn: (row) => isPSU(row.attrs) ? row.attrs.color : '—',
     },
-  ],
-  VIDEO_CARD: [
-    {
-      header: 'Memory',
-      accessorFn: (row) => isGPU(row.attrs) ? row.attrs.memory : '—',
-    },
-    {
-      header: 'Chipset',
-      accessorFn: (row) => isGPU(row.attrs) ? row.attrs.chipset : '—',
-    },
-    {
-      header: 'Core Clock',
-      accessorFn: (row) => isGPU(row.attrs) ? row.attrs.base_clock : '—',
-    },
-  ],
+  ]
 };

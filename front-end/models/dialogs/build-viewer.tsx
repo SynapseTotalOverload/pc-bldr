@@ -59,7 +59,7 @@ export default function BuildViewer({ open, onOpenChange, build }: BuildViewerPr
                 </Badge>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Price</p>
+                <p className="text-sm text-muted-foreground">Build Price</p>
                 <p className="font-semibold text-lg">{formatPrice(build.build_price)}</p>
               </div>
               <div>

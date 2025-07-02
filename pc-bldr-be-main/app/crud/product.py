@@ -88,6 +88,13 @@ class CRUDProduct:
         
         # Create basic product
         db_obj = Product(**create_data)
+        exist = self.get_by_asin(db, db_obj.asin)
+        if exist:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Product with this ASIN already exists"
+            )
+
         db.add(db_obj)
         db.flush()  # Flush to get the product ID
         
@@ -144,7 +151,7 @@ class CRUDProduct:
         if category_id:
             CatAttrTable = cat_id_to_attrs_model_map[category_id]
             count_stmt = count_stmt.join(CatAttrTable)
-        total = db.scalar(count_stmt)
+        total = db.scalar(count_stmt.order_by(Product.updated_at.desc()))
         return db.scalars(stmt).all(), total
 
     def update(self, db: Session, *, db_obj: Product, obj_in: ProductUpdate):
@@ -262,8 +269,6 @@ class CRUDProduct:
         else:
             stmt = stmt.options(*self._get_joinedload_attrs_option())
 
-        if query:
-            stmt = stmt.where(Product.title.ilike(f"%{query}%"))
         
         # Count query
         count_stmt = select(func.count()).select_from(Product)
@@ -272,9 +277,12 @@ class CRUDProduct:
             count_stmt = count_stmt.join(CatAttrTable)
             if filters:
                 count_stmt = count_stmt.where(*filters)
+        if query:
+            stmt = stmt.where(Product.title.ilike(f"%{query}%"))
+            count_stmt = count_stmt.where(Product.title.ilike(f"%{query}%"))
         
         total = db.scalar(count_stmt)
-        return db.scalars(stmt).all(), total
+        return db.scalars(stmt.order_by(Product.updated_at.desc())).all(), total
 
     def remove(self, db: Session, *, id_: int):
         obj = db.get(Product, id_)
