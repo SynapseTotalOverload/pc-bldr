@@ -1,0 +1,1 @@
+export { Feature242Component as Feature242 } from './Component' 

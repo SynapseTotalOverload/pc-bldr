@@ -8,6 +8,7 @@ import { cn } from "@/utilities/ui";
 import { HeroMeteorBlock } from "./types";
 import { Button } from "@/components/ui/button";
 import { CMSLink } from "@/components/Link";
+import { ArrowRight } from "lucide-react";
 
 interface HeroMeteorProps {
   className?: string;
@@ -61,7 +62,8 @@ export const HeroMeteorComponent: React.FC<HeroMeteorProps & HeroMeteorBlock> = 
             {...buttonLink}
             className="group text-md mt-10 flex w-fit items-center justify-center gap-2 rounded-full px-4 py-1 tracking-tight bg-secondary text-secondary-foreground hover:bg-secondary/80"
           >
-            {buttonText} {">"}
+          <ArrowRight className="h-4 w-4" />
+
           </CMSLink>
         )}
         

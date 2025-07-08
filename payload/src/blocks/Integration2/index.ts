@@ -1,0 +1,1 @@
+export { Integration2Component as Integration2 } from './Component' 

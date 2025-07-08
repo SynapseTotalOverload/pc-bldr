@@ -50,6 +50,7 @@ const config = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'meteor': 'meteor 3s linear infinite',
+        'marquee': 'marquee 25s linear infinite',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -117,6 +118,10 @@ const config = {
             transform: 'rotate(var(--angle)) translateX(600px) translateY(600px)', 
             opacity: '0' 
           },
+        },
+        'marquee': {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
         },
       },
       typography: () => ({

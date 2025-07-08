@@ -12,6 +12,12 @@ import { FeatureList } from '../../blocks/FeatureList/config'
 import { ApiCardList } from '../../blocks/ApiCardList/config'
 import { WhyWorkWithUs } from '../../blocks/WhyWorkWithUs/config'
 import { HeroMeteor } from '../../blocks/HeroMeteor/config'
+import { Integration2 } from '../../blocks/Integration2/config'
+import { Feature242 } from '../../blocks/Feature242/config'
+import { Feature157 } from '../../blocks/Feature157/config'
+import { Feature251 } from '../../blocks/Feature251/config'
+import { Testimonial19 } from '../../blocks/Testimonial19/config'
+import { Feature253 } from '../../blocks/Feature253/config'
 import { hero } from '@/heros/config'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -80,7 +86,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, FeatureCard, FeatureList, ApiCardList, WhyWorkWithUs, HeroMeteor],
+              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, FeatureCard, FeatureList, ApiCardList, WhyWorkWithUs, HeroMeteor, Integration2, Feature242, Feature157, Feature251, Testimonial19, Feature253],
               required: true,
               admin: {
                 initCollapsed: true,

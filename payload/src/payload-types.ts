@@ -206,6 +206,51 @@ export interface Page {
     | ApiCardListBlock
     | WhyWorkWithUsBlock
     | HeroMeteorBlock
+    | Integration2Block
+    | Feature242Block
+    | Feature157Block
+    | Feature251Block
+    | {
+        enabled?: boolean | null;
+        title?: string | null;
+        subtitle?: string | null;
+        ratingText?: string | null;
+        linkText?: string | null;
+        link?: {
+          type?: ('reference' | 'custom') | null;
+          reference?: (string | null) | Page;
+          url?: string | null;
+          newTab?: boolean | null;
+        };
+        testimonials?:
+          | {
+              name: string;
+              role: string;
+              content: string;
+              avatar?: (string | null) | Media;
+              rating?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'testimonial19';
+      }
+    | {
+        enabled?: boolean | null;
+        title: string;
+        description: string;
+        buttonText: string;
+        link?: {
+          type?: ('reference' | 'custom') | null;
+          reference?: (string | null) | Page;
+          url?: string | null;
+          newTab?: boolean | null;
+        };
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'feature253';
+      }
   )[];
   meta?: {
     title?: string | null;
@@ -905,6 +950,255 @@ export interface HeroMeteorBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Integration2Block".
+ */
+export interface Integration2Block {
+  blockName?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+  buttonLink: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null);
+    url?: string | null;
+    label: string;
+    /**
+     * Choose how the link should be rendered.
+     */
+    appearance?: ('default' | 'outline') | null;
+  };
+  id?: string | null;
+  blockType: 'integration2';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Feature242Block".
+ */
+export interface Feature242Block {
+  blockName?: string | null;
+  title?: string | null;
+  description?: string | null;
+  readMoreText?: string | null;
+  items?:
+    | {
+        title: string;
+        href?: string | null;
+        image: string | Media;
+        /**
+         * Used if no media image is selected
+         */
+        imageUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockType: 'feature242';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Feature157Block".
+ */
+export interface Feature157Block {
+  blockName?: string | null;
+  subtitle?: string | null;
+  title?: string | null;
+  /**
+   * You must provide exactly 2 service cards
+   */
+  cards?:
+    | {
+        title: string;
+        description: string;
+        /**
+         * Choose to link to an existing page or enter a custom URL. Leave empty to disable link functionality.
+         */
+        link?: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: string | Post;
+              } | null);
+          url?: string | null;
+        };
+        image?: (string | null) | Media;
+        /**
+         * Used if no media image is selected
+         */
+        imageUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockType: 'feature157';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Feature251Block".
+ */
+export interface Feature251Block {
+  blockName?: string | null;
+  card1?: {
+    title?: string | null;
+    enabled?: boolean | null;
+    description?: string | null;
+    icons?: {
+      icon1?:
+        | (
+            | 'google'
+            | 'figma'
+            | 'notion'
+            | 'g2'
+            | 'block'
+            | 'cpu'
+            | 'gpu'
+            | 'motherboard'
+            | 'memory'
+            | 'storage'
+            | 'power-supply'
+            | 'case'
+            | 'cpu-cooler'
+          )
+        | null;
+      icon2?:
+        | (
+            | 'google'
+            | 'figma'
+            | 'notion'
+            | 'g2'
+            | 'block'
+            | 'cpu'
+            | 'gpu'
+            | 'motherboard'
+            | 'memory'
+            | 'storage'
+            | 'power-supply'
+            | 'case'
+            | 'cpu-cooler'
+          )
+        | null;
+      icon3?:
+        | (
+            | 'google'
+            | 'figma'
+            | 'notion'
+            | 'g2'
+            | 'block'
+            | 'cpu'
+            | 'gpu'
+            | 'motherboard'
+            | 'memory'
+            | 'storage'
+            | 'power-supply'
+            | 'case'
+            | 'cpu-cooler'
+          )
+        | null;
+      icon4?:
+        | (
+            | 'google'
+            | 'figma'
+            | 'notion'
+            | 'g2'
+            | 'block'
+            | 'cpu'
+            | 'gpu'
+            | 'motherboard'
+            | 'memory'
+            | 'storage'
+            | 'power-supply'
+            | 'case'
+            | 'cpu-cooler'
+          )
+        | null;
+    };
+  };
+  card2?: {
+    title?: string | null;
+    enabled?: boolean | null;
+    description?: string | null;
+    icons?: {
+      topIcon?:
+        | (
+            | 'google'
+            | 'figma'
+            | 'notion'
+            | 'g2'
+            | 'block'
+            | 'cpu'
+            | 'gpu'
+            | 'motherboard'
+            | 'memory'
+            | 'storage'
+            | 'power-supply'
+            | 'case'
+            | 'cpu-cooler'
+          )
+        | null;
+      bottomIcon?:
+        | (
+            | 'google'
+            | 'figma'
+            | 'notion'
+            | 'g2'
+            | 'block'
+            | 'cpu'
+            | 'gpu'
+            | 'motherboard'
+            | 'memory'
+            | 'storage'
+            | 'power-supply'
+            | 'case'
+            | 'cpu-cooler'
+          )
+        | null;
+    };
+  };
+  card3?: {
+    title?: string | null;
+    enabled?: boolean | null;
+    description?: string | null;
+    image?:
+      | (
+          | 'google'
+          | 'figma'
+          | 'notion'
+          | 'g2'
+          | 'block'
+          | 'cpu'
+          | 'gpu'
+          | 'motherboard'
+          | 'memory'
+          | 'storage'
+          | 'power-supply'
+          | 'case'
+          | 'cpu-cooler'
+        )
+      | null;
+  };
+  card4?: {
+    title?: string | null;
+    enabled?: boolean | null;
+    description?: string | null;
+  };
+  id?: string | null;
+  blockType: 'feature251';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1199,6 +1493,57 @@ export interface PagesSelect<T extends boolean = true> {
         apiCardList?: T | ApiCardListBlockSelect<T>;
         whyWorkWithUs?: T | WhyWorkWithUsBlockSelect<T>;
         heroMeteor?: T | HeroMeteorBlockSelect<T>;
+        integration2?: T | Integration2BlockSelect<T>;
+        feature242?: T | Feature242BlockSelect<T>;
+        feature157?: T | Feature157BlockSelect<T>;
+        feature251?: T | Feature251BlockSelect<T>;
+        testimonial19?:
+          | T
+          | {
+              enabled?: T;
+              title?: T;
+              subtitle?: T;
+              ratingText?: T;
+              linkText?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+              testimonials?:
+                | T
+                | {
+                    name?: T;
+                    role?: T;
+                    content?: T;
+                    avatar?: T;
+                    rating?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        feature253?:
+          | T
+          | {
+              enabled?: T;
+              title?: T;
+              description?: T;
+              buttonText?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1403,6 +1748,124 @@ export interface HeroMeteorBlockSelect<T extends boolean = true> {
   globeSize?: T;
   id?: T;
   blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Integration2Block_select".
+ */
+export interface Integration2BlockSelect<T extends boolean = true> {
+  blockName?: T;
+  title?: T;
+  subtitle?: T;
+  buttonLink?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+        appearance?: T;
+      };
+  id?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Feature242Block_select".
+ */
+export interface Feature242BlockSelect<T extends boolean = true> {
+  blockName?: T;
+  title?: T;
+  description?: T;
+  readMoreText?: T;
+  items?:
+    | T
+    | {
+        title?: T;
+        href?: T;
+        image?: T;
+        imageUrl?: T;
+        id?: T;
+      };
+  id?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Feature157Block_select".
+ */
+export interface Feature157BlockSelect<T extends boolean = true> {
+  blockName?: T;
+  subtitle?: T;
+  title?: T;
+  cards?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+            };
+        image?: T;
+        imageUrl?: T;
+        id?: T;
+      };
+  id?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Feature251Block_select".
+ */
+export interface Feature251BlockSelect<T extends boolean = true> {
+  blockName?: T;
+  card1?:
+    | T
+    | {
+        title?: T;
+        enabled?: T;
+        description?: T;
+        icons?:
+          | T
+          | {
+              icon1?: T;
+              icon2?: T;
+              icon3?: T;
+              icon4?: T;
+            };
+      };
+  card2?:
+    | T
+    | {
+        title?: T;
+        enabled?: T;
+        description?: T;
+        icons?:
+          | T
+          | {
+              topIcon?: T;
+              bottomIcon?: T;
+            };
+      };
+  card3?:
+    | T
+    | {
+        title?: T;
+        enabled?: T;
+        description?: T;
+        image?: T;
+      };
+  card4?:
+    | T
+    | {
+        title?: T;
+        enabled?: T;
+        description?: T;
+      };
+  id?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -12,6 +12,12 @@ import { FeatureListBlock } from '@/blocks/FeatureList/Component'
 import { ApiCardListBlock } from '@/blocks/ApiCardList/Component'
 import { WhyWorkWithUs } from '@/blocks/WhyWorkWithUs/Component'
 import { HeroMeteorComponent } from '@/blocks/HeroMeteor/Component'
+import { Integration2Component } from '@/blocks/Integration2/Component'
+import { Feature242Component } from '@/blocks/Feature242/Component'
+import { Feature157Component } from '@/blocks/Feature157/Component'
+import { Feature251Component } from '@/blocks/Feature251/Component'
+import { Testimonial19Component } from '@/blocks/Testimonial19/Component'
+import { Feature253Component } from '@/blocks/Feature253/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -24,6 +30,12 @@ const blockComponents = {
   apiCardList: ApiCardListBlock,
   whyWorkWithUs: WhyWorkWithUs,
   heroMeteor: HeroMeteorComponent,
+  integration2: Integration2Component,
+  feature242: Feature242Component,
+  feature157: Feature157Component,
+  feature251: Feature251Component,
+  testimonial19: Testimonial19Component,
+  feature253: Feature253Component,
 }
 
 export const RenderBlocks: React.FC<{
