@@ -114,8 +114,11 @@ class CRUDBuild:
         count_stmt = (
             select(func.count())
             .select_from(Build)
-            .where(Build.name.ilike(f"%{query}%"))
         )
+        if query:
+            count_stmt = count_stmt.where(Build.name.ilike(f"%{query}%"))
+        if build_type:
+            count_stmt = count_stmt.where(Build.build_type == build_type)
         total = db.scalar(count_stmt)
         
         # Get builds with pagination
