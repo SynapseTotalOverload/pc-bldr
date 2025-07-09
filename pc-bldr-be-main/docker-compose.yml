@@ -1,5 +1,6 @@
 volumes:
   postgres_data: {}
+  mongo_data: {}
 
 networks:
   internal: {}
@@ -34,6 +35,24 @@ services:
       timeout: 5s
       retries: 5
 
+  mongo:
+    image: mongo
+    restart: always
+    networks:
+      - internal
+      - external
+    volumes:
+      - mongo_data:/var/lib/mongo/data:rw
+    expose:
+      - ${MONGO__PORT}
+    ports:
+      - "${MONGO__PORT}:27017"  
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO__USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO__PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO__DB}
+
+      
   app:
     build:
       context: .

@@ -58,10 +58,12 @@ jobs:
       env:
         POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
         POSTGRES_DSN: ${{ secrets.POSTGRES_DSN }}
+        MONGO_DSN: ${{ secrets.MONGO_DSN }}
         KEEPA_API_KEY: ${{ secrets.KEEPA_API_KEY }}
       run: |
         ESCAPED_POSTGRES_DSN=$(echo "$POSTGRES_DSN" | sed 's/"/\\"/g')
         ESCAPED_KEEPA_API_KEY=$(echo "$KEEPA_API_KEY" | sed 's/"/\\"/g')
+        ESCAPED_MONGO_DSN=$(echo "$MONGO_DSN" | sed 's/"/\\"/g')
         FULL_IMAGE_NAME="${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest"
         
         gcloud compute ssh ${{ env.GCP_INSTANCE_NAME }} \
@@ -76,12 +78,13 @@ jobs:
               --restart=always \
               -p 8000:8000 \
               -e POSTGRES_HOST=\"$POSTGRES_HOST\" \
+              -e MONGO_DSN=\"$ESCAPED_MONGO_DSN\" \
               -e POSTGRES_DSN=\"$ESCAPED_POSTGRES_DSN\" \
               -e KEEPA_API_KEY=\"$ESCAPED_KEEPA_API_KEY\" \
               $FULL_IMAGE_NAME 
             "
-        gcloud compute ssh ${{ env.GCP_FRONTEND_INSTANCE_NAME }} \
-          --zone ${{ env.GCP_FRONTEND_INSTANCE_ZONE }} \
+        gcloud compute ssh ${{ secrets.GCP_FRONTEND_INSTANCE_NAME }} \
+          --zone ${{ secrets.GCP_FRONTEND_INSTANCE_ZONE }} \
           --tunnel-through-iap \
           --command="
             docker pull $FULL_IMAGE_NAME
@@ -93,6 +96,7 @@ jobs:
               -p 8000:8000 \
               -e POSTGRES_HOST=\"$POSTGRES_HOST\" \
               -e POSTGRES_DSN=\"$ESCAPED_POSTGRES_DSN\" \
+              -e MONGO_DSN=\"$ESCAPED_MONGO_DSN\" \
               -e KEEPA_API_KEY=\"$ESCAPED_KEEPA_API_KEY\" \
               $FULL_IMAGE_NAME 
             "
