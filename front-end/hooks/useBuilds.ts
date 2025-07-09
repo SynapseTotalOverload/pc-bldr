@@ -58,7 +58,7 @@ export function useBuilds({
         query: currentSearch,
       });
 
-      const response = await instance.get(`/builds?${searchParams.toString()}`);
+      const response = await instance.get(`/builds/?${searchParams.toString()}`);
       const data = response.data;
 
       // Backend now returns paginated response with items and pagination
