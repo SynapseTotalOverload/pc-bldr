@@ -79,8 +79,8 @@ export const ApiCardListBlock: React.FC<Props> = ({
             searchParams.append('query', searchQuery);
           }
 
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-          const response = await fetch(`${apiUrl}/api/v1/builds?${searchParams.toString()}`)
+          const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:8000/api/v1'
+          const response = await fetch(`${apiUrl}builds?${searchParams.toString()}`)
           
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`)
