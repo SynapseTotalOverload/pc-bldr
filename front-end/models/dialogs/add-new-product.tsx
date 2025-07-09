@@ -67,7 +67,7 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames, FormField[]> = {
     { name: 'clock_speed', label: 'Clock Speed (MHz)', type: 'number', placeholder: '1710' },
     { name: 'frame_sync', label: 'Frame Sync', type: 'text', required: true, placeholder: 'G-Sync, FreeSync' },
   ],
-  memory: [
+  ram: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Corsair, G.Skill' },
     { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'Vengeance LPX' },
     { name: 'total_memory', label: 'Total Memory (GB)', type: 'number', required: true, placeholder: '32' },
@@ -86,7 +86,7 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames, FormField[]> = {
     { name: 'ram_slots', label: 'RAM Slots', type: 'number', required: true, placeholder: '4' },
     { name: 'max_ram_support', label: 'Max RAM Support (GB)', type: 'number', required: true, placeholder: '128' },
   ],
-  internal_hard_drive: [
+  storage: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Samsung, Western Digital' },
     { name: 'model', label: 'Model', type: 'text', required: true, placeholder: '970 EVO Plus' },
     { name: 'capacity', label: 'Capacity (GB)', type: 'number', placeholder: '1000' },
@@ -259,8 +259,8 @@ export function AddNewProduct({
       cpu_cooler: 2,
       gpu: 3,
       motherboard: 4,
-      memory: 5,
-      internal_hard_drive: 6,
+      ram: 5,
+      storage: 6,
       power_supply: 7,
       case: 8,
     };
@@ -273,8 +273,8 @@ export function AddNewProduct({
       2: 'cpu_cooler',
       3: 'gpu',
       4: 'motherboard',
-      5: 'memory',
-      6: 'internal_hard_drive',
+      5: 'ram',
+      6: 'storage',
       7: 'power_supply',
       8: 'case',
     };

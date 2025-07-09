@@ -61,7 +61,6 @@ export class ApiService {
         url = `${this.baseUrl}${endpoint}`
       }
 
-      // Add query parameters
       if (params) {
         const searchParams = new URLSearchParams()
         Object.entries(params).forEach(([key, value]) => {
@@ -89,7 +88,6 @@ export class ApiService {
 
       const result = await response.json()
       
-      // Normalize response format
       return this.normalizeResponse(result)
     } catch (error) {
       console.error('API fetch error:', error)

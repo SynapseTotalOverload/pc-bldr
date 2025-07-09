@@ -32,10 +32,8 @@ export const ProductCard: React.FC<CardProps> = ({ item, cardType, styling }) =>
           cardStyles[styling?.cardStyle || 'default'],
           'hover:scale-[1.02] group-hover:shadow-xl'
         )}>
-          {/* Decorative gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
-          {/* Premium badge */}
           {product.rating && product.rating >= 4.5 && (
             <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs px-2 py-1 rounded-full shadow-md">
               <Star className="w-3 h-3 inline mr-1" />
@@ -44,25 +42,16 @@ export const ProductCard: React.FC<CardProps> = ({ item, cardType, styling }) =>
           )}
           
           <div className="p-6 relative z-10">
-            {/* Product icon */}
             <div className="flex items-start justify-between mb-4">
               <div className="p-2 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg">
                 <Package className="w-5 h-5 text-blue-600" />
               </div>
-              {/* {product.category && (
-                <div className="flex items-center gap-1 text-xs text-muted-foreground bg-gray-100 px-2 py-1 rounded-full">
-                  <Tag className="w-3 h-3" />
-                  {product.category.name}
-                </div>
-              )} */}
             </div>
 
-            {/* Product title */}
             <h3 className="font-bold text-lg line-clamp-2 group-hover:text-blue-700 transition-colors duration-200 mb-3">
               {product.title}
             </h3>
             
-            {/* Price and rating section */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-4 h-4 text-green-600" />
@@ -78,7 +67,6 @@ export const ProductCard: React.FC<CardProps> = ({ item, cardType, styling }) =>
               )}
             </div>
 
-            {/* Action indicator */}
             <div className="flex items-center gap-2 text-sm text-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
               <span className="font-medium">View Details</span>
               <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center">
@@ -100,29 +88,19 @@ export const ProductCard: React.FC<CardProps> = ({ item, cardType, styling }) =>
           cardStyles[styling?.cardStyle || 'default'],
           'hover:scale-[1.02] group-hover:shadow-xl'
         )}>
-          {/* Decorative gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
-          {/* Build type badge
-          <div className="absolute top-3 right-3 bg-gradient-to-r from-green-400 to-emerald-400 text-white text-xs px-3 py-1 rounded-full shadow-md capitalize">
-            <Zap className="w-3 h-3 inline mr-1" />
-            {build.build_type}
-          </div> */}
-          
           <div className="p-6 relative z-10">
-            {/* Build icon */}
             <div className="flex items-start justify-between mb-4">
               <div className="p-2 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-lg">
                 <Cpu className="w-5 h-5 text-green-600" />
               </div>
             </div>
 
-            {/* Build name */}
             <h3 className="font-bold text-lg line-clamp-2 group-hover:text-green-700 transition-colors duration-200 mb-4">
               {build.name}
             </h3>
             
-            {/* Price section */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-4 h-4 text-green-600" />
@@ -132,7 +110,6 @@ export const ProductCard: React.FC<CardProps> = ({ item, cardType, styling }) =>
               </div>
             </div>
 
-            {/* Action indicator */}
             <div className="flex items-center gap-2 text-sm text-green-600 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
               <span className="font-medium">View Build</span>
               <div className="w-4 h-4 rounded-full bg-green-100 flex items-center justify-center">

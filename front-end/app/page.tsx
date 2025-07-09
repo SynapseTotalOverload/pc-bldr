@@ -59,8 +59,8 @@ export default function Home() {
           cpu_cooler: 2,
           gpu: 3,
           motherboard: 4,
-          memory: 5,
-          internal_hard_drive: 6,
+          ram: 5,
+          storage: 6,
           power_supply: 7,
           case: 8,
         };

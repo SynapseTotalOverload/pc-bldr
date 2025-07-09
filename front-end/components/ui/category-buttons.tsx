@@ -3,10 +3,10 @@ import { Button } from '@/components/ui/button';
 const categories = [
   { id: 'cpu', label: 'CPU' },
   { id: 'cpu_cooler', label: 'CPU Cooler' },
+  { id: 'gpu', label: 'GPU' },
   { id: 'motherboard', label: 'Motherboard' },
-  { id: 'memory', label: 'Memory' },
-  { id: 'internal_hard_drive', label: 'Storage' },
-  { id: 'video_card', label: 'Video Card' },
+  { id: 'ram', label: 'RAM' },
+  { id: 'storage', label: 'Storage' },
   { id: 'power_supply', label: 'Power Supply' },
   { id: 'case', label: 'Case' },
 ];

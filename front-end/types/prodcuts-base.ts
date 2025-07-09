@@ -44,9 +44,9 @@ export interface ProductTypeMapNames {
   cpu: 'CPU';
   cpu_cooler: 'CPU Cooler';
   gpu: 'GPU';
-  memory: 'Memory';
+  ram: 'RAM';
   motherboard: 'Motherboard';
-  internal_hard_drive: 'Internal Hard Drive';
+  storage: 'Storage';
   power_supply: 'Power Supply';
   case: 'Case';
 }
@@ -55,9 +55,9 @@ export const PRODUCT_TYPE_NAMES: Record<keyof ProductTypeMapNames, string> = {
   cpu: 'CPU',
   cpu_cooler: 'CPU Cooler',
   gpu: 'GPU',
-  memory: 'Memory',
+  ram: 'RAM',
   motherboard: 'Motherboard',
-  internal_hard_drive: 'Internal Hard Drive',
+  storage: 'Storage',
   power_supply: 'Power Supply',
   case: 'Case',
 };
@@ -87,8 +87,8 @@ export const FrontendToBackendCategoryMap: Record<string, keyof ProductTypeMapId
   cpu: 'CPU',
   cpu_cooler: 'CPU_COOLER',
   motherboard: 'MOTHERBOARD',
-  memory: 'RAM',
-  internal_hard_drive: 'ROM',
+  ram: 'RAM',
+  storage: 'ROM',
   gpu: 'GPU',
   power_supply: 'PSU',
   case: 'CASE', 

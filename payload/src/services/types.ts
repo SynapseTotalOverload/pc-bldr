@@ -43,7 +43,6 @@ export interface Product {
     search?: string
   }
 
-// Types
 export interface BuildItem {
     id: number
     name: string
@@ -155,10 +154,8 @@ export interface ProductAttributes {
   brand: string
   model: string
   
-  // Опціональні поля специфічні для різних типів компонентів
   color?: string
   
-  // CPU специфічні
   architechture?: string
   base_speed?: number
   core_family?: string
@@ -172,13 +169,11 @@ export interface ProductAttributes {
   threads?: number
   turbo_speed?: number
   
-  // CPU Cooler специфічні
   fan_rpm_base?: number
   fan_rpm_max?: number
   noise_level_base?: number
   noise_level_max?: number
   
-  // GPU специфічні
   base_clock?: number
   chipset?: string
   clock_speed?: number
@@ -188,12 +183,10 @@ export interface ProductAttributes {
   mem_interface?: string
   memory?: number
   
-  // Motherboard специфічні
   form_factor?: string
   max_ram_support?: number
   ram_slots?: number
   
-  // RAM специфічні
   cas_latency?: string
   one_unit_memory?: number
   quantity?: number
@@ -201,16 +194,13 @@ export interface ProductAttributes {
   ram_type?: string
   total_memory?: number
   
-  // Storage специфічні
   cache_mem?: number
   capacity?: number
   mem_type?: string
   
-  // Power Supply специфічні
   efficiency?: string
   power?: number
   
-  // Case специфічні
   cabinet_type?: string
   side_panel?: string
 }

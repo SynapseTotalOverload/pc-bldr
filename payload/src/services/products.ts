@@ -21,15 +21,6 @@ export class ProductsService {
   async getProduct(product_id: number) {
     return apiService.getProduct(product_id)
   }
-
-
-  // /**
-  //  * Search products
-  //  */
-  // async searchProducts(query: string, params?: Omit<ProductsParams, 'search'>) {
-  //   return this.getProducts({ ...params, search: query })
-  // }
 }
 
-// Export singleton instance
 export const productsService = new ProductsService() 

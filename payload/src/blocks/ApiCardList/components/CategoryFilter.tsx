@@ -40,28 +40,10 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
   return (
     <div className="relative mb-8">
-      {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-purple-50/20 to-indigo-50/30 rounded-2xl " />
-      
-      {/* Title and decoration */}
-      <div className="relative z-10">
-        {/* <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg">
-            {cardType === 'product' ? (
-              <Package className="w-5 h-5 text-blue-600" />
-            ) : (
-              <Gamepad2 className="w-5 h-5 text-green-600" />
-            )}
-          </div>
-          <h3 className="text-lg font-bold text-gray-800">
-            {cardType === 'product' ? 'Product Categories' : 'Build Types'}
-          </h3>
-          <div className="flex-1 h-px bg-gradient-to-r from-gray-300 to-transparent" />
-        </div> */}
+        <div className="relative z-10">
 
-        {/* Filter buttons */}
         <div className="flex flex-wrap gap-3">
-          {/* All button */}
           <Button
             onClick={() => onCategoryChange(null)}
             variant={activeCategory === null ? 'default' : 'secondary'}
@@ -76,7 +58,6 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
             <span className="relative z-10 font-medium">All</span>
           </Button>
 
-          {/* Category buttons */}
           {categories.map((category) => {
             const IconComponent = category.icon
             const isActive = activeCategory === category.id
@@ -95,19 +76,15 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                     : 'bg-white/80 backdrop-blur-sm border border-gray-200/60 hover:border-gray-300 hover:shadow-md text-gray-700 hover:text-gray-900'
                 )}
               >
-                {/* Hover overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
-                {/* Icon */}
                 <IconComponent className={cn(
                   'w-4 h-4 relative z-10 transition-transform duration-300 group-hover:scale-110',
                   isActive ? 'text-white' : 'text-gray-600 group-hover:text-gray-800'
                 )} />
                 
-                {/* Text */}
                 <span className="relative z-10 font-medium">{category.name}</span>
                 
-                {/* Active indicator */}
                 {isActive && (
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-white rounded-full" />
                 )}

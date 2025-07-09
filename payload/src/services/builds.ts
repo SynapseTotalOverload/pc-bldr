@@ -18,7 +18,6 @@ export class BuildsService {
       ...(params?.search && { search: params.search }),
       ...(params?.build_type && params.build_type !== 'all' && { build_type: params.build_type }),
     }
-    // console.log("apiParams-----------------", apiParams)
     return apiService.getBuilds(apiParams)
   }
 
