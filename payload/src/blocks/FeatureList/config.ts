@@ -6,21 +6,21 @@ export const FeatureList: Block = {
     {
       name: 'title',
       type: 'text',
-      label: 'Заголовок секції',
+      label: 'Name of section',
     },
     {
       name: 'description',
       type: 'textarea',
-      label: 'Опис секції',
+      label: 'Description of section',
     },
     {
       name: 'layout',
       type: 'select',
       defaultValue: 'grid',
       options: [
-        { label: 'Сітка (Grid)', value: 'grid' },
-        { label: 'Список (List)', value: 'list' },
-        { label: 'Карточки (Cards)', value: 'cards' },
+        { label: 'Grid', value: 'grid' },
+        { label: 'List', value: 'list' },
+        { label: 'Cards', value: 'cards' },
       ],
     },
     {
@@ -28,10 +28,10 @@ export const FeatureList: Block = {
       type: 'select',
       defaultValue: '3',
       options: [
-        { label: '1 колонка', value: '1' },
-        { label: '2 колонки', value: '2' },
-        { label: '3 колонки', value: '3' },
-        { label: '4 колонки', value: '4' },
+        { label: '1 column', value: '1' },
+        { label: '2 columns', value: '2' },
+        { label: '3 columns', value: '3' },
+        { label: '4 columns', value: '4' },
       ],
       admin: {
         condition: (data) => data?.layout === 'grid',
@@ -40,7 +40,7 @@ export const FeatureList: Block = {
     {
       name: 'features',
       type: 'array',
-      label: 'Елементи списку',
+      label: 'List items',
       required: true,
       minRows: 1,
       maxRows: 12,
@@ -80,12 +80,12 @@ export const FeatureList: Block = {
             {
               name: 'url',
               type: 'text',
-              label: 'URL посилання',
+              label: 'URL link',
             },
             {
               name: 'text',
               type: 'text',
-              label: 'Текст посилання',
+              label: 'Text link',
             },
           ],
         },

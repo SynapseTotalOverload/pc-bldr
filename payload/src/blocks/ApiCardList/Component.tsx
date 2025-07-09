@@ -230,13 +230,10 @@ export const ApiCardListBlock: React.FC<Props> = ({
 
                   {showPagination && data.pagination.totalItems > itemsPerPage && (
                     <div className="relative mt-12">
-                      {/* Background decoration */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-gray-50/50 via-blue-50/30 to-gray-50/50 rounded-2xl" />
+                      <div className="absolute inset-0 from-gray-50/50 via-blue-50/30 to-gray-50/50 rounded-2xl" />
                       
                       <div className="relative z-10 p-6">
-                        {/* Pagination controls */}
                         <div className="flex items-center justify-center gap-4">
-                          {/* Previous button */}
                           <button
                             onClick={() => handlePageChange(page - 1)}
                             disabled={page === 1}
@@ -251,9 +248,7 @@ export const ApiCardListBlock: React.FC<Props> = ({
                             <span className="relative z-10 text-lg">←</span>
                           </button>
                           
-                          {/* Page numbers */}
                           <div className="flex items-center gap-2">
-                            {/* Show first page */}
                             {page > 3 && (
                               <>
                                 <button
@@ -266,7 +261,6 @@ export const ApiCardListBlock: React.FC<Props> = ({
                               </>
                             )}
                             
-                            {/* Show pages around current page */}
                             {Array.from({ length: Math.min(5, data.pagination.totalPages) }, (_, i) => {
                               const startPage = Math.max(1, page - 2)
                               const pageNum = startPage + i
@@ -291,7 +285,6 @@ export const ApiCardListBlock: React.FC<Props> = ({
                               )
                             })}
                             
-                            {/* Show last page */}
                             {page < data.pagination.totalPages - 2 && (
                               <>
                                 {page < data.pagination.totalPages - 3 && <span className="px-2 text-gray-400">...</span>}
@@ -305,7 +298,6 @@ export const ApiCardListBlock: React.FC<Props> = ({
                             )}
                           </div>
                           
-                          {/* Next button */}
                           <button
                             onClick={() => handlePageChange(page + 1)}
                             disabled={page === data.pagination.totalPages}

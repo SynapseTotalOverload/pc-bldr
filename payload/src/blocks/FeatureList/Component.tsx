@@ -77,7 +77,6 @@ const Icons = {
   ),
 }
 
-// Feature item component
 const FeatureItem: React.FC<{
   feature: {
     icon: string
@@ -162,7 +161,6 @@ const FeatureItem: React.FC<{
     )
   }
 
-  // Grid layout (default)
   return (
     <div className="text-center">
       <div className={cn('p-3 rounded-full inline-flex mb-4', iconBgClasses[backgroundColor as keyof typeof iconBgClasses])}>

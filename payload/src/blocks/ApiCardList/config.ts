@@ -80,10 +80,10 @@ export const ApiCardList: Block = {
         condition: (_, data) => data?.layout === 'grid',
       },
       options: [
-        { label: '1 колонка', value: '1' },
-        { label: '2 колонки', value: '2' },
-        { label: '3 колонки', value: '3' },
-        { label: '4 колонки', value: '4' },
+        { label: '1 column', value: '1' },
+        { label: '2 columns', value: '2' },
+        { label: '3 columns', value: '3' },
+        { label: '4 columns', value: '4' },
       ],
     },
     {
