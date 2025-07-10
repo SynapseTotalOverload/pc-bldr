@@ -47,7 +47,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: ./pc-bldr-be-main/
+        context: ./payload/
         push: true
         tags: ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
         cache-from: type=gha
