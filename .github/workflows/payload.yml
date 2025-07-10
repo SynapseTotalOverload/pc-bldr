@@ -86,7 +86,7 @@ jobs:
               --restart=always \
               -p 8000:8000 \
               -e PREVIEW_SECRET= \"$ESCAPED_PREVIEW_KEY\" \
-              -e PAYLOAD_SECRET=\"$ESCAPED_PAYLOAD_SECRET\" \
+              -e PAYLOAD_SECRET=\"$ESCAPED_PAYLOAD_SCRET\" \
               -e DATABASE_URI=\"$ESCAPED_MONGO_DSN\" \
               -e CRON_SECRET=\"$ESCAPED_CRON_SECRET\" \
               -e NEXT_PUBLIC_SERVER_URL=\"$PUBLIC_IP\" \
