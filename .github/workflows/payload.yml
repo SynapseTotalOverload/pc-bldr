@@ -1,0 +1,100 @@
+name: Payload CI/CD
+
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'payload/**'
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
+  GCP_INSTANCE_NAME: ${{ secrets.GCP_PAYLOAD_INSTANCE_NAME }}
+  GCP_INSTANCE_ZONE: ${{ secrets.GCP_PAYLOAD_INSTANCE_ZONE }}
+  IMAGE_NAME: payload
+  GCR_REGISTRY: gcr.io
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Auth to GCP
+    - name: Auth to GCP
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    # Setting GCP SDK
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+    # Auth to GCR
+    - name: Docker auth
+      run: gcloud auth configure-docker --quiet
+
+    # Build and push image
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./pc-bldr-be-main/
+        push: true
+        tags: ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        
+    # Deploy on instance
+    - name: Deploy to GCP instance
+      env:
+        MONGO_DSN: ${{ secrets.MONGO_DSN }}
+        PREVIEW_KEY: ${{ secrets.PREVIEW_KEY }}
+        CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+        
+      run: |
+        ESCAPED_PREVIEW_KEY=$(echo "$PREVIEW_KEY" | sed 's/"/\\"/g')
+        ESCAPED_MONGO_DSN=$(echo "$MONGO_DSN" | sed 's/"/\\"/g')
+        ESCAPED_CRON_SECRET=$(echo "$CRON_SECRET" | sed 's/"/\\"/g')
+        ESCAPED_PAYLOAD_SECRET=$(echo "$PAYLOAD_SECRET" | sed 's/"/\\"/g')
+
+
+        FULL_IMAGE_NAME="${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+
+        PUBLIC_IP="http://$(gcloud compute instances describe ${{ secrets.GCP_INSTANCE_NAME }} \
+          --zone=${{ secrets.GCP_INSTANCE_ZONE }} \
+          --format="get(networkInterfaces[0].accessConfigs[0].natIP)")/api/v1/"
+
+        gcloud compute ssh ${{ env.GCP_INSTANCE_NAME }} \
+          --zone ${{ env.GCP_INSTANCE_ZONE }} \
+          --tunnel-through-iap \
+          --command="
+            docker pull $FULL_IMAGE_NAME
+            docker stop ${{ env.IMAGE_NAME }} || true
+            docker rm ${{ env.IMAGE_NAME }} || true
+            docker run -d \
+              --name ${{ env.IMAGE_NAME }} \
+              --restart=always \
+              -p 8000:8000 \
+              -e PREVIEW_SECRET= \"$ESCAPED_PREVIEW_KEY\" \
+              -e PAYLOAD_SECRET=\"$ESCAPED_PAYLOAD_SECRET\" \
+              -e DATABASE_URI=\"$ESCAPED_MONGO_DSN\" \
+              -e CRON_SECRET=\"$ESCAPED_CRON_SECRET\" \
+              -e NEXT_PUBLIC_SERVER_URL=\"$PUBLIC_IP\" \
+              $FULL_IMAGE_NAME 
+            "
+       
+
+
+        
+    
+        echo "ip: $PUBLIC_IP:8000" 
