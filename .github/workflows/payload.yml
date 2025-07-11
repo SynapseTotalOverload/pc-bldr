@@ -12,6 +12,7 @@ env:
   GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
   GCP_INSTANCE_NAME: ${{ secrets.GCP_PAYLOAD_INSTANCE}}
   GCP_INSTANCE_ZONE: ${{ secrets.GCP_PAYLOAD_ZONE }}
+  ENV_PAYLOAD_BUILD: ${{ secrets.ENV_PAYLOAD_BUILD }}
   IMAGE_NAME: payload
   GCR_REGISTRY: gcr.io
 
@@ -45,7 +46,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
 
     - name: Set up enviroment variabled for build
-      run: echo "${{ secrets.ENV_PAYLOAD_BUILD }}" > ./payload/.env
+      run: echo "${{ env.ENV_PAYLOAD_BUILD }}" > ./payload/.env
 
     
     - name: Verify .env file
