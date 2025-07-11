@@ -47,7 +47,8 @@ jobs:
 
     - name: Set up enviroment variabled for build
     
-      run: echo "${{ secrets.ENV_PAYLOAD_BUILD }}" | base64 --decode > ./payload/.env
+      run: |
+        echo "${{ secrets.ENV_PAYLOAD_BUILD }}" | base64 --decode > ./payload/.env
 
     
     - name: Verify .env file
