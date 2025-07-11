@@ -46,7 +46,8 @@ jobs:
       uses: docker/setup-buildx-action@v3
 
     - name: Set up enviroment variabled for build
-      run: echo "${{ env.ENV_PAYLOAD_BUILD }}" > ./payload/.env
+    
+      run: echo "${{ secrets.ENV_PAYLOAD_BUILD }}" | base64 --decode > ./payload/.env
 
     
     - name: Verify .env file
