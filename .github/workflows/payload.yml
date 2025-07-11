@@ -47,6 +47,12 @@ jobs:
     - name: Set up enviroment variabled for build
       run: echo "$ENV_PAYLOAD_BUILD" > ./payload/.env
 
+    
+    - name: Verify .env file
+      run: |
+        ls -la ./payload/.env
+        cat ./payload/.env
+
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
