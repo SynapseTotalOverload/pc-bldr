@@ -98,7 +98,7 @@ jobs:
             sudo docker run -d \
               --name ${{ env.IMAGE_NAME }} \
               --restart=always \
-              -p 8000:8000 \
+              -p 3000:3000 \
               -e PREVIEW_SECRET=\"$ESCAPED_PREVIEW_KEY\" \
               -e PAYLOAD_SECRET=\"$ESCAPED_PAYLOAD_SECRET\" \
               -e DATABASE_URI=\"$ESCAPED_MONGO_DSN\" \
