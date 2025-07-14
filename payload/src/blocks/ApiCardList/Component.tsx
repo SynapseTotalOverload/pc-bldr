@@ -8,6 +8,7 @@ import { CategoryFilter } from './components/CategoryFilter'
 import { SearchInput } from './components/SearchInput'
 import { ProductCard } from './components/ProductCard'
 import { PriceFilter } from './components/PriceFilter'
+import { buildsService } from '@/services/builds'
 
 type Props = {
   className?: string
@@ -48,16 +49,25 @@ export const ApiCardListBlock: React.FC<Props> = ({
         setLoading(true)
         setError(null)
 
+
         let result: ApiResponse | null = null
 
         if (cardType === 'product') {
-          const currentCategoryId = activeCategory || category_id
-          const productResult = await productsService.getProducts({
-            category_id: typeof currentCategoryId === 'string' ? parseInt(currentCategoryId, 10) : currentCategoryId,
-            search: searchQuery,
-            page: page,
-            page_size: itemsPerPage
-          })
+          const searchParams = new URLSearchParams()
+
+          if(activeCategory || category_id) {
+            searchParams.append("category_id", activeCategory || category_id || '')
+          }
+          if(searchQuery) {
+            searchParams.append("query", searchQuery)
+          }
+          searchParams.append("page", page.toString())
+          searchParams.append("page_size", itemsPerPage.toString())
+          if(price_min && price_max) {
+            searchParams.append("price_min", price_min.toString())
+            searchParams.append("price_max", price_max.toString())
+          }
+          const productResult = await productsService.getProducts(searchParams.toString())
 
           result = productResult as ApiResponse
         } else if (cardType === 'builds') {
@@ -66,15 +76,19 @@ export const ApiCardListBlock: React.FC<Props> = ({
           if(build_type || activeCategory) {
             const buildTypeValue = build_type || activeCategory;
             if (buildTypeValue && buildTypeValue !== 'all') {
-              searchParams.append("skip",((page - 1) * itemsPerPage).toString())
+              const skip = ((page - 1) * itemsPerPage)
+              searchParams.append("skip", skip.toString())
               searchParams.append("limit",itemsPerPage.toString())
               searchParams.append("return_models","true")
               searchParams.append("build_type",buildTypeValue)
+              searchParams.append("show_in_site_only","true")
             }
           }else{
-            searchParams.append("skip",((page - 1) * itemsPerPage).toString())
+            const skip = ((page - 1) * itemsPerPage)
+            searchParams.append("skip", skip.toString())
             searchParams.append("limit",itemsPerPage.toString())
             searchParams.append("return_models","false")
+            searchParams.append("show_in_site_only","true")
           }
           if (searchQuery) {
             searchParams.append('query', searchQuery);
@@ -84,14 +98,7 @@ export const ApiCardListBlock: React.FC<Props> = ({
             searchParams.append("price_max",price_max.toString())
           }
 
-          const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:8000/api/v1'
-          const response = await fetch(`${apiUrl}builds?${searchParams.toString()}`)
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`)
-          }
-          
-          const buildsResult = await response.json()
+          const buildsResult = await buildsService.getBuilds(searchParams.toString())
 
           if (buildsResult.items && buildsResult.pagination) {
             result = {
@@ -132,18 +139,18 @@ export const ApiCardListBlock: React.FC<Props> = ({
 
   const handleCategoryChange = (category: string | null) => {
     setActiveCategory(category)
-    setPage(1)
+    // setPage(1)
   }
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
-    setPage(1)
+    // setPage(1)
   }
 
   const onPriceChange = (min: number, max: number) => {
     setPriceMin(min)
     setPriceMax(max)
-    setPage(1)
+    // setPage(1)
   }
 
   const handlePageChange = (newPage: number) => {
@@ -190,7 +197,9 @@ export const ApiCardListBlock: React.FC<Props> = ({
           
           <div className="space-y-6">
             <SearchInput onSearch={handleSearch} />
+
             <PriceFilter onPriceChange={onPriceChange} />
+            
             
             {shouldShowFilter && (
               <CategoryFilter

@@ -20,8 +20,12 @@ import {
 } from '@/components/ui/select';
 import { useProducts } from '@/hooks/useProducts';
 import { SearchPrice } from '@/components/ui/search-price';
+import { useRouter } from 'next/navigation';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 export default function Builds() {
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [buildType, setBuildType] = useState<string>('');
@@ -33,6 +37,7 @@ export default function Builds() {
   const [viewingBuild, setViewingBuild] = useState<BuildRead | null>(null);
   const [priceMin, setPriceMin] = useState<number>(0);
   const [priceMax, setPriceMax] = useState<number>(1000000);
+  const [showInSiteOnly, setShowInSiteOnly] = useState<boolean>(false);
 
   const { builds, pagination, loading, error, refetch, refetchWithOptions } = useBuilds({
     page,
@@ -42,6 +47,7 @@ export default function Builds() {
     autoFetchOnSearchChange: false, 
     price_min: priceMin || undefined,
     price_max: priceMax || undefined,
+    show_in_site_only: showInSiteOnly,
   });
 
 
@@ -77,6 +83,7 @@ export default function Builds() {
       buildType: buildType || undefined,
       price_min: priceMin,
       price_max: priceMax,
+      show_in_site_only: showInSiteOnly,
     };
 
     setSearch(value);
@@ -93,6 +100,7 @@ export default function Builds() {
       page: 1,
       search: search || undefined,
       buildType: buildType || undefined,
+      show_in_site_only: showInSiteOnly,
     };
 
     setPriceMin(from);
@@ -108,9 +116,25 @@ export default function Builds() {
       search: search || undefined,
       price_min: priceMin,
       price_max: priceMax,
+      show_in_site_only: showInSiteOnly,
     };
 
     setBuildType(newBuildType || '');
+    setPage(1);
+    refetchWithOptions(queryParams);
+  };
+
+  const handleShowInSiteOnlyChange = (checked: boolean) => {
+    const queryParams = {
+      show_in_site_only: checked,
+      page: 1,
+      search: search || undefined,
+      buildType: buildType || undefined,
+      price_min: priceMin,
+      price_max: priceMax,
+    };
+
+    setShowInSiteOnly(checked);
     setPage(1);
     refetchWithOptions(queryParams);
   };
@@ -123,6 +147,7 @@ export default function Builds() {
       buildType: buildType || undefined,
       price_min: priceMin || undefined,
       price_max: priceMax || undefined,
+      show_in_site_only: showInSiteOnly,
     };
     
     setPage(newPage);
@@ -146,6 +171,10 @@ export default function Builds() {
     );
   }
 
+  useEffect(() => {
+    console.log(builds)
+  }, [builds]);
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -153,10 +182,35 @@ export default function Builds() {
           <h1 className="text-3xl font-bold">PC Builds</h1>
           <p className="text-muted-foreground">Manage your PC builds and configurations</p>
         </div>
-        <Button onClick={handleCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          Create Build
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="show-in-site-only"
+              checked={showInSiteOnly}
+              onCheckedChange={handleShowInSiteOnlyChange}
+            />
+            <Label htmlFor="show-in-site-only" className="text-sm font-normal">
+              Show only site builds
+            </Label>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="default"
+              className="cursor-pointer"
+              onClick={() => router.push('/configurator')}
+            >
+              Configurator Builds
+            </Button>
+            <Button 
+              variant="default"
+              className="cursor-pointer"
+              onClick={handleCreate}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Create Build
+            </Button>
+          </div>
+        </div>
       </div>
 
       <DataTable
@@ -168,10 +222,12 @@ export default function Builds() {
         onSearchChange={handleSearch}
         onSearchPrice={handleSearchPrice}
         onBuildTypeChange={handleBuildTypeChange}
+        showFilter={true}
         pagination={{
           total: pagination.total,
           totalPages: pagination.totalPages,
           currentPage: pagination.currentPage,
+          itemsPerPage: 10,
         }}
         onPageChange={handlePageChange}
         renderActions={() => (

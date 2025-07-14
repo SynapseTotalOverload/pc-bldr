@@ -2416,7 +2416,7 @@ export interface BuildComponents {
  */
 export interface Product {
   id: string;
-  blocks?: (ProductInfo | ProductReviews | ProductAttributes)[] | null;
+  blocks?: (ProductInfo | ProductReviews | ProductAttributes | ProductImage)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2439,6 +2439,10 @@ export interface ProductInfo {
    * Show stock status
    */
   showStock?: boolean | null;
+  /**
+   * Show product image
+   */
+  showImage?: boolean | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'productInfo';
@@ -2470,6 +2474,20 @@ export interface ProductAttributes {
   id?: string | null;
   blockName?: string | null;
   blockType: 'productAttributes';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductImage".
+ */
+export interface ProductImage {
+  heading?: string | null;
+  /**
+   * Choose the display size for the product image
+   */
+  imageSize?: ('small' | 'medium' | 'large') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'productImage';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2569,6 +2587,7 @@ export interface ProductSelect<T extends boolean = true> {
         productInfo?: T | ProductInfoSelect<T>;
         productReviews?: T | ProductReviewsSelect<T>;
         productAttributes?: T | ProductAttributesSelect<T>;
+        productImage?: T | ProductImageSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -2584,6 +2603,7 @@ export interface ProductInfoSelect<T extends boolean = true> {
   showCategory?: T;
   showPrice?: T;
   showStock?: T;
+  showImage?: T;
   id?: T;
   blockName?: T;
 }
@@ -2604,6 +2624,16 @@ export interface ProductReviewsSelect<T extends boolean = true> {
  */
 export interface ProductAttributesSelect<T extends boolean = true> {
   heading?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductImage_select".
+ */
+export interface ProductImageSelect<T extends boolean = true> {
+  heading?: T;
+  imageSize?: T;
   id?: T;
   blockName?: T;
 }

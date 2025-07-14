@@ -5,13 +5,17 @@ export class ProductsService {
   /**
    * Get products with category filtering
    */
-  async getProducts(params?: ProductsParams) {    
-    const apiParams: ApiParams = {
-      ...params,
-      ...(params?.search && { query: params.search }),
-    }
+  // async getProducts(params?: ProductsParams) {    
+  //   const apiParams: ApiParams = {
+  //     ...params,
+  //     ...(params?.search && { query: params.search }),
+  //   }
 
-    return apiService.getProducts(apiParams)
+  //   return apiService.getProducts(apiParams)
+  // }
+
+  async getProducts(params: string) {    
+    return apiService.getProducts(params)
   }
 
 

@@ -1,5 +1,5 @@
 export type UseCase = {
-  key: 'workstation' | 'gaming' | 'office';
+  key: 'workstation' | 'gaming' | 'office' | 'budget' | 'high-end';
   label: string;
   desc: string;
   icon: string;

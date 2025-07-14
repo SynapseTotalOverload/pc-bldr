@@ -2,16 +2,21 @@ version: '3'
 
 services:
   payload:
-    image: node:18-alpine
+    image: node:20-alpine
     ports:
       - '3000:3000'
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
     working_dir: /home/node/app/
-    command: sh -c "yarn install && yarn dev"
+    command: sh -c "corepack enable pnpm && pnpm install && pnpm dev"
     depends_on:
       - mongo
+    environment:
+      - DATABASE_URI=mongodb://mongo:27017/payload
+      - PAYLOAD_SECRET=your-secret-key
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+      - NODE_OPTIONS=--no-deprecation
     env_file:
       - .env
 

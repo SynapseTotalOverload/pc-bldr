@@ -22,7 +22,6 @@ export const BUILD_TYPES = [
   { id: 'workstation', name: 'Workstation', slug: 'workstation', icon: Wrench },
   { id: 'budget', name: 'Budget', slug: 'budget', icon: DollarSign },
   { id: 'high-end', name: 'High-end', slug: 'high-end', icon: Crown },
-  { id: 'other', name: 'Other', slug: 'other', icon: MoreHorizontal }
 ]
 
 type CategoryFilterProps = {

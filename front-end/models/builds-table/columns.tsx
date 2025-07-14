@@ -22,6 +22,16 @@ export const createBuildColumns = ({ onEdit, onDelete, onView }: BuildColumnsPro
   {
     accessorKey: 'name',
     header: 'Name',
+    cell: ({ row }) => {
+      const name = row.getValue('name') as string;
+      const showInSite = row.original.show_in_site;
+      
+      return (
+        <span className={showInSite ? 'text-green-600 font-medium' : ''}>
+          {name}
+        </span>
+      );
+    },
   },
   {
     accessorKey: 'build_type',

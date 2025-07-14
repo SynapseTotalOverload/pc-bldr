@@ -1,5 +1,7 @@
 export interface Product {
   id: number
+  high_image_url?: string
+  low_image_url?: string
   price: number
   rating: number
   title: string
@@ -111,6 +113,8 @@ export interface BuildItem {
     build_type?: string
     return_models?: string
     query?: string
+    price_min?: number
+    price_max?: number
   }
 
 // Base API params

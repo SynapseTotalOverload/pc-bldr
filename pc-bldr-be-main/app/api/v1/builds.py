@@ -52,6 +52,10 @@ def read_builds(
         None, 
         ge=0, 
         description="Maximum price in USD"
+    ),
+    show_in_site_only: bool = Query(
+        False, 
+        description="Show in site"
     )
 ) -> BuildListWithPagination:
     """
@@ -65,7 +69,8 @@ def read_builds(
         return_models=return_models,
         query=query,
         price_min=price_min,
-        price_max=price_max
+        price_max=price_max,
+        show_in_site_only=show_in_site_only
     )
     
     items = [BuildRead.from_orm_with_attrs(build, return_models=return_models) for build in builds]

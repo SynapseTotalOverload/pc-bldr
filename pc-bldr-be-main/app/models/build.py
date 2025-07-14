@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, text
+from sqlalchemy import Boolean, Column, Integer, String, DateTime, Float, ForeignKey, text
 from sqlalchemy.orm import relationship, Mapped
 from app.db.base import Base
 
@@ -11,6 +11,7 @@ class Build(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     build_type = Column(String, nullable=True)  # gaming, office, etc.
+    build_cost = Column(Float, nullable=True)
     build_price = Column(Float, nullable=True)
     
     # Foreign keys to products (nullable)
@@ -22,6 +23,7 @@ class Build(Base):
     storage_id = Column(Integer, ForeignKey("product.id", ondelete="SET NULL"), nullable=True)
     psu_id = Column(Integer, ForeignKey("product.id", ondelete="SET NULL"), nullable=True)
     case_id = Column(Integer, ForeignKey("product.id", ondelete="SET NULL"), nullable=True)
+    show_in_site = Column(Boolean, default=True)
     
     # Relationships to products
     cpu: Mapped["Product"] = relationship("Product", foreign_keys=[cpu_id], lazy="joined")

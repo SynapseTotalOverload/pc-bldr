@@ -143,6 +143,7 @@ export interface BuildRead{
   id: number;
   created_at: string; // ISO string from `datetime`
   updated_at: string; // ISO string from `datetime`
+  show_in_site: boolean;
 }
 
 

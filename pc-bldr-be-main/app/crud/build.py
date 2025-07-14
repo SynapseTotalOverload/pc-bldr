@@ -55,7 +55,7 @@ class CRUDBuild:
         
         return True
 
-    def _calculate_build_price(self, build: Build) -> float:
+    def _calculate_build_cost(self, build: Build) -> float:
         """Calculate total price of all components in the build"""
         total_price = 0.0
         component_mapping = self._get_component_mapping(build)
@@ -88,8 +88,8 @@ class CRUDBuild:
                 )
         
         # Calculate and set build price if not provided
-        if db_obj.build_price is None:
-            db_obj.build_price = self._calculate_build_price(db_obj)
+        if db_obj.build_cost is None:
+            db_obj.build_cost = self._calculate_build_cost(db_obj)
         
         db.commit()
         db.refresh(db_obj)
@@ -110,6 +110,7 @@ class CRUDBuild:
         query: str = None,
         price_min: int | None = None,
         price_max: int | None = None,
+        show_in_site_only: bool = False,
     ) -> tuple[List[Build], int]:
         """Get multiple builds with pagination"""
         # Get total count
@@ -121,7 +122,6 @@ class CRUDBuild:
             count_stmt = count_stmt.where(Build.name.ilike(f"%{query}%"))
         if build_type:
             count_stmt = count_stmt.where(Build.build_type == build_type)
-        total = db.scalar(count_stmt)
         
         # Get builds with pagination
         stmt = (
@@ -139,6 +139,9 @@ class CRUDBuild:
         if price_max:
             stmt = stmt.where(Build.build_price <= price_max)
             count_stmt = count_stmt.where(Build.build_price <= price_max)
+        if show_in_site_only:
+            stmt = stmt.where(Build.show_in_site==True)
+            count_stmt = count_stmt.where(Build.show_in_site==True)
         if return_models:
             stmt = stmt.options(
                 joinedload(Build.cpu), 
@@ -151,6 +154,7 @@ class CRUDBuild:
                 joinedload(Build.case)
             )
         builds = db.scalars(stmt.order_by(Build.updated_at.desc())).all()
+        total = db.scalar(count_stmt)
         
         return builds, total
 
@@ -175,10 +179,10 @@ class CRUDBuild:
                 joinedload(Build.ram),
                 joinedload(Build.storage),
                 joinedload(Build.psu),
-                joinedload(Build.case)
+                joinedload(Build.case),
             )
+            .where(Build.show_in_site==True)
         )
-        
         if build_type:
             stmt = stmt.where(Build.build_type == build_type)
         
@@ -205,7 +209,7 @@ class CRUDBuild:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Selected components are not compatible with each other"
             )
-        db_obj.build_price = self._calculate_build_price(db_obj)
+        db_obj.build_cost = self._calculate_build_cost(db_obj)
         
         db_obj.updated_at = datetime.now(timezone.utc)
         db.commit()

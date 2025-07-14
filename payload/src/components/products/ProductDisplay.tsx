@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ProductAttributes, Product } from '@/services/types'
 import { useEffect } from 'react'
 import { Attributes } from './components/Attributes'
+import ImgProduct from './components/ImgProdut'
 
 interface ProductDisplayProps {
   data: Product
@@ -116,7 +117,35 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
                           <p className="text-sm text-muted-foreground">Price</p>
                           <p className="font-medium text-green-600">{formatPrice(data.price)}</p>
                         </div>
-                      )}
+                      )} 
+                    </div>
+                    {block.showImage && (data.high_image_url || data.low_image_url) && (
+                      <div className="mt-4">
+                        <ImgProduct src={data.high_image_url || data.low_image_url} />
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )
+            case 'productImage':
+              if (!data.high_image_url && !data.low_image_url) return null
+              const imageSizeClass = {
+                small: 'max-w-sm',
+                medium: 'max-w-md',
+                large: 'max-w-2xl'
+              }[(block.imageSize as 'small' | 'medium' | 'large') || 'medium']
+              
+              return (
+                <Card key={index} className="mb-6">
+                  <CardHeader>
+                    <CardTitle>{block.heading || 'Product Image'}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className={`mx-auto ${imageSizeClass}`}>
+                      <ImgProduct 
+                        src={data.high_image_url || data.low_image_url} 
+                        alt={data.title}
+                      />
                     </div>
                   </CardContent>
                 </Card>

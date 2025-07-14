@@ -58,7 +58,7 @@ def actualize_data():
                     cur_prod_state = keepa_prod["stats_parsed"].get("current")
                     if cur_prod_state:
                         prod_rate = round(cur_prod_state.get("RATING", float(0)), 1) or None
-                        prod_price: float = (
+                        prod_price: into = (
                             cur_prod_state.get("AMAZON") or 
                             cur_prod_state.get("NEW") or 
                             cur_prod_state.get("USED") or
@@ -91,7 +91,7 @@ def actualize_data():
             logger.info("Data actualization process completed successfully")
             
         except Exception as e:
-            db.rollback()
+            db.rollbackproducts
             logger.error(f"Critical error while processing categories from keepa: {e}")
             raise
 

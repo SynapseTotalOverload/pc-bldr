@@ -57,11 +57,14 @@ export const Testimonial19Component: React.FC<Testimonial19Props & Testimonial19
     }),
   );
 
-  const getImageSrc = (media?: any): string => {
+  const getImageSrc = (media?: any): string | undefined => {
     if (media && typeof media === 'object' && 'url' in media) {
-      return media.url || '';
+      return media.url || undefined;
     }
-    return media || '';
+    if (typeof media === 'string' && media.trim() !== '') {
+      return media;
+    }
+    return undefined;
   };
 
   const getLinkUrl = (): string => {

@@ -51,6 +51,14 @@ export const Product: GlobalConfig = {
               admin: {
                 description: 'Show stock status'
               }
+            },
+            {
+              name: 'showImage',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show product image'
+              }
             }
           ]
         },
@@ -92,6 +100,40 @@ export const Product: GlobalConfig = {
               type: 'text',
               defaultValue: 'Attributes'
             },
+          ]
+        },
+        {
+          slug: 'productImage',
+          imageAltText: 'Product Image Block',
+          interfaceName: 'ProductImage',
+          fields: [
+            {
+              name: 'heading',
+              type: 'text',
+              defaultValue: 'Product Image'
+            },
+            {
+              name: 'imageSize',
+              type: 'select',
+              defaultValue: 'medium',
+              options: [
+                {
+                  label: 'Small',
+                  value: 'small'
+                },
+                {
+                  label: 'Medium',
+                  value: 'medium'
+                },
+                {
+                  label: 'Large',
+                  value: 'large'
+                }
+              ],
+              admin: {
+                description: 'Choose the display size for the product image'
+              }
+            }
           ]
         }
       ]

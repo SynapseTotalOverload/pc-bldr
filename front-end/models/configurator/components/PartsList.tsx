@@ -1,11 +1,13 @@
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-
+import { useEffect } from 'react';
 import { FrontendToBackendCategoryIdMap, ProductRead } from '@/types/prodcuts-base';
 
 export function PartsList({ parts, loading, error }: { parts: ProductRead[]; loading: boolean; error: string | null }) {
  
-
+  useEffect(() => {
+    console.log(parts);
+  }, [parts]);
  
   return (
    <Card className="h-fit w-full max-w-xl p-6">

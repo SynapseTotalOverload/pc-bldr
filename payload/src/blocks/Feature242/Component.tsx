@@ -131,11 +131,13 @@ export const Feature242Component: React.FC<Feature242Props & Feature242Block> = 
                         </Button>
                       </a>
                     </div>
-                    <img
-                      className="absolute w-full opacity-100 transition-all ease-in-out group-hover:scale-90 group-hover:opacity-60"
-                      src={getImageSrc(item)}
-                      alt={item.title}
-                    />
+                    {getImageSrc(item) && getImageSrc(item).trim() !== '' && (
+                      <img
+                        className="absolute w-full opacity-100 transition-all ease-in-out group-hover:scale-90 group-hover:opacity-60"
+                        src={getImageSrc(item)}
+                        alt={item.title}
+                      />
+                    )}
                   </div>
                 </CarouselItem>
               ))}

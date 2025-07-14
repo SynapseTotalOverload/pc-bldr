@@ -30,7 +30,6 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   try {
     const { id } = await paramsPromise
     const productResponse = await productsService.getProduct(parseInt(id))
-    // Handle ApiResponse structure - extract product from response
     const productData = productResponse.data?.[0] || productResponse as ServiceProduct
     
     return {
@@ -57,7 +56,6 @@ const ProductPageComponent = async ({ params: paramsPromise }: Args) => {
     // Handle ApiResponse structure - extract product from response
     const productData = productResponse.data?.[0] || productResponse as ServiceProduct
     
-    console.log('productData', productData)
     return <ProductDisplay data={productData} template={productConfig} />
   } catch (error) {
     console.error('Error loading product page:', error)

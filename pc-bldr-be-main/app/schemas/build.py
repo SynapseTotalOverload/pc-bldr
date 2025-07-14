@@ -10,6 +10,7 @@ class BuildBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     build_type: Annotated[Optional[BuildTypeEnum], Field(None, description="The type of build")] = None
     build_price: Optional[float] = None
+    show_in_site: Optional[bool] = None
     
     # Component IDs (nullable)
     cpu: Optional[int|ProductRead] = None
@@ -52,6 +53,7 @@ class BuildCreate(BaseModel):
     storage_id: Optional[int] = None
     psu_id: Optional[int] = None
     case_id: Optional[int] = None
+    show_in_site: Optional[bool] = None
 
     @field_validator('build_price')
     @classmethod
@@ -82,6 +84,7 @@ class BuildUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     build_type: Annotated[Optional[BuildTypeEnum], Field(None, description="The type of build")] = None
     build_price: Optional[float] = None
+    show_in_site: Optional[bool] = None
     
     # Component IDs (nullable)
     cpu_id: Optional[int] = None

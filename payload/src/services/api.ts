@@ -35,7 +35,6 @@ export class ApiService {
    */
   async postData<T = any>(endpoint: string, body: any): Promise<ApiResponse<T>> {
     const url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint}`;
-    console.log('POST to:', url, 'body:', body)
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -121,31 +120,27 @@ export class ApiService {
   /**
    * Get products with optional filtering (POST)
    */
-  async getProducts(params?: ApiParams) {
-    const body: any = {
-      selected_components: params?.selected_components || {},
-      page: params?.page || 1,
-      page_size: params?.page_size || 20,
-      category_id: params?.category_id,
-    };
-    if (params?.query) body.query = params.query;
-    if (params?.budget) body.budget = params.budget;
-    console.log('ApiService.getProducts POST body:', body)
-    return this.postData('products/compatible', body);
+  // async getProducts(params?: ApiParams) {
+  //   const body: any = {
+  //     selected_components: params?.selected_components || {},
+  //     page: params?.page || 1,
+  //     page_size: params?.page_size || 20,
+  //     category_id: params?.category_id,
+  //   };
+  //   if (params?.query) body.query = params.query;
+  //   if (params?.budget) body.budget = params.budget;
+  //   return this.postData('products/compatible', body);
+  // }
+
+  async getProducts(params: string) {
+    return this.fetchData(`products?${params}`);
   }
 
   /**
    * Get builds with optional filtering (GET)
    */
-  async getBuilds(params?: ApiParams) {
-    const body: any = {
-        selected_components: params?.selected_components || {},
-        page: params?.page || 1,
-        page_size: params?.page_size || 20,
-      };
-
-    console.log('ApiService.getBuilds GET params:', params)
-    return this.fetchData('builds', params)
+  async getBuilds(params: string) {
+    return this.fetchData(`builds?${params}`)
   }
 
   async getBuild(id: number) {

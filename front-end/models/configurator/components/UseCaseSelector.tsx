@@ -11,7 +11,7 @@ export function UseCaseSelector({ selectedUseCase, onUseCaseChange }: UseCaseSel
   return (
     <Card className="w-full max-w-xl p-6">
       <div className="mb-2 text-lg font-semibold">Use Case</div>
-      <div className="flex gap-4">
+      <div className="grid grid-cols-3 gap-4">
         {USE_CASES.map((uc) => (
           <button
             key={uc.key}

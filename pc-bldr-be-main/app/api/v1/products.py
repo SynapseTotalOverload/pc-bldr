@@ -101,9 +101,21 @@ def list_products(
         ge=0, 
         description="Maximum price in USD"
     ),
+    query: str | None = Query(
+        None, 
+        description="Search query"
+    ),
     db: Session = Depends(get_db),
 ):
-    items, count = product_crud.get_multi(db, page=page, page_size=page_size, category_id=category_id, price_min=price_min, price_max=price_max)
+    items, count = product_crud.get_multi(
+        db, 
+        page=page, 
+        page_size=page_size, 
+        category_id=category_id, 
+        price_min=price_min, 
+        price_max=price_max, 
+        query=query
+    )
     items = [ProductRead.from_orm_with_attrs(i) for i in items]
     pagination = PaginationSchema(
         currentPage=page,

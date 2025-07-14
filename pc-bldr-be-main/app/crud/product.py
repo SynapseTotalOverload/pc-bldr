@@ -136,7 +136,17 @@ class CRUDProduct:
     def get_by_asin(self, db: Session, asin: str):
         return db.scalar(select(Product).where(Product.asin == asin).options(*self._get_joinedload_attrs_option()))
 
-    def get_multi(self, db: Session, *, page: int = 1, page_size: int = 20, category_id: int | None = None, price_min: int | None = None, price_max: int | None = None):
+    def get_multi(
+            self, 
+            db: Session, 
+            *, 
+            page: int = 1, 
+            page_size: int = 20, 
+            category_id: int | None = None, 
+            price_min: int | None = None, 
+            price_max: int | None = None, 
+            query: str | None = None
+        ):
         stmt = (
             select(Product)
             .offset((page - 1) * page_size)
@@ -157,6 +167,9 @@ class CRUDProduct:
         if price_max:
             stmt = stmt.where(Product.price <= price_max)
             count_stmt = count_stmt.where(Product.price <= price_max)
+        if query:
+            stmt = stmt.where(Product.title.ilike(f"%{query}%"))
+            count_stmt = count_stmt.where(Product.title.ilike(f"%{query}%"))
         total = db.scalar(count_stmt)
         return db.scalars(stmt.order_by(Product.updated_at.desc())).all(), total
 

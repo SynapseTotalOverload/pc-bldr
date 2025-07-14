@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { BuildRead, ProductRead } from '@/types/prodcuts-base';
 import { useBuild } from '@/hooks/useBuilds';
 import { useToast } from '@/hooks/use-toast';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useSelectCpu } from '@/hooks/select/use-select-cpu';
 import { useSelectCpuCooler } from '@/hooks/select/use-select-cpu-cooler';
 import { useSelectMotherboard } from '@/hooks/select/use-select-motherboard';
@@ -46,6 +47,7 @@ export function BuildDialog({ open, onOpenChange, build, onSuccess }: BuildDialo
     power_supply_id: '',
     case_id: '',
     video_card_id: '',
+    show_in_site: true,
   });
 
   // Create selected components object for compatibility filtering
@@ -168,6 +170,7 @@ export function BuildDialog({ open, onOpenChange, build, onSuccess }: BuildDialo
         power_supply_id: build.psu?.id?.toString() || 'none',
         case_id: build.case?.id?.toString() || 'none',
         video_card_id: build.gpu?.id?.toString() || 'none',
+        show_in_site: build.show_in_site ?? true,
       });
     } else {
       setFormData({
@@ -182,6 +185,7 @@ export function BuildDialog({ open, onOpenChange, build, onSuccess }: BuildDialo
         power_supply_id: 'none',
         case_id: 'none',
         video_card_id: 'none',
+        show_in_site: true,
       });
     }
     setErrors({});
@@ -226,7 +230,8 @@ export function BuildDialog({ open, onOpenChange, build, onSuccess }: BuildDialo
         "ram_id": (formData.memory_id && formData.memory_id !== 'none') ? parseInt(formData.memory_id) : null,
         "storage_id": (formData.storage_id && formData.storage_id !== 'none') ? parseInt(formData.storage_id) : null,
         "psu_id": (formData.power_supply_id && formData.power_supply_id !== 'none') ? parseInt(formData.power_supply_id) : null,
-        "case_id": (formData.case_id && formData.case_id !== 'none') ? parseInt(formData.case_id) : null
+        "case_id": (formData.case_id && formData.case_id !== 'none') ? parseInt(formData.case_id) : null,
+        ...(isEditing && { "show_in_site": formData.show_in_site })
       };
 
       console.log("submitData", submitData);
@@ -474,6 +479,29 @@ export function BuildDialog({ open, onOpenChange, build, onSuccess }: BuildDialo
                 {errors.build_price && <p className="mt-1 text-sm text-red-500">{errors.build_price}</p>}
               </div>
             </div>
+
+            {/* Show in Site checkbox - only visible during edit mode */}
+            {isEditing && (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="show_in_site" className="text-right">
+                  Show on Site
+                </Label>
+                <div className="col-span-3">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="show_in_site"
+                      checked={formData.show_in_site}
+                      onCheckedChange={(checked) => {
+                        setFormData((prev) => ({ ...prev, show_in_site: checked as boolean }));
+                      }}
+                    />
+                    <Label htmlFor="show_in_site" className="text-sm font-normal">
+                      Display this build on the public website
+                    </Label>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

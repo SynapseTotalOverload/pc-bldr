@@ -1,9 +1,11 @@
 import { BudgetTier, UseCase } from './types';
 
 export const USE_CASES: UseCase[] = [
-  { key: 'workstation', label: 'Workstation', desc: 'Content creation & rendering', icon: '💼' },
-  { key: 'gaming', label: 'Gaming', desc: 'High FPS gaming & VR', icon: '🎮' },
+  { key: 'budget', label: 'Budget', desc: 'Best value for money', icon: '💰' },
   { key: 'office', label: 'Office', desc: 'Productivity & web browsing', icon: '📊' },
+  { key: 'gaming', label: 'Gaming', desc: 'High FPS gaming & VR', icon: '🎮' },
+  { key: 'workstation', label: 'Workstation', desc: 'Content creation & rendering', icon: '💼' },
+  { key: 'high-end', label: 'High-End', desc: 'Top performance & premium parts', icon: '🚀' },
 ];
 
 export const BUDGET_TIERS: BudgetTier[] = [

@@ -68,13 +68,17 @@ export const Feature157Component: React.FC<Feature157Props & Feature157Block> = 
             const linkUrl = getLinkUrl(card);
             const openInNewTab = shouldOpenInNewTab(card);
             
+            const imageSrc = getImageSrc(card);
+            
             const CardContent = (
               <>
-                <img
-                  src={getImageSrc(card)}
-                  alt={card.title}
-                  className="mb-6 aspect-[1.5] w-full rounded-2xl object-cover"
-                />
+                {imageSrc && imageSrc.trim() !== '' && (
+                  <img
+                    src={imageSrc}
+                    alt={card.title}
+                    className="mb-6 aspect-[1.5] w-full rounded-2xl object-cover"
+                  />
+                )}
                 <div className="mb-2 text-2xl font-semibold">{card.title}</div>
                 <div>{card.description}</div>
               </>

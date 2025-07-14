@@ -36,10 +36,12 @@ interface DataTableProps<TData, TValue> {
   onBuildTypeChange?: (buildType: string | null) => void;
   onSearchChange?: (value: string) => void;
   renderActions?: () => React.ReactNode;
+  showFilter?: boolean;
   pagination: {
     total: number;
     totalPages: number;
     currentPage: number;
+    itemsPerPage?: number;
   };
   onPageChange: (page: number) => void;
 }
@@ -54,6 +56,7 @@ export function DataTable<TData, TValue>({
   onBuildTypeChange,
   onSearchChange,
   renderActions,
+  showFilter = false,
   pagination,
   onPageChange,
 }: DataTableProps<TData, TValue>) {
@@ -121,15 +124,19 @@ export function DataTable<TData, TValue>({
                 <Search className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
               </Button>
             </div>
-            <div className="pl-6">
-              <SearchPrice onSearch={onSearchPrice || (() => {})} />
-            </div>
+            {showFilter && (
+              <div className="pl-6">
+                <SearchPrice onSearch={onSearchPrice || (() => {})} />
+              </div>
+            )}
           </>
         )}
         {renderActions && renderActions()}
-                 <div className="relative">
-           <SelectBuildType onBuildTypeChange={onBuildTypeChange || (() => {console.log("build type changed")})} />
-        </div>
+        {showFilter && (
+          <div className="relative">
+            <SelectBuildType onBuildTypeChange={onBuildTypeChange || (() => {console.log("build type changed")})} />
+          </div>
+        )}
         
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -156,7 +163,7 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border ">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -192,9 +199,17 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="text-muted-foreground flex-1 text-sm">
-          Showing {data.length} of {pagination.total} results
+          {(() => {
+            if (pagination.total === 0) return 'Showing 0 results';
+            
+            const itemsPerPage = pagination.itemsPerPage || data.length;
+            const skip = (pagination.currentPage - 1) * itemsPerPage;
+            const start = skip + 1;
+            const end = Math.min(skip + data.length, pagination.total);
+            
+            return `Showing ${end} of ${pagination.total} results`;
+          })()}
         </div>
-        <div className="flex items-center space-x-2">
           {pagination.totalPages > 1 && (
             <>
               <Button
@@ -211,12 +226,10 @@ export function DataTable<TData, TValue>({
                   const totalPages = pagination.totalPages;
                   const currentPage = pagination.currentPage;
 
-                  // Don't show pagination if there's only one page or no pages
                   if (totalPages <= 1) {
                     return null;
                   }
 
-                  // Always show first page
                   pages.push(
                     <Button
                       key={1}
@@ -228,16 +241,13 @@ export function DataTable<TData, TValue>({
                     </Button>,
                   );
 
-                  // Calculate start and end of page range
                   const start = Math.max(2, currentPage - 1);
                   const end = Math.min(totalPages - 1, currentPage + 1);
 
-                  // Add ellipsis after first page if needed
                   if (start > 2) {
                     pages.push(<span key="ellipsis1">...</span>);
                   }
 
-                  // Add middle pages
                   for (let i = start; i <= end; i++) {
                     pages.push(
                       <Button
@@ -251,12 +261,10 @@ export function DataTable<TData, TValue>({
                     );
                   }
 
-                  // Add ellipsis before last page if needed
                   if (end < totalPages - 1) {
                     pages.push(<span key="ellipsis2">...</span>);
                   }
 
-                  // Always show last page if there is more than one page
                   if (totalPages > 1) {
                     pages.push(
                       <Button
@@ -283,8 +291,7 @@ export function DataTable<TData, TValue>({
               </Button>
             </>
           )}
-        </div>
-      </div> 
+      </div>
     </Card>
   );
 }
