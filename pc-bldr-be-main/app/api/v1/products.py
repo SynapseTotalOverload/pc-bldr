@@ -29,7 +29,8 @@ def get_compatible_products(
         "category_id": 1,
         "page": 1,
         "page_size": 20,
-        "budget": 1000
+        "budget": 1000,
+        "query": "Ryzen 5 5600X",
     }
     """
     items, count = product_crud.get_compatible(
@@ -90,9 +91,19 @@ def list_products(
             "8 - Case;\n"
             "If None - search in all categories"),
     ),
+    price_min: int | None = Query(
+        None, 
+        ge=0, 
+        description="Minimum price in USD"
+    ),
+    price_max: int | None = Query(
+        None, 
+        ge=0, 
+        description="Maximum price in USD"
+    ),
     db: Session = Depends(get_db),
 ):
-    items, count = product_crud.get_multi(db, page=page, page_size=page_size, category_id=category_id)
+    items, count = product_crud.get_multi(db, page=page, page_size=page_size, category_id=category_id, price_min=price_min, price_max=price_max)
     items = [ProductRead.from_orm_with_attrs(i) for i in items]
     pagination = PaginationSchema(
         currentPage=page,

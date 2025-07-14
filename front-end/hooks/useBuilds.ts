@@ -8,6 +8,8 @@ interface UseBuildsOptions {
   buildType?: string;
   search?: string;
   autoFetchOnSearchChange?: boolean;
+  price_min?: number;
+  price_max?: number;
 }
 
 interface UseBuildsResult {
@@ -29,6 +31,8 @@ export function useBuilds({
   buildType,
   search = '',
   autoFetchOnSearchChange = true,
+  price_min,
+  price_max,
 }: UseBuildsOptions): UseBuildsResult {
   const [builds, setBuilds] = useState<BuildRead[]>([]);
   const [pagination, setPagination] = useState({
@@ -47,7 +51,8 @@ export function useBuilds({
     const currentLimit = overrides?.limit ?? limit;
     const currentSearch = overrides?.search ?? search;
     const currentBuildType = overrides?.buildType ?? buildType;
-
+    const currentPriceMin = overrides?.price_min ?? price_min;
+    const currentPriceMax = overrides?.price_max ?? price_max;
     try {
       const searchParams = new URLSearchParams({
         skip: ((currentPage - 1) * currentLimit).toString(),
@@ -55,6 +60,8 @@ export function useBuilds({
         return_models: 'true',
         ...(currentSearch && { search: currentSearch }),
         ...(currentBuildType && currentBuildType !== 'all' && { build_type: currentBuildType }),
+        ...(currentPriceMin && { price_min: currentPriceMin.toString() }),
+        ...(currentPriceMax && { price_max: currentPriceMax.toString() }),
         query: currentSearch,
       });
 

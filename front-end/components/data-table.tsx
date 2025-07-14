@@ -23,6 +23,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card } from './ui/card';
+import { SearchPrice } from './ui/search-price';
+import { SelectBuildType } from '@/components/ui/select-build-type';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,6 +32,8 @@ interface DataTableProps<TData, TValue> {
   searchKey?: string;
   searchPlaceholder?: string;
   searchValue?: string;
+  onSearchPrice?: (from: number, to: number) => void;
+  onBuildTypeChange?: (buildType: string | null) => void;
   onSearchChange?: (value: string) => void;
   renderActions?: () => React.ReactNode;
   pagination: {
@@ -46,6 +50,8 @@ export function DataTable<TData, TValue>({
   searchKey,
   searchPlaceholder = 'Search...',
   searchValue = '',
+  onSearchPrice,
+  onBuildTypeChange,
   onSearchChange,
   renderActions,
   pagination,
@@ -92,7 +98,6 @@ export function DataTable<TData, TValue>({
     pageCount: pagination.totalPages,
   });
 
-
   return (
     <Card className="w-full">
       <div className="flex items-center py-4 px-4 gap-4">
@@ -116,9 +121,16 @@ export function DataTable<TData, TValue>({
                 <Search className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
               </Button>
             </div>
+            <div className="pl-6">
+              <SearchPrice onSearch={onSearchPrice || (() => {})} />
+            </div>
           </>
         )}
         {renderActions && renderActions()}
+                 <div className="relative">
+           <SelectBuildType onBuildTypeChange={onBuildTypeChange || (() => {console.log("build type changed")})} />
+        </div>
+        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

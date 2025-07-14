@@ -136,7 +136,7 @@ class CRUDProduct:
     def get_by_asin(self, db: Session, asin: str):
         return db.scalar(select(Product).where(Product.asin == asin).options(*self._get_joinedload_attrs_option()))
 
-    def get_multi(self, db: Session, *, page: int = 1, page_size: int = 20, category_id: int | None = None):
+    def get_multi(self, db: Session, *, page: int = 1, page_size: int = 20, category_id: int | None = None, price_min: int | None = None, price_max: int | None = None):
         stmt = (
             select(Product)
             .offset((page - 1) * page_size)
@@ -151,8 +151,14 @@ class CRUDProduct:
         if category_id:
             CatAttrTable = cat_id_to_attrs_model_map[category_id]
             count_stmt = count_stmt.join(CatAttrTable)
-        total = db.scalar(count_stmt.order_by(Product.updated_at.desc()))
-        return db.scalars(stmt).all(), total
+        if price_min:
+            stmt = stmt.where(Product.price >= price_min)
+            count_stmt = count_stmt.where(Product.price >= price_min)
+        if price_max:
+            stmt = stmt.where(Product.price <= price_max)
+            count_stmt = count_stmt.where(Product.price <= price_max)
+        total = db.scalar(count_stmt)
+        return db.scalars(stmt.order_by(Product.updated_at.desc())).all(), total
 
     def update(self, db: Session, *, db_obj: Product, obj_in: ProductUpdate):
         update_data = obj_in.model_dump(exclude_unset=True)

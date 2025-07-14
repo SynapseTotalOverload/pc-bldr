@@ -32,6 +32,8 @@ class Product(Base):
     power_supply_attributes: Mapped["PowerSupplyAttributes"] = relationship("PowerSupplyAttributes", back_populates="product", uselist=False)
     ram_attributes: Mapped["RAMAttributes"] = relationship("RAMAttributes", back_populates="product", uselist=False)
     storage_attributes: Mapped["StorageAttributes"] = relationship("StorageAttributes", back_populates="product", uselist=False)
+    low_image_url = Column(String, nullable=True)
+    high_image_url = Column(String, nullable=True)
 
     category_id = Column(BigInteger, ForeignKey("category.id", ondelete="SET NULL"))
     category = relationship("Category", back_populates="products")

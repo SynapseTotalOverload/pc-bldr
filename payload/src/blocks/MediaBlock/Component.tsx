@@ -44,7 +44,7 @@ export const MediaBlock: React.FC<Props> = (props) => {
     >
       {(media || staticImage) && (
         <Media
-          key={media && typeof media === 'object' ? `${media.id}_${Date.now()}` : undefined}
+          key={media && typeof media === 'object' ? media.id : undefined}
           imgClassName={cn('border border-border rounded-[0.8rem]', imgClassName)}
           resource={media}
           src={staticImage}

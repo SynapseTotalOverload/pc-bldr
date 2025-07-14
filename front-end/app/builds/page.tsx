@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { createBuildColumns } from '@/models/builds-table';
 import { useBuilds } from '@/hooks/useBuilds';
@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useProducts } from '@/hooks/useProducts';
+import { SearchPrice } from '@/components/ui/search-price';
 
 export default function Builds() {
   const [page, setPage] = useState(1);
@@ -30,6 +31,8 @@ export default function Builds() {
   const [selectedBuild, setSelectedBuild] = useState<BuildRead | null>(null);
   const [editingBuild, setEditingBuild] = useState<BuildRead | null>(null);
   const [viewingBuild, setViewingBuild] = useState<BuildRead | null>(null);
+  const [priceMin, setPriceMin] = useState<number>(0);
+  const [priceMax, setPriceMax] = useState<number>(1000000);
 
   const { builds, pagination, loading, error, refetch, refetchWithOptions } = useBuilds({
     page,
@@ -37,9 +40,10 @@ export default function Builds() {
     buildType: buildType || undefined,
     search: search || undefined,
     autoFetchOnSearchChange: false, 
+    price_min: priceMin || undefined,
+    price_max: priceMax || undefined,
   });
 
-  const { toast } = useToast();
 
   const handleEdit = (build: BuildRead) => {
     setEditingBuild(build);
@@ -66,9 +70,63 @@ export default function Builds() {
   };
 
   const handleSearch = (value: string) => {
+
+    const queryParams = {
+      search: value || undefined,
+      page: 1,
+      buildType: buildType || undefined,
+      price_min: priceMin,
+      price_max: priceMax,
+    };
+
     setSearch(value);
     setPage(1);
-    refetchWithOptions({ search: value, page: 1 });
+    refetchWithOptions(queryParams);
+  };
+
+  const handleSearchPrice = (from: number, to: number) => {
+
+
+    const queryParams = {
+      price_min: from,
+      price_max: to,
+      page: 1,
+      search: search || undefined,
+      buildType: buildType || undefined,
+    };
+
+    setPriceMin(from);
+    setPriceMax(to);
+    setPage(1);
+    refetchWithOptions(queryParams);
+  };
+
+  const handleBuildTypeChange = (newBuildType: string | null) => {
+    const queryParams = {
+      buildType: newBuildType || undefined,
+      page: 1,
+      search: search || undefined,
+      price_min: priceMin,
+      price_max: priceMax,
+    };
+
+    setBuildType(newBuildType || '');
+    setPage(1);
+    refetchWithOptions(queryParams);
+  };
+
+  const handlePageChange = (newPage: number) => {    
+
+    const queryParams = {
+      page: newPage,
+      search: search || undefined,
+      buildType: buildType || undefined,
+      price_min: priceMin || undefined,
+      price_max: priceMax || undefined,
+    };
+    
+    setPage(newPage);
+    refetchWithOptions(queryParams);
   };
 
   const columns = createBuildColumns({
@@ -101,11 +159,6 @@ export default function Builds() {
         </Button>
       </div>
 
-      <div className="flex items-center gap-4">
-      
-      
-      </div>
-
       <DataTable
         columns={columns}
         data={builds}
@@ -113,12 +166,14 @@ export default function Builds() {
         searchPlaceholder="Search builds..."
         searchValue={search}
         onSearchChange={handleSearch}
+        onSearchPrice={handleSearchPrice}
+        onBuildTypeChange={handleBuildTypeChange}
         pagination={{
           total: pagination.total,
           totalPages: pagination.totalPages,
           currentPage: pagination.currentPage,
         }}
-        onPageChange={setPage}
+        onPageChange={handlePageChange}
         renderActions={() => (
           <div className="flex items-center gap-2">
             {loading && <div className="text-sm text-muted-foreground">Loading...</div>}

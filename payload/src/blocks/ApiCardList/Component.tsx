@@ -7,6 +7,7 @@ import { ApiCardListBlockProps, ApiResponse } from './types'
 import { CategoryFilter } from './components/CategoryFilter'
 import { SearchInput } from './components/SearchInput'
 import { ProductCard } from './components/ProductCard'
+import { PriceFilter } from './components/PriceFilter'
 
 type Props = {
   className?: string
@@ -39,9 +40,9 @@ export const ApiCardListBlock: React.FC<Props> = ({
   const [page, setPage] = useState(1)
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-
+  const [price_min, setPriceMin] = useState<number>(0)
+  const [price_max, setPriceMax] = useState<number>(1000000)
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         setLoading(true)
@@ -68,7 +69,7 @@ export const ApiCardListBlock: React.FC<Props> = ({
               searchParams.append("skip",((page - 1) * itemsPerPage).toString())
               searchParams.append("limit",itemsPerPage.toString())
               searchParams.append("return_models","true")
-              searchParams.append("build_type",activeCategory || '')
+              searchParams.append("build_type",buildTypeValue)
             }
           }else{
             searchParams.append("skip",((page - 1) * itemsPerPage).toString())
@@ -77,6 +78,10 @@ export const ApiCardListBlock: React.FC<Props> = ({
           }
           if (searchQuery) {
             searchParams.append('query', searchQuery);
+          }
+          if (price_min && price_max) {
+            searchParams.append("price_min",price_min.toString())
+            searchParams.append("price_max",price_max.toString())
           }
 
           const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:8000/api/v1'
@@ -123,7 +128,7 @@ export const ApiCardListBlock: React.FC<Props> = ({
     }
 
     fetchData()
-  }, [cardType, category_id, build_type, itemsPerPage, activeCategory, page, searchQuery])
+  }, [cardType, category_id, build_type, itemsPerPage, activeCategory, page, searchQuery, price_min, price_max])
 
   const handleCategoryChange = (category: string | null) => {
     setActiveCategory(category)
@@ -132,6 +137,12 @@ export const ApiCardListBlock: React.FC<Props> = ({
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
+    setPage(1)
+  }
+
+  const onPriceChange = (min: number, max: number) => {
+    setPriceMin(min)
+    setPriceMax(max)
     setPage(1)
   }
 
@@ -179,6 +190,7 @@ export const ApiCardListBlock: React.FC<Props> = ({
           
           <div className="space-y-6">
             <SearchInput onSearch={handleSearch} />
+            <PriceFilter onPriceChange={onPriceChange} />
             
             {shouldShowFilter && (
               <CategoryFilter

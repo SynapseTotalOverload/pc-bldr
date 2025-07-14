@@ -42,18 +42,30 @@ def read_builds(
     limit: int = Query(100, ge=1, le=1000, description="Number of records to return"),
     build_type: BuildTypeEnum = Query(None, description="Build type"),
     return_models: bool = Query(False, description="Return models of components instead of ids"),
-    query: str = Query(None, description="Search query")
+    query: str = Query(None, description="Search query"),
+    price_min: int | None = Query(
+        None, 
+        ge=0, 
+        description="Minimum price in USD"
+    ),
+    price_max: int | None = Query(
+        None, 
+        ge=0, 
+        description="Maximum price in USD"
+    )
 ) -> BuildListWithPagination:
     """
     Retrieve builds with pagination.
-    """
+    """   
     builds, total = build_crud.get_multi(
         db=db, 
         skip=skip, 
         limit=limit, 
         build_type=build_type.value if build_type else None, 
         return_models=return_models,
-        query=query
+        query=query,
+        price_min=price_min,
+        price_max=price_max
     )
     
     items = [BuildRead.from_orm_with_attrs(build, return_models=return_models) for build in builds]
@@ -68,6 +80,36 @@ def read_builds(
     )
     
     return BuildListWithPagination(items=items, pagination=pagination)
+
+
+@router.get("/nearest/{budget}", response_model=List[BuildRead])
+def get_nearest_builds_to_budget(
+    *,
+    db: Session = Depends(get_db),
+    budget: int,
+    build_type: BuildTypeEnum = Query(None, description="Build type"),
+    limit: int = Query(5, ge=1, le=20, description="Maximum number of builds to return"),
+) -> List[BuildRead]:
+    """
+    Get builds nearest to the specified budget.
+    
+    Example: budget=1000, tolerance_percent=0.3 will find builds between $700-$1300,
+    ordered by closest to $1000.
+    """
+    builds = build_crud.get_nearest_to_budget(
+        db=db,
+        budget=budget,
+        build_type=build_type.value if build_type else None,
+        limit=limit
+    )
+    
+    if not builds:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No builds found near budget ${budget}"
+        )
+    
+    return [BuildRead.from_orm_with_attrs(build, return_models=True) for build in builds]
 
 
 @router.get("/{build_id}", response_model=BuildRead)

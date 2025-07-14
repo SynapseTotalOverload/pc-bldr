@@ -23,7 +23,9 @@ class ProductBase(BaseModel):
     title: str
     price: Optional[float] = None
     rating: Optional[float] = None
-
+    low_image_url: Optional[str] = Field(None, description="Low resolution image URL")
+    high_image_url: Optional[str] = Field(None, description="High resolution image URL")
+    
     class Config:
         from_attributes = True
 
@@ -46,6 +48,8 @@ class ProductUpdate(BaseModel):
     rating: Optional[float] = None
     category_id: Optional[int] = None
     attrs: Optional[AttributesUpdateUnion] = None
+    low_image_url: Optional[str] = None
+    high_image_url: Optional[str] = None
 
     @field_validator('category_id')
     @classmethod

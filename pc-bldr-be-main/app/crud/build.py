@@ -107,7 +107,9 @@ class CRUDBuild:
         limit: int = 100,
         build_type: BuildTypeEnum = None,
         return_models: bool = False,
-        query: str = None
+        query: str = None,
+        price_min: int | None = None,
+        price_max: int | None = None,
     ) -> tuple[List[Build], int]:
         """Get multiple builds with pagination"""
         # Get total count
@@ -131,6 +133,12 @@ class CRUDBuild:
             stmt = stmt.where(Build.build_type == build_type)
         if query:
             stmt = stmt.where(Build.name.ilike(f"%{query}%"))
+        if price_min:
+            stmt = stmt.where(Build.build_price >= price_min)
+            count_stmt = count_stmt.where(Build.build_price >= price_min)
+        if price_max:
+            stmt = stmt.where(Build.build_price <= price_max)
+            count_stmt = count_stmt.where(Build.build_price <= price_max)
         if return_models:
             stmt = stmt.options(
                 joinedload(Build.cpu), 
@@ -145,6 +153,36 @@ class CRUDBuild:
         builds = db.scalars(stmt.order_by(Build.updated_at.desc())).all()
         
         return builds, total
+
+    def get_nearest_to_budget(
+        self,
+        db: Session,
+        *,
+        budget: int,
+        build_type: BuildTypeEnum = None,
+        limit: int = 5
+    ) -> List[Build]:
+        """Get builds nearest to the specified budget"""        
+        stmt = (
+            select(Build)
+            .order_by(func.abs(Build.build_price - budget))
+            .limit(limit)
+            .options(
+                joinedload(Build.cpu),
+                joinedload(Build.cpu_cooler),
+                joinedload(Build.gpu),
+                joinedload(Build.motherboard),
+                joinedload(Build.ram),
+                joinedload(Build.storage),
+                joinedload(Build.psu),
+                joinedload(Build.case)
+            )
+        )
+        
+        if build_type:
+            stmt = stmt.where(Build.build_type == build_type)
+        
+        return db.scalars(stmt).all()
 
     def update(self, db: Session, *, db_obj: Build, obj_in: BuildUpdate) -> Build:
         """Update build with compatibility check"""
