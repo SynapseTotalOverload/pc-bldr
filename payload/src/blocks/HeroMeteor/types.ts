@@ -3,6 +3,7 @@ export interface HeroMeteorBlock {
   subtitle?: string
   title?: string
   buttonText?: string
+  showButton?: boolean
   buttonLink?: {
     type?: 'reference' | 'custom'
     newTab?: boolean

@@ -32,7 +32,7 @@ import {
 interface FormField {
   name: string;
   label: string;
-  type: 'text' | 'number' | 'select';
+  type: 'text' | 'number' | 'integer' | 'select';
   required?: boolean;
   options?: { value: string; label: string }[];
   placeholder?: string;
@@ -42,8 +42,8 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames, FormField[]> = {
   cpu: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Intel, AMD' },
     { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'Core i7-12700K' },
-    { name: 'cores', label: 'Cores', type: 'number', required: true, placeholder: '12' },
-    { name: 'threads', label: 'Threads', type: 'number', required: true, placeholder: '20' },
+    { name: 'cores', label: 'Cores', type: 'integer', required: true, placeholder: '12' },
+    { name: 'threads', label: 'Threads', type: 'integer', required: true, placeholder: '20' },
     { name: 'socket_type', label: 'Socket Type', type: 'text', required: true, placeholder: 'LGA1700' },
     { name: 'base_speed', label: 'Base Speed (GHz)', type: 'number', required: true, placeholder: '3.6' },
     { name: 'turbo_speed', label: 'Turbo Speed (GHz)', type: 'number', required: true, placeholder: '5.0' },
@@ -51,7 +51,7 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames, FormField[]> = {
     { name: 'core_family', label: 'Core Family', type: 'text', required: true, placeholder: 'Core i7' },
     { name: 'integrated_graphics', label: 'Integrated Graphics', type: 'text', placeholder: 'Intel UHD 770' },
     { name: 'memory_type', label: 'Memory Type', type: 'text', required: true, placeholder: 'DDR5' },
-    { name: 'memory_speed', label: 'Memory Speed (MHz)', type: 'number', required: true, placeholder: '4800' },
+    { name: 'memory_speed', label: 'Memory Speed (MHz)', type: 'integer', required: true, placeholder: '4800' },
     { name: 'series', label: 'Series', type: 'text', required: true, placeholder: '12700K' },
     { name: 'generation', label: 'Generation', type: 'text', required: true, placeholder: '12th Gen' },
   ],
@@ -60,21 +60,21 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames, FormField[]> = {
     { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'RTX 3080' },
     { name: 'memory', label: 'Memory (GB)', type: 'number', required: true, placeholder: '10' },
     { name: 'mem_interface', label: 'Memory Interface', type: 'text', required: true, placeholder: '320-bit' },
-    { name: 'length', label: 'Length (mm)', type: 'number', placeholder: '285' },
+    { name: 'length', label: 'Length (mm)', type: 'integer', placeholder: '285' },
     { name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'PCIe 4.0' },
     { name: 'chipset', label: 'Chipset', type: 'text', required: true, placeholder: 'Ampere' },
-    { name: 'base_clock', label: 'Base Clock (MHz)', type: 'number', placeholder: '1440' },
-    { name: 'clock_speed', label: 'Clock Speed (MHz)', type: 'number', placeholder: '1710' },
+    { name: 'base_clock', label: 'Base Clock (MHz)', type: 'integer', placeholder: '1440' },
+    { name: 'clock_speed', label: 'Clock Speed (MHz)', type: 'integer', placeholder: '1710' },
     { name: 'frame_sync', label: 'Frame Sync', type: 'text', required: true, placeholder: 'G-Sync, FreeSync' },
   ],
   ram: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Corsair, G.Skill' },
     { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'Vengeance LPX' },
-    { name: 'total_memory', label: 'Total Memory (GB)', type: 'number', required: true, placeholder: '32' },
-    { name: 'one_unit_memory', label: 'One Unit Memory (GB)', type: 'number', required: true, placeholder: '16' },
-    { name: 'quantity', label: 'Quantity', type: 'number', required: true, placeholder: '2' },
+    { name: 'total_memory', label: 'Total Memory (GB)', type: 'integer', required: true, placeholder: '32' },
+    { name: 'one_unit_memory', label: 'One Unit Memory (GB)', type: 'integer', required: true, placeholder: '16' },
+    { name: 'quantity', label: 'Quantity', type: 'integer', required: true, placeholder: '2' },
     { name: 'ram_type', label: 'RAM Type', type: 'text', required: true, placeholder: 'DDR4, DDR5' },
-    { name: 'ram_speed', label: 'RAM Speed (MHz)', type: 'number', required: true, placeholder: '3200' },
+    { name: 'ram_speed', label: 'RAM Speed (MHz)', type: 'integer', required: true, placeholder: '3200' },
     { name: 'cas_latency', label: 'CAS Latency', type: 'text', required: true, placeholder: 'CL16' },
   ],
   motherboard: [
@@ -83,30 +83,30 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames, FormField[]> = {
     { name: 'chipset', label: 'Chipset', type: 'text', required: true, placeholder: 'Z690' },
     { name: 'form_factor', label: 'Form Factor', type: 'text', required: true, placeholder: 'ATX, mATX' },
     { name: 'socket_type', label: 'Socket Type', type: 'text', required: true, placeholder: 'LGA1700' },
-    { name: 'ram_slots', label: 'RAM Slots', type: 'number', required: true, placeholder: '4' },
-    { name: 'max_ram_support', label: 'Max RAM Support (GB)', type: 'number', required: true, placeholder: '128' },
+    { name: 'ram_slots', label: 'RAM Slots', type: 'integer', required: true, placeholder: '4' },
+    { name: 'max_ram_support', label: 'Max RAM Support (GB)', type: 'integer', required: true, placeholder: '128' },
   ],
   storage: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Samsung, Western Digital' },
     { name: 'model', label: 'Model', type: 'text', required: true, placeholder: '970 EVO Plus' },
-    { name: 'capacity', label: 'Capacity (GB)', type: 'number', placeholder: '1000' },
+    { name: 'capacity', label: 'Capacity (GB)', type: 'integer', placeholder: '1000' },
     { name: 'mem_type', label: 'Memory Type', type: 'text', required: true, placeholder: 'NVMe, SATA' },
     { name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'PCIe 4.0, SATA III' },
-    { name: 'cache_mem', label: 'Cache Memory (MB)', type: 'number', placeholder: '1024' },
+    { name: 'cache_mem', label: 'Cache Memory (MB)', type: 'integer', placeholder: '1024' },
     { name: 'form_factor', label: 'Form Factor', type: 'text', required: true, placeholder: 'M.2, 2.5"' },
   ],
   power_supply: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Corsair, EVGA' },
     { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'RM850x' },
-    { name: 'power', label: 'Power (W)', type: 'number', placeholder: '850' },
+    { name: 'power', label: 'Power (W)', type: 'integer', placeholder: '850' },
     { name: 'efficiency', label: 'Efficiency', type: 'text', required: true, placeholder: '80+ Gold' },
     { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black' },
   ],
   cpu_cooler: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Noctua, Cooler Master' },
     { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'NH-D15' },
-    { name: 'fan_rpm_base', label: 'Base Fan RPM', type: 'number', placeholder: '300' },
-    { name: 'fan_rpm_max', label: 'Max Fan RPM', type: 'number', placeholder: '1500' },
+    { name: 'fan_rpm_base', label: 'Base Fan RPM', type: 'integer', placeholder: '300' },
+    { name: 'fan_rpm_max', label: 'Max Fan RPM', type: 'integer', placeholder: '1500' },
     { name: 'noise_level_base', label: 'Base Noise Level (dB)', type: 'number', placeholder: '24' },
     { name: 'noise_level_max', label: 'Max Noise Level (dB)', type: 'number', placeholder: '24' },
     { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, White' },
@@ -370,6 +370,43 @@ export function AddNewProduct({
               type: 'number'
             });
           }
+        } else if (field.type === 'integer') {
+          const intValue = parseInt(stringValue, 10);
+          
+          if (isNaN(intValue)) {
+            console.error(`❌ Type mismatch for ${field.name}:`, {
+              fieldLabel: field.label,
+              expectedType: 'integer',
+              receivedValue: stringValue,
+              receivedType: typeof value,
+              category: data.category
+            });
+            hasTypeErrors = true;
+            
+            toast({
+              title: "Type Validation Error",
+              description: `${field.label} must be a valid integer. Received: "${stringValue}"`,
+              variant: "destructive",
+            });
+          } else if (!Number.isInteger(parseFloat(stringValue))) {
+            console.error(`❌ Type mismatch for ${field.name}:`, {
+              fieldLabel: field.label,
+              expectedType: 'integer',
+              receivedValue: stringValue,
+              receivedType: typeof value,
+              category: data.category
+            });
+            hasTypeErrors = true;
+            
+            toast({
+              title: "Type Validation Error",
+              description: `${field.label} must be a whole number (integer). Received: "${stringValue}"`,
+              variant: "destructive",
+            });
+          } else {
+            // Successfully converted to integer
+            convertedData[field.name] = intValue;
+          }
         } else if (field.type === 'text') {
           // Keep as string, but log the conversion
           convertedData[field.name] = stringValue;
@@ -540,24 +577,32 @@ export function AddNewProduct({
         name={field.name}
         rules={{
           required: field.required ? `${field.label} is required` : false,
-          validate: (value) => {
-            // Skip validation for empty optional fields
-            if (!field.required && (!value || value.toString().trim() === '')) {
-              return true;
-            }
-            
-            // Validate if field has value
-            if (value && value.toString().trim() !== '') {
-              if (field.type === 'number') {
-                const numValue = parseFloat(value.toString());
-                if (isNaN(numValue)) {
-                  return `${field.label} must be a valid number`;
+                      validate: (value) => {
+              // Skip validation for empty optional fields
+              if (!field.required && (!value || value.toString().trim() === '')) {
+                return true;
+              }
+              
+              // Validate if field has value
+              if (value && value.toString().trim() !== '') {
+                if (field.type === 'number') {
+                  const numValue = parseFloat(value.toString());
+                  if (isNaN(numValue)) {
+                    return `${field.label} must be a valid number`;
+                  }
+                } else if (field.type === 'integer') {
+                  const intValue = parseInt(value.toString(), 10);
+                  if (isNaN(intValue)) {
+                    return `${field.label} must be a valid integer`;
+                  }
+                  if (!Number.isInteger(parseFloat(value.toString()))) {
+                    return `${field.label} must be a whole number (integer)`;
+                  }
                 }
               }
+              
+              return true;
             }
-            
-            return true;
-          }
         }}
         render={({ field: formField, fieldState }) => (
           <FormItem>
@@ -574,6 +619,21 @@ export function AddNewProduct({
                   value={formField.value ?? ''}
                   onChange={(e) => formField.onChange(e.target.value)}
                   step="0.1"
+                  min={0}
+                  className={
+                    fieldState.error || 
+                    (isSubmitAttempted && field.required && (!formField.value || formField.value.toString().trim() === ''))
+                    ? 'border-red-500 focus:border-red-500' : ''
+                  }
+                />
+              ) : (field.type === 'integer') ? (
+                <Input
+                  type="number"
+                  placeholder={field.placeholder}
+                  {...formField}
+                  value={formField.value ?? ''}
+                  onChange={(e) => formField.onChange(e.target.value)}
+                  step="1"
                   min={0}
                   className={
                     fieldState.error || 

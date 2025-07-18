@@ -94,10 +94,23 @@ class ProductRead(ProductBase):
         for attr_name, schema in mapping:
             attrs_model = getattr(obj, attr_name, None)
             if attrs_model:
+                attrs_dict = schema.model_validate(attrs_model).model_dump()
+                # Add type field based on attribute name
+                type_mapping = {
+                    "cpu_attributes": "cpu",
+                    "cpu_cooler_attributes": "cpu_cooler", 
+                    "gpu_attributes": "gpu",
+                    "motherboard_attributes": "motherboard",
+                    "ram_attributes": "memory",
+                    "storage_attributes": "internal_hard_drive",
+                    "power_supply_attributes": "power_supply",
+                    "case_attributes": "case",
+                }
+                attrs_dict["type"] = type_mapping.get(attr_name, "unknown")
                 return cls(
                     **obj.__dict__,
                     category=category,
-                    attrs=schema.model_validate(attrs_model).model_dump()
+                    attrs=attrs_dict
                 )
 
         return cls(**obj.__dict__, category=category, attrs=None)

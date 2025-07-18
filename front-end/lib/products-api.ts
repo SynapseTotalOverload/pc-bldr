@@ -6,7 +6,9 @@ export interface GetProductsParams {
   category_id?: number;
   page?: number;
   page_size?: number;
-  search?: string;
+  query?: string;
+  price_min?: number;
+  price_max?: number;
 }
 
 export interface SelectedComponents {
@@ -31,7 +33,9 @@ export const getProducts = async (params: GetProductsParams): Promise<PaginatedI
   if (params.category_id) searchParams.append('category_id', params.category_id.toString());
   if (params.page) searchParams.append('page', params.page.toString());
   if (params.page_size) searchParams.append('page_size', params.page_size.toString());
-  if (params.search) searchParams.append('search', params.search);
+  if (params.query) searchParams.append('query', params.query);
+  if (params.price_min) searchParams.append('price_min', params.price_min.toString());
+  if (params.price_max) searchParams.append('price_max', params.price_max.toString());
 
   const response = await instance.get(`/products?${searchParams.toString()}`);
   return response.data;

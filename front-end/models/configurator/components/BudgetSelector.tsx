@@ -9,11 +9,11 @@ interface BudgetSelectorProps {
 
 export function BudgetSelector({ budget, onBudgetChange }: BudgetSelectorProps) {
   return (
-    <Card className="w-full min-w-xl p-6">
+    <Card className="w-full p-6 max-w-xl min-w-xl">
       <div className="flex flex-col items-center gap-4">
         <div className="flex w-full flex-row items-center justify-between">
           <div className="text-2xl font-bold">Budget</div>
-          <div className="neon-text text-2xl font-extrabold text-white">${budget.toLocaleString()}</div>
+          <div className="neon-text text-2xl">${budget.toLocaleString()}</div>
         </div>
 
         <LiquidGlassInput

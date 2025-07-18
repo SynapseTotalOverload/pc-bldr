@@ -153,14 +153,13 @@ class CRUDProduct:
             .limit(page_size)
         )
         if category_id:
-            CatAttrTable = cat_id_to_attrs_model_map[category_id]
-            stmt = stmt.join(CatAttrTable)
+          
+            stmt = stmt.where(Product.category_id == category_id)
+            count_stmt = select(func.count()).select_from(Product).where(Product.category_id == category_id)
         else:
             stmt = stmt.options(*self._get_joinedload_attrs_option())
-        count_stmt = select(func.count()).select_from(Product)
-        if category_id:
-            CatAttrTable = cat_id_to_attrs_model_map[category_id]
-            count_stmt = count_stmt.join(CatAttrTable)
+            count_stmt = select(func.count()).select_from(Product)
+         
         if price_min:
             stmt = stmt.where(Product.price >= price_min)
             count_stmt = count_stmt.where(Product.price >= price_min)
@@ -171,6 +170,10 @@ class CRUDProduct:
             stmt = stmt.where(Product.title.ilike(f"%{query}%"))
             count_stmt = count_stmt.where(Product.title.ilike(f"%{query}%"))
         total = db.scalar(count_stmt)
+
+        if category_id:
+            stmt = stmt.options(*self._get_joinedload_attrs_option())
+            
         return db.scalars(stmt.order_by(Product.updated_at.desc())).all(), total
 
     def update(self, db: Session, *, db_obj: Product, obj_in: ProductUpdate):
@@ -238,10 +241,10 @@ class CRUDProduct:
             category_id: int | None = None, 
             budget: int | None = None,
             query: str | None = None
-        ):
+    ):
         """Get products compatible with selected components using ComponentFiltersBuilder"""
         from app.services.pc_builder.component_filters_builder import ComponentFiltersBuilder
-        
+       
         # Get selected component products from database
         selected_products = {}
         if selected_components:
@@ -267,8 +270,13 @@ class CRUDProduct:
                 filters = ComponentFiltersBuilder.form_storage_compability_filters(selected_products)
             elif category_id == 7:  # Power Supply
                 filters = ComponentFiltersBuilder.form_power_supply_compability_filters(selected_products, budget or 0)
+
+                # Skip compatibility filters for PSU if no attributes exist
+                # pass //----------------------------------
             elif category_id == 8:  # Case
+                print(category_id,66666666)
                 filters = ComponentFiltersBuilder.form_case_compability_filters(selected_products)
+                print(filters,77777777)
         
         # Build query
         stmt = (
@@ -281,26 +289,40 @@ class CRUDProduct:
         if category_id:
             CatAttrTable = cat_id_to_attrs_model_map[category_id]
             stmt = stmt.join(CatAttrTable)
+
+            # stmt = stmt.where(Product.category_id == category_id)
+            # count_stmt = select(func.count()).select_from(Product).where(Product.category_id == category_id) //----------------------------------
             
-            # Apply compatibility filters
+            # Apply compatibility filters (only if they exist and are not for PSU)
+            # if filters and category_id != 7: //----------------------------------
             if filters:
+                print(filters)
                 stmt = stmt.where(*filters)
+                # count_stmt = count_stmt.where(*filters) //----------------------------------
         else:
             stmt = stmt.options(*self._get_joinedload_attrs_option())
+
+
 
         
         # Count query
         count_stmt = select(func.count()).select_from(Product)
+        print(stmt,88888888)
         if category_id:
             CatAttrTable = cat_id_to_attrs_model_map[category_id]
             count_stmt = count_stmt.join(CatAttrTable)
             if filters:
                 count_stmt = count_stmt.where(*filters)
+            # count_stmt = select(func.count()).select_from(Product) #----------------------------------
         if query:
             stmt = stmt.where(Product.title.ilike(f"%{query}%"))
             count_stmt = count_stmt.where(Product.title.ilike(f"%{query}%"))
         
         total = db.scalar(count_stmt)
+        
+        # if category_id:
+        #     stmt = stmt.options(*self._get_joinedload_attrs_option()) //----------------------------------
+            
         return db.scalars(stmt.order_by(Product.updated_at.desc())).all(), total
 
     def remove(self, db: Session, *, id_: int):

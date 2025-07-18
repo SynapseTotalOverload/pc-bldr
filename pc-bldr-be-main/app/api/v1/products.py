@@ -142,7 +142,10 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
     obj = product_crud.get(db, product_id)
     if not obj:
         raise HTTPException(status_code=404, detail="Not found")
-    return ProductRead.from_orm_with_attrs(obj)
+    
+    result = ProductRead.from_orm_with_attrs(obj)
+    print(f"🔍 Product {product_id} attrs: {result.attrs}")
+    return result
 
 @router.put("/{product_id}", response_model=ProductRead)
 def update_product(product_id: int, item: ProductUpdate, db: Session = Depends(get_db)):

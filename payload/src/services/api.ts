@@ -151,6 +151,10 @@ export class ApiService {
     return this.fetchData(`products/${id}`)
   } 
 
+  async getBuildsByParams(params: string, budget: number, limit: number) {
+    return this.fetchData(`builds/nearest/${budget}?build_type=${params}&limit=${limit}`)
+  }
+
   /**
    * Generic method for any endpoint
    */

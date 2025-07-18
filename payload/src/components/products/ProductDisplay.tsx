@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ProductAttributes, Product } from '@/services/types'
-import { useEffect } from 'react'
 import { Attributes } from './components/Attributes'
 import ImgProduct from './components/ImgProdut'
+import { Button } from '@payloadcms/ui'
+import Link from 'next/link'
 
 interface ProductDisplayProps {
   data: Product
-  template?: any // Type for template can be refined later
+  template?: any 
 }
 
 export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
@@ -92,7 +93,6 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
     )
   }
 
-  // If there is a template, render it with data
   return (
     <div className="container mx-auto py-8">
       <div className="max-w-4xl mx-auto">
@@ -117,7 +117,12 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
                           <p className="text-sm text-muted-foreground">Price</p>
                           <p className="font-medium text-green-600">{formatPrice(data.price)}</p>
                         </div>
-                      )} 
+                      )}
+                      {block.showButtonAmazon && (
+                          <Link className='flex bg-blue-500 text-white p-2 rounded-md items-center justify-center' href={`https://www.amazon.com/dp/${data.asin}?tag=dennyschoenme-21`}>
+                            View on Amazon
+                          </Link>
+                      )}
                     </div>
                     {block.showImage && (data.high_image_url || data.low_image_url) && (
                       <div className="mt-4">
@@ -186,7 +191,7 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
                     <CardTitle>Attributes</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Attributes {...(data.attrs as ProductAttributes)} />
+                    <Attributes data={data.attrs as ProductAttributes} template={template.blocks[1]}/>
                   </CardContent>
                 </Card>
               )

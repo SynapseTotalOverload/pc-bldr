@@ -26,6 +26,8 @@ import { useSelectVideoCard } from '@/hooks/select/use-select-video-card';
 import { SelectProductBuilds } from '@/components/ui/select-product-builds';
 import { useSelectPowerSupply } from '@/hooks/select/use-select-power-supply';
 import { useSelectCase } from '@/hooks/select/use-select-case';
+import { BUDGET_STEP, MAX_BUDGET, MIN_BUDGET } from '../configurator/constants';
+import { LiquidGlassInput } from '../configurator/components/LiquidGlassInput';
 
 interface BuildDialogProps {
   open: boolean;
@@ -279,11 +281,11 @@ export function BuildDialog({ open, onOpenChange, build, onSuccess }: BuildDialo
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+            <div className="flex items-center gap-4">
+              <Label htmlFor="name" className="text-left">
                 Name
               </Label>
-              <div className="col-span-3">
+              <div className="w-full">
                 <Input
                   id="name"
                   value={formData.name}
@@ -294,11 +296,11 @@ export function BuildDialog({ open, onOpenChange, build, onSuccess }: BuildDialo
                 {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
               </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="build_type" className="text-right">
+            <div className="flex items-center gap-4">
+              <Label htmlFor="build_type" className="text-left">
                 Type
               </Label>
-              <div className="col-span-3">
+              <div className="w-full">
                 <Select value={formData.build_type} onValueChange={(value) => handleInputChange('build_type', value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select build type" />
@@ -461,15 +463,24 @@ export function BuildDialog({ open, onOpenChange, build, onSuccess }: BuildDialo
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="build_price" className="text-right">
+            <div className="grid grid-cols-2 items-center gap-4">
+              <Label htmlFor="build_price" className="text-left">
                 Build Price
               </Label>
               <div className="col-span-3">
+                <LiquidGlassInput
+                  value={Number(formData.build_price)}
+                  min={MIN_BUDGET}
+                  max={MAX_BUDGET}
+                  step={BUDGET_STEP}
+                    onChange={(v) => handleInputChange('build_price', v.toString())}
+                  formatValue={(v) => `$${v.toLocaleString()}`}
+                  className="mt-4"
+                />
                 <Input
                   id="build_price"
                   type="number"
-                  step="0.01"
+                  step="1"
                   min="0"
                   value={formData.build_price}
                   onChange={(e) => handleInputChange('build_price', e.target.value)}

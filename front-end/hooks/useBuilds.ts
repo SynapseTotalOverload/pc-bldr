@@ -56,17 +56,17 @@ export function useBuilds({
     const currentPriceMin = overrides?.price_min ?? price_min;
     const currentPriceMax = overrides?.price_max ?? price_max;
     const currentShowInSite = overrides?.show_in_site_only ?? show_in_site_only;
+    
     try {
       const searchParams = new URLSearchParams({
         skip: ((currentPage - 1) * currentLimit).toString(),
         limit: currentLimit.toString(),
         return_models: 'true',
-        ...(currentSearch && { search: currentSearch }),
+        ...(overrides?.search !== undefined && overrides?.search !== '' && { query: overrides?.search }),
         ...(currentBuildType && currentBuildType !== 'all' && { build_type: currentBuildType }),
         ...(currentPriceMin && { price_min: currentPriceMin.toString() }),
         ...(currentPriceMax && { price_max: currentPriceMax.toString() }),
         ...(currentShowInSite && { show_in_site_only: currentShowInSite.toString() }),
-        query: currentSearch,
       });
 
       const response = await instance.get(`/builds/?${searchParams.toString()}`);

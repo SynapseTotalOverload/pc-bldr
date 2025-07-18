@@ -28,10 +28,22 @@ export const HeroMeteor: Block = {
       label: 'Button Text',
       defaultValue: 'Get Started',
     },
+    {
+      name: 'showButton',
+      type: 'checkbox',
+      label: 'Show Button',
+      defaultValue: true,
+      admin: {
+        description: 'Toggle to show or hide the button link',
+      },
+    },
     link({
       overrides: {
         name: 'buttonLink',
         label: 'Button Link',
+        admin: {
+          condition: (_, data) => data.showButton === true,
+        },
       },
     }),
     {

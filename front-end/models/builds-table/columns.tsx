@@ -58,6 +58,14 @@ export const createBuildColumns = ({ onEdit, onDelete, onView }: BuildColumnsPro
     },
   },
   {
+    accessorKey: 'cpu_cooler',
+    header: 'CPU Cooler',
+    cell: ({ row }) => {
+      const cpu_cooler = row.original.cpu_cooler;
+      return cpu_cooler ? `${cpu_cooler.attrs.brand} ${cpu_cooler.attrs.model}` : '—';
+    },
+  },
+  {
     accessorKey: 'gpu',
     header: 'GPU',
     cell: ({ row }) => {
@@ -115,6 +123,7 @@ export const createBuildColumns = ({ onEdit, onDelete, onView }: BuildColumnsPro
   },
   {
     id: 'actions',
+    header: 'Actions',
     cell: ({ row }) => {
       const build = row.original;
 

@@ -16,7 +16,7 @@ export function UseCaseSelector({ selectedUseCase, onUseCaseChange }: UseCaseSel
           <button
             key={uc.key}
             className={`flex flex-1 flex-col items-center rounded border p-4 ${
-              selectedUseCase === uc.key ? 'border-white/80 text-white' : ''
+              selectedUseCase === uc.key ? 'bg-primary/10 border-primary/20' : ''
             }`}
             onClick={() => onUseCaseChange(uc.key)}
           >

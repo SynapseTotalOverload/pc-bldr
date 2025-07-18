@@ -18,6 +18,10 @@ export class BuildsService {
   async getBuild(id: number) {
     return apiService.getBuild(id)
   }
+
+  async getBuildsByParams(params: string, budget: number, limit: number) {
+    return apiService.getBuildsByParams(params, budget, limit)
+  }
 }
 
 export const buildsService = new BuildsService()

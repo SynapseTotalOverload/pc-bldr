@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ProductRead, CPU, CPUCooler, Motherboard, RAM, Storage, GPU, PowerSupply, Case } from '@/types/prodcuts-base';
+import { ProductRead } from '@/types/prodcuts-base';
 
 interface SelectProductBuildsProps {
   label: string;
@@ -47,77 +47,43 @@ export function SelectProductBuilds({
 
     switch (product.attrs.type) {
       case 'cpu':
-        const cpuAttrs = product.attrs as CPU;
         return {
           ...baseInfo,
-          subtitle: `${cpuAttrs.cores}C/${cpuAttrs.threads}T • ${cpuAttrs.base_speed} • ${cpuAttrs.socket_type}`,
         };
 
       case 'cpu_cooler':
-        const cpuCoolerAttrs = product.attrs as CPUCooler;
-        const rpmInfo = cpuCoolerAttrs.fan_rpm_max 
-          ? `${cpuCoolerAttrs.fan_rpm_max} RPM`
-          : '';
-        const noiseInfo = cpuCoolerAttrs.noise_level_max 
-          ? `${cpuCoolerAttrs.noise_level_max} dB`
-          : '';
         return {
           ...baseInfo,
-          subtitle: `${cpuCoolerAttrs.color} • ${rpmInfo} • ${noiseInfo}`.replace(/^[^•]* • /, '').replace(/ • $/, ''),
         };
 
       case 'motherboard':
-        const motherboardAttrs = product.attrs as Motherboard;
         return {
           ...baseInfo,
-          subtitle: `${motherboardAttrs.chipset} • ${motherboardAttrs.form_factor} • ${motherboardAttrs.socket_type}`,
         };
 
       case 'ram':
-        const ramAttrs = product.attrs as RAM;
         return {
           ...baseInfo,
-          subtitle: `${ramAttrs.total_memory}GB ${ramAttrs.ram_type} • ${ramAttrs.ram_speed}MHz • CL${ramAttrs.cas_latency}`,
         };
 
       case 'storage':
-        const storageAttrs = product.attrs as Storage;
-        const capacity = storageAttrs.capacity 
-          ? `${storageAttrs.capacity}GB`
-          : '';
         return {
           ...baseInfo,
-          subtitle: `${capacity} • ${storageAttrs.mem_type} • ${storageAttrs.interface}`,
         };
 
       case 'gpu':
-        const gpuAttrs = product.attrs as GPU;
-        const memory = gpuAttrs.memory 
-          ? `${gpuAttrs.memory}GB`
-          : '';
-        const clockSpeed = gpuAttrs.clock_speed 
-          ? `${gpuAttrs.clock_speed}MHz`
-          : '';
         return {
           ...baseInfo,
-          subtitle: `${gpuAttrs.chipset} • ${memory} • ${clockSpeed}`,
         };
 
       case 'power_supply':
-        const powerSupplyAttrs = product.attrs as PowerSupply;
-        const power = powerSupplyAttrs.power 
-          ? `${powerSupplyAttrs.power}W`
-          : '';
         return {
           ...baseInfo,
-          subtitle: `${power} • ${powerSupplyAttrs.efficiency} • ${powerSupplyAttrs.color}`,
         };
 
       case 'case':
-        const caseAttrs = product.attrs as Case;
         return {
           ...baseInfo,
-          subtitle: `${caseAttrs.cabinet_type} • ${caseAttrs.side_panel} • ${caseAttrs.color}`,
         };
 
       default:
@@ -127,7 +93,7 @@ export function SelectProductBuilds({
 
   return (
     <div className="grid grid-cols-4 items-center gap-4">
-      <Label htmlFor={fieldId} className="text-right">
+      <Label htmlFor={fieldId} className="text-left">
         {label}
       </Label>
       <div className="col-span-3">
@@ -142,7 +108,6 @@ export function SelectProductBuilds({
           onValueChange={onValueChange}
           onOpenChange={(open) => {
             if (open && onInitializeData) {
-              console.log('🔽 SelectProductBuilds: Select opened, calling onInitializeData');
               onInitializeData();
             }
           }}

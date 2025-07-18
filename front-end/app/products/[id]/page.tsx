@@ -1,6 +1,6 @@
 'use client';
 
-import { use } from 'react';
+import { use, useEffect } from 'react';
 import { useProduct } from '@/hooks/useProduct';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useRouter } from 'next/navigation';
 import { 
   Star, 
   ExternalLink, 
@@ -22,7 +23,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { PRODUCT_TYPE_NAMES } from '@/types/prodcuts-base';
-import { Input } from '@/components/ui/input';
+import Image from 'next/image';
 
 const categoryIcons = {
   cpu: Cpu,
@@ -57,48 +58,78 @@ const formatRating = (rating?: number) => {
 const renderCPUAttributes = (attrs: any) => (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div className="space-y-3">
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Cores</span>
-        <span className="font-medium">{attrs.cores}</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Threads</span>
-        <span className="font-medium">{attrs.threads}</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Socket Type</span>
-        <span className="font-medium">{attrs.socket_type}</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Base Speed</span>
-        <span className="font-medium">{attrs.base_speed}</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Turbo Speed</span>
-        <span className="font-medium">{attrs.turbo_speed}</span>
-      </div>
+      {attrs.cores && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Cores</span>
+          <span className="font-medium">{attrs.cores}</span>
+        </div>
+      )}
+      {attrs.threads && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Threads</span>
+          <span className="font-medium">{attrs.threads}</span>
+        </div>
+      )}
+      {attrs.socket_type && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Socket Type</span>
+          <span className="font-medium">{attrs.socket_type}</span>
+        </div>
+      )}
+      {attrs.base_speed && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Base Speed</span>
+          <span className="font-medium">{attrs.base_speed} GHz</span>
+        </div>
+      )}
+      {attrs.turbo_speed && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Turbo Speed</span>
+          <span className="font-medium">{attrs.turbo_speed} GHz</span>
+        </div>
+      )}
     </div>
     <div className="space-y-3">
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Architecture</span>
-        <span className="font-medium">{attrs.architechture}</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Core Family</span>
-        <span className="font-medium">{attrs.core_family}</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Memory Type</span>
-        <span className="font-medium">{attrs.memory_type}</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Memory Speed</span>
-        <span className="font-medium">{attrs.memory_speed} MHz</span>
-      </div>
+      {(attrs.architechture || attrs.architecture) && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Architecture</span>
+          <span className="font-medium">{attrs.architechture || attrs.architecture}</span>
+        </div>
+      )}
+      {attrs.core_family && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Core Family</span>
+          <span className="font-medium">{attrs.core_family}</span>
+        </div>
+      )}
+      {attrs.memory_type && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Memory Type</span>
+          <span className="font-medium">{attrs.memory_type}</span>
+        </div>
+      )}
+      {attrs.memory_speed && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Memory Speed</span>
+          <span className="font-medium">{attrs.memory_speed} MHz</span>
+        </div>
+      )}
       {attrs.integrated_graphics && (
         <div className="flex justify-between">
           <span className="text-muted-foreground">Integrated Graphics</span>
           <span className="font-medium">{attrs.integrated_graphics}</span>
+        </div>
+      )}
+      {attrs.generation && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Generation</span>
+          <span className="font-medium">{attrs.generation}</span>
+        </div>
+      )}
+      {attrs.series && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Series</span>
+          <span className="font-medium">{attrs.series}</span>
         </div>
       )}
     </div>
@@ -329,6 +360,17 @@ const renderCaseAttributes = (attrs: any) => (
 );
 
 const renderAttributes = (attrs: any) => {
+  console.log('🔧 Rendering attributes:', attrs);
+  
+  if (!attrs || !attrs.type) {
+    return (
+      <div className="text-muted-foreground">
+        <p>No attributes available for this product.</p>
+      </div>
+    );
+  }
+
+  
   switch (attrs.type) {
     case 'cpu':
       return renderCPUAttributes(attrs);
@@ -348,6 +390,7 @@ const renderAttributes = (attrs: any) => {
     case 'case':
       return renderCaseAttributes(attrs);
     default:
+      console.log('⚠️ Unknown attribute type:', attrs.type);
       return (
         <div className="text-muted-foreground">
           <pre className="whitespace-pre-wrap">{JSON.stringify(attrs, null, 2)}</pre>
@@ -359,6 +402,14 @@ const renderAttributes = (attrs: any) => {
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { product, loading, error } = useProduct(id);
+  const router = useRouter()
+  
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('isAdmin')
+    if (!isAdmin) {
+      router.push('/auth');
+    }
+  }, [router]);
 
   if (loading) {
     return (
@@ -400,8 +451,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     );
   }
 
-  const CategoryIcon = categoryIcons[product.attrs.type as keyof typeof categoryIcons] || Cpu;
-  const categoryName = PRODUCT_TYPE_NAMES[product.attrs.type as keyof typeof PRODUCT_TYPE_NAMES] || product.attrs.type;
+  const CategoryIcon = categoryIcons[product.attrs?.type as keyof typeof categoryIcons] || Cpu;
+  const categoryName = PRODUCT_TYPE_NAMES[product.attrs?.type as keyof typeof PRODUCT_TYPE_NAMES] || product.attrs?.type || 'Unknown';
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -453,11 +504,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Brand</span>
-                      <span className="font-medium">{product.attrs.brand}</span>
+                      <span className="font-medium">{product.attrs?.brand || 'N/A'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Model</span>
-                      <span className="font-medium">{product.attrs.model}</span>
+                      <span className="font-medium">{product.attrs?.model || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
@@ -467,7 +518,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 {/* Technical Specifications */}
                 <div>
                   <h4 className="font-semibold mb-3">Technical Specifications</h4>
-                  {renderAttributes(product.attrs)}
+                  {product.attrs ? renderAttributes(product.attrs) : (
+                    <div className="text-muted-foreground">
+                      <p>No technical specifications available for this product.</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -478,28 +533,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <div className="space-y-6">
           {/* Price Card */}
           <Card>
-            <CardHeader>
-              <CardTitle>Pricing</CardTitle>
+            <CardHeader className="items-center justify-center">
+              <Image src={product.high_image_url || ''} alt={product.title} width={400} height={400} />
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-green-600">
-                    {formatPrice(product.price)}
-                  </div>
-                  {product.rating && (
-                    <div className="flex items-center justify-center gap-1 mt-2">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm">{product.rating.toFixed(1)}</span>
-                    </div>
-                  )}
-                </div>
-                <Button className="w-full" size="lg">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  View on Amazon
-                </Button>
-              </div>
-            </CardContent>
           </Card>
 
           {/* Product Details */}

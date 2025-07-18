@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { ProductRead, ProductCreate, ProductAttrs } from '@/types/prodcuts-base';
+import { ProductRead, ProductAttrs } from '@/types/prodcuts-base';
 
 const ITEMS_PER_PAGE = 20;
 

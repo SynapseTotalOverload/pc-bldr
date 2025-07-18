@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { CategoryButtons } from '@/components/ui/category-buttons';
 import { DataTable } from '@/components/data-table';
-import { useProducts } from '@/hooks/useProducts';
+import { useProducts } from '@/hooks/useProductT';
 import {
   ProductTypeMapNames,
   ProductRead,
-  ProductTypeMapIds,
   FrontendToBackendCategoryMap,
 } from '@/types/prodcuts-base';
 import { ColumnDef } from '@tanstack/react-table';
@@ -23,6 +21,9 @@ import { useToast } from '@/hooks/use-toast';
 import instance from '@/lib/axios';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useBoolean } from '@/hooks/use-boolean';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { ThemeToggle } from '@/components/theme-provider';
 
 interface FormData {
   category: keyof ProductTypeMapNames;
@@ -43,12 +44,19 @@ export default function Home() {
   const { toast } = useToast();
   const {isState, changeState, toggleState}= useBoolean();
   const [selectedProduct, setSelectedProduct] = useState<ProductRead | null>(null);
+  const router = useRouter()
   const { products, pagination, error, refetch } = useProducts<ProductRead>({
     category: selectedCategory,
     page,
     search,
   });
 
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('isAdmin')
+    if (!isAdmin) {
+      router.push('/auth');
+    }
+  }, [router]);
 
   const handleAddProduct = async (data: FormData) => {
     try {
@@ -198,11 +206,12 @@ export default function Home() {
   ];
 
   return (
-    <main className="depth-bg flex min-h-screen flex-col items-center justify-between p-4">
+          <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
       <div className="z-10 w-full items-center justify-between font-mono text-sm">
         <div className="flex items-center justify-between">
           <h1 className="mb-8 text-4xl font-bold">PC Part Picker Products</h1>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <ToggleGroup
               type="single"
               value={viewMode}

@@ -6,23 +6,13 @@ import { createBuildColumns } from '@/models/builds-table';
 import { useBuilds } from '@/hooks/useBuilds';
 import { BuildDialog, DeleteBuildDialog } from '@/models/dialogs';
 import BuildViewer from '@/models/dialogs/build-viewer';
-import { BuildRead, ProductRead } from '@/types/prodcuts-base';
-import { Plus, Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { BuildRead } from '@/types/prodcuts-base';
+import { Plus } from 'lucide-react';
 import { DataTable } from '@/components/data-table';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { useProducts } from '@/hooks/useProducts';
-import { SearchPrice } from '@/components/ui/search-price';
 import { useRouter } from 'next/navigation';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { ThemeToggle } from '@/components/theme-provider';
 
 export default function Builds() {
   const router = useRouter();
@@ -154,6 +144,13 @@ export default function Builds() {
     refetchWithOptions(queryParams);
   };
 
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('isAdmin')
+    if (!isAdmin) {
+      router.push('/auth');
+    }
+  }, [router]);
+
   const columns = createBuildColumns({
     onEdit: handleEdit,
     onDelete: handleDelete,
@@ -171,10 +168,6 @@ export default function Builds() {
     );
   }
 
-  useEffect(() => {
-    console.log(builds)
-  }, [builds]);
-
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -183,6 +176,7 @@ export default function Builds() {
           <p className="text-muted-foreground">Manage your PC builds and configurations</p>
         </div>
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <div className="flex items-center space-x-2">
             <Checkbox
               id="show-in-site-only"
@@ -199,7 +193,7 @@ export default function Builds() {
               className="cursor-pointer"
               onClick={() => router.push('/configurator')}
             >
-              Configurator Builds
+              Configurator
             </Button>
             <Button 
               variant="default"

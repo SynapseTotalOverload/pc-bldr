@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class Product(Base):
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     asin = Column(String(12), unique=True, index=True, nullable=False)
     title = Column(String, nullable=False)
     price = Column(Float, nullable=True)

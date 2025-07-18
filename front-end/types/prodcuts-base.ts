@@ -1,8 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { NextDataPathnameNormalizer } from "next/dist/server/normalizers/request/next-data";
-import { ButtonHTMLAttributes } from "react";
-import { PreviousMonthButton } from "react-day-picker";
-
 export interface CategoryRead {
   id: number;
   keepa_id: number;
@@ -121,12 +116,16 @@ export interface ProductRead extends ProductBase {
   created_at: string; // ISO string from `datetime`
   category?: CategoryRead;
   attrs: ProductAttrs;
+  low_image_url?: string;
+  high_image_url?: string;
 }
 export interface ProductGenericRead<T extends ProductAttrs> extends ProductBase {
   id: number;
   created_at: string; // ISO string from `datetime`
   category?: CategoryRead;
   attrs: T;
+  low_image_url?: string;
+  high_image_url?: string;
 }
 export interface BuildRead{
   name: string;

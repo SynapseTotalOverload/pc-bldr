@@ -59,7 +59,15 @@ export const Product: GlobalConfig = {
               admin: {
                 description: 'Show product image'
               }
-            }
+            },
+            {
+              name: 'showButtonAmazon',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show Amazon button'
+              }
+            },
           ]
         },
         {
@@ -100,42 +108,344 @@ export const Product: GlobalConfig = {
               type: 'text',
               defaultValue: 'Attributes'
             },
-          ]
-        },
-        {
-          slug: 'productImage',
-          imageAltText: 'Product Image Block',
-          interfaceName: 'ProductImage',
-          fields: [
             {
-              name: 'heading',
-              type: 'text',
-              defaultValue: 'Product Image'
+              name: 'showBrand',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show brand'
+              }
             },
             {
-              name: 'imageSize',
-              type: 'select',
-              defaultValue: 'medium',
-              options: [
-                {
-                  label: 'Small',
-                  value: 'small'
-                },
-                {
-                  label: 'Medium',
-                  value: 'medium'
-                },
-                {
-                  label: 'Large',
-                  value: 'large'
-                }
-              ],
+              name: 'showModel',
+              type: 'checkbox',
+              defaultValue: true,
               admin: {
-                description: 'Choose the display size for the product image'
+                description: 'Show model'
+              }
+            },
+            {
+              name: 'showColor',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show color'
+              }
+            },
+            {
+              name: 'showCores',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show cores'
+              }
+            },
+            {
+              name: 'showThreads',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show threads'
+              }
+            },
+            {
+              name: 'showSocketType',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show socket type'
+              }
+            },
+            {
+              name: 'showBaseSpeed',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show base speed'
+              }
+            },
+            {
+              name: 'showTurboSpeed',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show turbo speed'
+              }
+            },
+            {
+              name: 'showArchitecture',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show architecture'
+              }
+            },
+            {
+              name: 'showCoreFamily',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show core family'
+              }
+            },
+            {
+              name: 'showGeneration',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show generation'
+              }
+            },
+            {
+              name: 'showIntegratedGraphics',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show integrated graphics'
+              }
+            },
+            {
+              name: 'showMemorySpeed',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show memory speed'
+              }
+            },
+            {
+              name: 'showSeries',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show series'
+              }
+            },
+            {
+              name: 'showBaseFanRPM',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show base fan RPM'
+              }
+            },
+            {
+              name: 'showMaxFanRPM',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show max fan RPM'
+              }
+            },
+            {
+              name: 'showBaseNoiseLevel',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show base noise level'
+              }
+            },
+            {
+              name: 'showMaxNoiseLevel',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show max noise level'
+              }
+            },
+            {
+              name: 'showBaseClock',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show base clock'
+              }
+            },
+            {
+              name: 'showChipset',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show chipset'
+              }
+            },
+            {
+              name: 'showClockSpeed',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show clock speed'
+              }
+            },
+            {
+              name: 'showFrameSync',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show frame sync'
+              }
+            },
+            {
+              name: 'showInterface',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show interface'
+              }
+            },
+            {
+              name: 'showLength',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show length'
+              }
+            },
+            {
+              name: 'showMemoryInterface',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show memory interface'
+              }
+            },
+            {
+              name: 'showMemory',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show memory'
+              }
+            },
+            {
+              name: 'showFormFactor',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show form factor'
+              }
+            },
+            {
+              name: 'showMaxRAMSupport',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show max RAM support'
+              }
+            },
+            {
+              name: 'showRAMSlots',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show RAM slots'
+              }
+            },
+            {
+              name: 'showCASLatency',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show CAS latency'
+              }
+            },
+            {
+              name: 'showOneUnitMemory',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show one unit memory'
+              }
+            },
+            {
+              name: 'showQuantity',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show quantity'
+              }
+            },
+            {
+              name: 'showRAMSpeed',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show RAM speed'
+              }
+            },
+            {
+              name: 'showRAMType',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show RAM type'
+              }
+            },
+            {
+              name: 'showTotalMemory',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show total memory'
+              }
+            },
+            {
+              name: 'showCacheMemory',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show cache memory'
+              }
+            },
+            {
+              name: 'showCapacity',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show capacity'
+              }
+            },
+            {
+              name: 'showMemoryType',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show memory type'
+              }
+            },
+            {
+              name: 'showEfficiency',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show efficiency'
+              }
+            },
+            {
+              name: 'showPower',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show power'
+              }
+            },
+            {
+              name: 'showCabinetType',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show cabinet type'
+              }
+            },
+            {
+              name: 'showSidePanel',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show side panel'
               }
             }
           ]
-        }
+        },
       ]
     }
   ],

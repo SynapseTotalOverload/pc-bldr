@@ -1,32 +1,36 @@
-import { CPU, CPUCooler, GPU, Motherboard, PowerSupply, ProductAttrs, ProductRead, ProductTypeMapIds, RAM, Storage } from '@/types/prodcuts-base';
+import { CPU, CPUCooler, GPU, Motherboard, PowerSupply, ProductAttrs, ProductRead, ProductTypeMapIds, RAM, Storage, Case } from '@/types/prodcuts-base';
 import { ColumnDef } from '@tanstack/react-table';
 
-function isCPU(attrs: ProductAttrs): attrs is CPU {
-return 'cores' in attrs && 'base_speed' in attrs;
+function isCPU(attrs: ProductAttrs | null | undefined, categoryId?: number): attrs is CPU {
+  return categoryId === 1;
 }
 
-function isCPUCooler(attrs: ProductAttrs): attrs is CPUCooler {
-  return 'fan_rpm_max' in attrs && 'noise_level_max' in attrs;
+function isCPUCooler(attrs: ProductAttrs | null | undefined, categoryId?: number): attrs is CPUCooler {
+  return categoryId === 2;
 }
 
-function isGPU(attrs: ProductAttrs): attrs is GPU {
-  return 'memory' in attrs && 'chipset' in attrs && 'base_clock' in attrs;
+function isGPU(attrs: ProductAttrs | null | undefined, categoryId?: number): attrs is GPU {
+  return categoryId === 3;
 }
 
-function isRAM(attrs: ProductAttrs): attrs is RAM {
-  return 'total_memory' in attrs && 'ram_speed' in attrs && 'ram_type' in attrs;
+function isRAM(attrs: ProductAttrs | null | undefined, categoryId?: number): attrs is RAM {
+  return categoryId === 5;
 }
 
-function isMotherboard(attrs: ProductAttrs): attrs is Motherboard {
-  return 'socket_type' in attrs && 'chipset' in attrs && 'form_factor' in attrs;
+function isMotherboard(attrs: ProductAttrs | null | undefined, categoryId?: number): attrs is Motherboard {
+  return categoryId === 4;
 }
 
-function isStorage(attrs: ProductAttrs): attrs is Storage {
-  return 'capacity' in attrs && 'mem_type' in attrs && 'interface' in attrs;
+function isStorage(attrs: ProductAttrs | null | undefined, categoryId?: number): attrs is Storage {
+  return categoryId === 6;
 }
 
-function isPSU(attrs: ProductAttrs): attrs is PowerSupply {
-  return 'power' in attrs && 'efficiency' in attrs;
+function isPSU(attrs: ProductAttrs | null | undefined, categoryId?: number): attrs is PowerSupply {
+  return categoryId === 7;
+}
+
+function isCase(attrs: ProductAttrs | null | undefined, categoryId?: number): attrs is Case {
+  return categoryId === 8;
 }
 
 
@@ -37,123 +41,521 @@ export const categoryColumnExtensions: {
   CPU: [
     {
       header: 'Brand',
-      accessorFn: (row) => isCPU(row.attrs) ? row.attrs.brand : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
     },
     {
       header: 'Model',
-      accessorFn: (row) => isCPU(row.attrs) ? row.attrs.model : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.model : '—';
+      },
     },
     {
       header: 'Core Count',
-      accessorFn: (row) => isCPU(row.attrs) ? row.attrs.cores : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.cores : '—';
+      },
+    },
+    {
+      header: 'Thread Count',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.threads : '—';
+      },
+    },
+    {
+      header: 'Socket Type',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.socket_type : '—';
+      },
     },
     {
       header: 'Base Clock',
-      accessorFn: (row) => isCPU(row.attrs) ? row.attrs.base_speed : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.base_speed : '—';
+      },
     },
     {
       header: 'Boost Clock',
-      accessorFn: (row) => isCPU(row.attrs) ? row.attrs.turbo_speed : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.turbo_speed : '—';
+      },
+    },
+    {
+      header: 'Architecture',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.architechture : '—';
+      },
+    },
+    {
+      header: 'Core Family',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.core_family : '—';
+      },
+    },
+    {
+      header: 'Generation',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.generation : '—';
+      },
+    },
+    {
+      header: 'Series',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.series : '—';
+      },
+    },
+    {
+      header: 'Integrated Graphics',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.integrated_graphics : '—';
+      },
+    },
+    {
+      header: 'Memory Type',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.memory_type : '—';
+      },
+    },
+    {
+      header: 'Memory Speed',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPU(attrs, categoryId) && attrs ? attrs.memory_speed : '—';
+      },
     },
   ],
   CPU_COOLER: [
     {
       header: 'Brand',
-      accessorFn: (row) => isCPUCooler(row.attrs) ? row.attrs.brand : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPUCooler(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
     },
     {
       header: 'Model',
-      accessorFn: (row) => isCPUCooler(row.attrs) ? row.attrs.model : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPUCooler(attrs, categoryId) && attrs ? attrs.model : '—';
+      },
+    },
+    {
+      header: 'Fan RPM Base',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPUCooler(attrs, categoryId) && attrs ? attrs.fan_rpm_base : '—';
+      },
     },
     {
       header: 'Fan RPM Max',
-      accessorFn: (row) => isCPUCooler(row.attrs) ? row.attrs.fan_rpm_max : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPUCooler(attrs, categoryId) && attrs ? attrs.fan_rpm_max : '—';
+      },
+    },
+    {
+      header: 'Noise Level Base',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPUCooler(attrs, categoryId) && attrs ? attrs.noise_level_base : '—';
+      },
     },
     {
       header: 'Noise Level Max',
-      accessorFn: (row) => isCPUCooler(row.attrs) ? row.attrs.noise_level_max : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPUCooler(attrs, categoryId) && attrs ? attrs.noise_level_max : '—';
+      },
     },
     {
       header: 'Color',
-      accessorFn: (row) => isCPUCooler(row.attrs) ? row.attrs.color : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCPUCooler(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
     },
   ],
   GPU: [
     {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isGPU(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Model',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isGPU(attrs, categoryId) && attrs ? attrs.model : '—';
+      },
+    },
+    {
       header: 'Memory',
-      accessorFn: (row) => isGPU(row.attrs) ? row.attrs.memory : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isGPU(attrs, categoryId) && attrs ? attrs.memory : '—';
+      },
+    },
+    {
+      header: 'Memory Interface',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isGPU(attrs, categoryId) && attrs ? attrs.mem_interface : '—';
+      },
+    },
+    {
+      header: 'Length',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isGPU(attrs, categoryId) && attrs ? attrs.length : '—';
+      },
+    },
+    {
+      header: 'Interface',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isGPU(attrs, categoryId) && attrs ? attrs.interface : '—';
+      },
     },
     {
       header: 'Chipset',
-      accessorFn: (row) => isGPU(row.attrs) ? row.attrs.chipset : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isGPU(attrs, categoryId) && attrs ? attrs.chipset : '—';
+      },
     },
     {
-      header: 'Core Clock',
-      accessorFn: (row) => isGPU(row.attrs) ? row.attrs.base_clock : '—',
+      header: 'Base Clock',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isGPU(attrs, categoryId) && attrs ? attrs.base_clock : '—';
+      },
+    },
+    {
+      header: 'Clock Speed',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isGPU(attrs, categoryId) && attrs ? attrs.clock_speed : '—';
+      },
+    },
+    {
+      header: 'Frame Sync',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isGPU(attrs, categoryId) && attrs ? attrs.frame_sync : '—';
+      },
     },
   ],
   RAM: [
     {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isRAM(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Model',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isRAM(attrs, categoryId) && attrs ? attrs.model : '—';
+      },
+    },
+    {
       header: 'Total Memory',
-      accessorFn: (row) => isRAM(row.attrs) ? row.attrs.total_memory : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isRAM(attrs, categoryId) && attrs ? attrs.total_memory : '—';
+      },
+    },
+    {
+      header: 'One Unit Memory',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isRAM(attrs, categoryId) && attrs ? attrs.one_unit_memory : '—';
+      },
+    },
+    {
+      header: 'Quantity',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isRAM(attrs, categoryId) && attrs ? attrs.quantity : '—';
+      },
     },
     {
       header: 'RAM Speed',
-      accessorFn: (row) => isRAM(row.attrs) ? row.attrs.ram_speed : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isRAM(attrs, categoryId) && attrs ? attrs.ram_speed : '—';
+      },
     },
     {
       header: 'RAM Type',
-      accessorFn: (row) => isRAM(row.attrs) ? row.attrs.ram_type : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isRAM(attrs, categoryId) && attrs ? attrs.ram_type : '—';
+      },
+    },
+    {
+      header: 'CAS Latency',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isRAM(attrs, categoryId) && attrs ? attrs.cas_latency : '—';
+      },
     },
   ],
   MOTHERBOARD: [
     {
-      header: 'Socket',
-      accessorFn: (row) => isMotherboard(row.attrs) ? row.attrs.socket_type : '—',
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMotherboard(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Model',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMotherboard(attrs, categoryId) && attrs ? attrs.model : '—';
+      },
+    },
+    {
+      header: 'Socket Type',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMotherboard(attrs, categoryId) && attrs ? attrs.socket_type : '—';
+      },
     },
     {
       header: 'Chipset',
-      accessorFn: (row) => isMotherboard(row.attrs) ? row.attrs.chipset : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMotherboard(attrs, categoryId) && attrs ? attrs.chipset : '—';
+      },
     },
     {
       header: 'Form Factor',
-      accessorFn: (row) => isMotherboard(row.attrs) ? row.attrs.form_factor : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMotherboard(attrs, categoryId) && attrs ? attrs.form_factor : '—';
+      },
     },
     {
-      header: 'Memory Slots',
-      accessorFn: (row) => isMotherboard(row.attrs) ? row.attrs.ram_slots : '—',
+      header: 'RAM Slots',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMotherboard(attrs, categoryId) && attrs ? attrs.ram_slots : '—';
+      },
+    },
+    {
+      header: 'Max RAM Support',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMotherboard(attrs, categoryId) && attrs ? attrs.max_ram_support : '—';
+      },
     },
   ],
   ROM: [
     {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isStorage(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Model',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isStorage(attrs, categoryId) && attrs ? attrs.model : '—';
+      },
+    },
+    {
       header: 'Capacity',
-      accessorFn: (row) => isStorage(row.attrs) ? row.attrs.capacity : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isStorage(attrs, categoryId) && attrs ? attrs.capacity : '—';
+      },
     },
     {
-      header: 'Type',
-      accessorFn: (row) => isStorage(row.attrs) ? row.attrs.mem_type : '—',
+      header: 'Memory Type',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isStorage(attrs, categoryId) && attrs ? attrs.mem_type : '—';
+      },
     },
     {
-      header: 'Cache',
-      accessorFn: (row) => isStorage(row.attrs) ? row.attrs.cache_mem : '—',
+      header: 'Form Factor',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isStorage(attrs, categoryId) && attrs ? attrs.form_factor : '—';
+      },
     },
     {
       header: 'Interface',
-      accessorFn: (row) => isStorage(row.attrs) ? row.attrs.interface : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isStorage(attrs, categoryId) && attrs ? attrs.interface : '—';
+      },
+    },
+    {
+      header: 'Cache Memory',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isStorage(attrs, categoryId) && attrs ? attrs.cache_mem : '—';
+      },
     },
   ],
   PSU: [
     {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isPSU(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Model',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isPSU(attrs, categoryId) && attrs ? attrs.model : '—';
+      },
+    },
+    {
       header: 'Wattage',
-      accessorFn: (row) => isPSU(row.attrs) ? row.attrs.power : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isPSU(attrs, categoryId) && attrs ? attrs.power : '—';
+      },
     },
     {
       header: 'Efficiency',
-      accessorFn: (row) => isPSU(row.attrs) ? row.attrs.efficiency : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isPSU(attrs, categoryId) && attrs ? attrs.efficiency : '—';
+      },
     },
     {
       header: 'Color',
-      accessorFn: (row) => isPSU(row.attrs) ? row.attrs.color : '—',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isPSU(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
+    },
+  ],
+  CASE: [
+    {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCase(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Model',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCase(attrs, categoryId) && attrs ? attrs.model : '—';
+      },
+    },
+    {
+      header: 'Side Panel',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCase(attrs, categoryId) && attrs ? attrs.side_panel : '—';
+      },
+    },
+    {
+      header: 'Cabinet Type',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCase(attrs, categoryId) && attrs ? attrs.cabinet_type : '—';
+      },
+    },
+    {
+      header: 'Color',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCase(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
     },
   ]
 };

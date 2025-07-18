@@ -919,7 +919,11 @@ export interface HeroMeteorBlock {
   subtitle?: string | null;
   title: string;
   buttonText?: string | null;
-  buttonLink: {
+  /**
+   * Toggle to show or hide the button link
+   */
+  showButton?: boolean | null;
+  buttonLink?: {
     type?: ('reference' | 'custom') | null;
     newTab?: boolean | null;
     reference?:
@@ -1733,6 +1737,7 @@ export interface HeroMeteorBlockSelect<T extends boolean = true> {
   subtitle?: T;
   title?: T;
   buttonText?: T;
+  showButton?: T;
   buttonLink?:
     | T
     | {
@@ -2416,7 +2421,7 @@ export interface BuildComponents {
  */
 export interface Product {
   id: string;
-  blocks?: (ProductInfo | ProductReviews | ProductAttributes | ProductImage)[] | null;
+  blocks?: (ProductInfo | ProductReviews | ProductAttributes)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2443,6 +2448,10 @@ export interface ProductInfo {
    * Show product image
    */
   showImage?: boolean | null;
+  /**
+   * Show Amazon button
+   */
+  showButtonAmazon?: boolean | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'productInfo';
@@ -2471,23 +2480,177 @@ export interface ProductReviews {
  */
 export interface ProductAttributes {
   heading?: string | null;
+  /**
+   * Show brand
+   */
+  showBrand?: boolean | null;
+  /**
+   * Show model
+   */
+  showModel?: boolean | null;
+  /**
+   * Show color
+   */
+  showColor?: boolean | null;
+  /**
+   * Show cores
+   */
+  showCores?: boolean | null;
+  /**
+   * Show threads
+   */
+  showThreads?: boolean | null;
+  /**
+   * Show socket type
+   */
+  showSocketType?: boolean | null;
+  /**
+   * Show base speed
+   */
+  showBaseSpeed?: boolean | null;
+  /**
+   * Show turbo speed
+   */
+  showTurboSpeed?: boolean | null;
+  /**
+   * Show architecture
+   */
+  showArchitecture?: boolean | null;
+  /**
+   * Show core family
+   */
+  showCoreFamily?: boolean | null;
+  /**
+   * Show generation
+   */
+  showGeneration?: boolean | null;
+  /**
+   * Show integrated graphics
+   */
+  showIntegratedGraphics?: boolean | null;
+  /**
+   * Show memory speed
+   */
+  showMemorySpeed?: boolean | null;
+  /**
+   * Show series
+   */
+  showSeries?: boolean | null;
+  /**
+   * Show base fan RPM
+   */
+  showBaseFanRPM?: boolean | null;
+  /**
+   * Show max fan RPM
+   */
+  showMaxFanRPM?: boolean | null;
+  /**
+   * Show base noise level
+   */
+  showBaseNoiseLevel?: boolean | null;
+  /**
+   * Show max noise level
+   */
+  showMaxNoiseLevel?: boolean | null;
+  /**
+   * Show base clock
+   */
+  showBaseClock?: boolean | null;
+  /**
+   * Show chipset
+   */
+  showChipset?: boolean | null;
+  /**
+   * Show clock speed
+   */
+  showClockSpeed?: boolean | null;
+  /**
+   * Show frame sync
+   */
+  showFrameSync?: boolean | null;
+  /**
+   * Show interface
+   */
+  showInterface?: boolean | null;
+  /**
+   * Show length
+   */
+  showLength?: boolean | null;
+  /**
+   * Show memory interface
+   */
+  showMemoryInterface?: boolean | null;
+  /**
+   * Show memory
+   */
+  showMemory?: boolean | null;
+  /**
+   * Show form factor
+   */
+  showFormFactor?: boolean | null;
+  /**
+   * Show max RAM support
+   */
+  showMaxRAMSupport?: boolean | null;
+  /**
+   * Show RAM slots
+   */
+  showRAMSlots?: boolean | null;
+  /**
+   * Show CAS latency
+   */
+  showCASLatency?: boolean | null;
+  /**
+   * Show one unit memory
+   */
+  showOneUnitMemory?: boolean | null;
+  /**
+   * Show quantity
+   */
+  showQuantity?: boolean | null;
+  /**
+   * Show RAM speed
+   */
+  showRAMSpeed?: boolean | null;
+  /**
+   * Show RAM type
+   */
+  showRAMType?: boolean | null;
+  /**
+   * Show total memory
+   */
+  showTotalMemory?: boolean | null;
+  /**
+   * Show cache memory
+   */
+  showCacheMemory?: boolean | null;
+  /**
+   * Show capacity
+   */
+  showCapacity?: boolean | null;
+  /**
+   * Show memory type
+   */
+  showMemoryType?: boolean | null;
+  /**
+   * Show efficiency
+   */
+  showEfficiency?: boolean | null;
+  /**
+   * Show power
+   */
+  showPower?: boolean | null;
+  /**
+   * Show cabinet type
+   */
+  showCabinetType?: boolean | null;
+  /**
+   * Show side panel
+   */
+  showSidePanel?: boolean | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'productAttributes';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProductImage".
- */
-export interface ProductImage {
-  heading?: string | null;
-  /**
-   * Choose the display size for the product image
-   */
-  imageSize?: ('small' | 'medium' | 'large') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'productImage';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2587,7 +2750,6 @@ export interface ProductSelect<T extends boolean = true> {
         productInfo?: T | ProductInfoSelect<T>;
         productReviews?: T | ProductReviewsSelect<T>;
         productAttributes?: T | ProductAttributesSelect<T>;
-        productImage?: T | ProductImageSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -2604,6 +2766,7 @@ export interface ProductInfoSelect<T extends boolean = true> {
   showPrice?: T;
   showStock?: T;
   showImage?: T;
+  showButtonAmazon?: T;
   id?: T;
   blockName?: T;
 }
@@ -2624,16 +2787,48 @@ export interface ProductReviewsSelect<T extends boolean = true> {
  */
 export interface ProductAttributesSelect<T extends boolean = true> {
   heading?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProductImage_select".
- */
-export interface ProductImageSelect<T extends boolean = true> {
-  heading?: T;
-  imageSize?: T;
+  showBrand?: T;
+  showModel?: T;
+  showColor?: T;
+  showCores?: T;
+  showThreads?: T;
+  showSocketType?: T;
+  showBaseSpeed?: T;
+  showTurboSpeed?: T;
+  showArchitecture?: T;
+  showCoreFamily?: T;
+  showGeneration?: T;
+  showIntegratedGraphics?: T;
+  showMemorySpeed?: T;
+  showSeries?: T;
+  showBaseFanRPM?: T;
+  showMaxFanRPM?: T;
+  showBaseNoiseLevel?: T;
+  showMaxNoiseLevel?: T;
+  showBaseClock?: T;
+  showChipset?: T;
+  showClockSpeed?: T;
+  showFrameSync?: T;
+  showInterface?: T;
+  showLength?: T;
+  showMemoryInterface?: T;
+  showMemory?: T;
+  showFormFactor?: T;
+  showMaxRAMSupport?: T;
+  showRAMSlots?: T;
+  showCASLatency?: T;
+  showOneUnitMemory?: T;
+  showQuantity?: T;
+  showRAMSpeed?: T;
+  showRAMType?: T;
+  showTotalMemory?: T;
+  showCacheMemory?: T;
+  showCapacity?: T;
+  showMemoryType?: T;
+  showEfficiency?: T;
+  showPower?: T;
+  showCabinetType?: T;
+  showSidePanel?: T;
   id?: T;
   blockName?: T;
 }

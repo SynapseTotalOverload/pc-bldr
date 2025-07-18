@@ -10,3 +10,4 @@ keepa
 pydantic-settings
 beautifulsoup4
 lxml
+playwright
