@@ -106,6 +106,7 @@ jobs:
               -e CRON_SECRET=\"$ESCAPED_CRON_SECRET\" \
               -e NEXT_PUBLIC_SERVER_URL=\"http://34.30.58.224/api/v1/\" \
               $FULL_IMAGE_NAME 
+            sudo  docker image prune -af
             "
        
 
