@@ -73,6 +73,7 @@ jobs:
             docker pull $FULL_IMAGE_NAME
             docker stop ${{ env.IMAGE_NAME }} || true
             docker rm ${{ env.IMAGE_NAME }} || true
+            docker image prune -
             docker run -d \
               --name ${{ env.IMAGE_NAME }} \
               --restart=always \
@@ -82,6 +83,7 @@ jobs:
               -e POSTGRES_DSN=\"$ESCAPED_POSTGRES_DSN\" \
               -e KEEPA_API_KEY=\"$ESCAPED_KEEPA_API_KEY\" \
               $FULL_IMAGE_NAME 
+            docker image prune -af
             "
         gcloud compute ssh ${{ secrets.GCP_FRONTEND_INSTANCE_NAME }} \
           --zone ${{ secrets.GCP_FRONTEND_INSTANCE_ZONE }} \
@@ -99,6 +101,7 @@ jobs:
               -e MONGO_DSN=\"$ESCAPED_MONGO_DSN\" \
               -e KEEPA_API_KEY=\"$ESCAPED_KEEPA_API_KEY\" \
               $FULL_IMAGE_NAME 
+            docker image prune -af
             "
         
         PUBLIC_IP=$(gcloud compute instances describe ${{ secrets.GCP_FRONTEND_INSTANCE_NAME }} \
