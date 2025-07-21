@@ -98,12 +98,13 @@ jobs:
             sudo docker run -d \
               --name ${{ env.IMAGE_NAME }} \
               --restart=always \
+              -v ./media:/app/public/media/ \
               -p 3000:3000 \
               -e PREVIEW_SECRET=\"$ESCAPED_PREVIEW_KEY\" \
               -e PAYLOAD_SECRET=\"$ESCAPED_PAYLOAD_SECRET\" \
               -e DATABASE_URI=\"$ESCAPED_MONGO_DSN\" \
               -e CRON_SECRET=\"$ESCAPED_CRON_SECRET\" \
-              -e NEXT_PUBLIC_SERVER_URL=\"http://$PUBLIC_IP/api/v1/\" \
+              -e NEXT_PUBLIC_SERVER_URL=\"http://34.30.58.224/api/v1/\" \
               $FULL_IMAGE_NAME 
             "
        
