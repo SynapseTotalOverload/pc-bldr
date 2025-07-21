@@ -1,12 +1,12 @@
 import { cache } from 'react'
 import { Metadata } from 'next'
-
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { Product as ServiceProduct } from '@/services/types'
 import { Product as GlobalProduct } from '@/payload-types'
 import { ProductDisplay } from '@/components/products/ProductDisplay'
 import { productsService } from '@/services/products'
+import { getCachedGlobal } from '@/utilities/getGlobals'
 
 type Args = {
   params: Promise<{
@@ -14,24 +14,23 @@ type Args = {
   }>
 }
 
+export const revalidate = 0
+
+const queryProductPageTemplate = cache(async () => {
+  const global = await getCachedGlobal('product')
+  const productConfig = typeof global === 'function' ? await global() : global
+  return JSON.parse(JSON.stringify(productConfig))
+})
+
 export async function generateStaticParams() {
   return []
 }
-
-const queryProductPageTemplate = cache(async (): Promise<GlobalProduct> => {
-  const payload = await getPayloadHMR({ config: configPromise })
-  const productConfig = await payload.findGlobal({
-    slug: 'product',
-  })
-  return productConfig
-})
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   try {
     const { id } = await paramsPromise
     const productResponse = await productsService.getProduct(parseInt(id))
     const productData = productResponse.data?.[0] || productResponse as ServiceProduct
-    
     return {
       title: productData.title || 'Product',
       description: productData.description || 'Product details'
@@ -48,13 +47,13 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 const ProductPageComponent = async ({ params: paramsPromise }: Args) => {
   try {
     const { id } = await paramsPromise
-    const [productResponse, productConfig] = await Promise.all([
+    const [productResponse, productConfigRaw] = await Promise.all([
       productsService.getProduct(parseInt(id)),
       queryProductPageTemplate()
     ])
     
-    // Handle ApiResponse structure - extract product from response
     const productData = productResponse.data?.[0] || productResponse as ServiceProduct
+    const productConfig = JSON.parse(JSON.stringify(productConfigRaw))
     
     return <ProductDisplay data={productData} template={productConfig} />
   } catch (error) {

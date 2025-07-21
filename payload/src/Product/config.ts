@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { authenticatedOrPublished } from '../access/authenticatedOrPublished'
+import { revalidateProduct } from './hooks/revalidateProduct'
 
 export const Product: GlobalConfig = {
   slug: 'product',
@@ -449,6 +450,9 @@ export const Product: GlobalConfig = {
       ]
     }
   ],
+  hooks: {
+    afterChange: [revalidateProduct],
+  },
   admin: {
     description: 'Global settings for product pages'
   }

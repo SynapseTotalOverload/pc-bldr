@@ -15,6 +15,8 @@ interface ProductDisplayProps {
 
 export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
   const [error, setError] = useState<string | null>(null)
+  
+  const safeTemplate = typeof template === 'function' ? undefined : template
 
   if (error) {
     return (
@@ -49,7 +51,7 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
   }
 
   // If there is no template, show the basic view
-  if (!template) {
+  if (!safeTemplate) {
     return (
       <div className="container mx-auto py-8">
         <div className="max-w-4xl mx-auto">
@@ -96,7 +98,7 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
   return (
     <div className="container mx-auto py-8">
       <div className="max-w-4xl mx-auto">
-        {template.blocks?.map((block: any, index: number) => {
+        {safeTemplate.blocks?.map((block: any, index: number) => {
           switch (block.blockType) {
             case 'productInfo':
               return (
@@ -191,7 +193,7 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
                     <CardTitle>Attributes</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Attributes data={data.attrs as ProductAttributes} template={template.blocks[1]}/>
+                    <Attributes data={data.attrs as ProductAttributes} template={safeTemplate.blocks[1]}/>
                   </CardContent>
                 </Card>
               )
