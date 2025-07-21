@@ -46,6 +46,8 @@ jobs:
       working-directory: ./front-end
       run: |
         echo "NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }}" > .env
+        echo "NEXT_PUBLIC_ADMIN_LOGIN=admin@admin.com" >> .env
+        echo "NEXT_PUBLIC_ADMIN_PASSWORD=1234567890" >> .env
         docker build -t ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
         docker push ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
