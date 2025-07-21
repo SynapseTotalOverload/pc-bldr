@@ -25,9 +25,14 @@ export const Meteors = ({
   const [meteorStyles, setMeteorStyles] = useState<Array<React.CSSProperties>>(
     [],
   );
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient || typeof window === 'undefined') return;
     
     const styles = [...new Array(number)].map(() => ({
       "--angle": angle + "deg",
@@ -41,15 +46,20 @@ export const Meteors = ({
     }));
     
     setMeteorStyles(styles);
-  }, [number, minDelay, maxDelay, minDuration, maxDuration, angle]);
+  }, [isClient, number, minDelay, maxDelay, minDuration, maxDuration, angle]);
+
+  // Don't render anything on server-side
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <>
-      {[...meteorStyles].map((style, idx) => (
+      {meteorStyles.map((style, idx) => (
         // Meteor container
         <span
           key={idx}
-          style={{ ...style }}
+          style={style}
           className={cn(
             "pointer-events-none absolute rotate-[var(--angle)] animate-meteor",
             className,

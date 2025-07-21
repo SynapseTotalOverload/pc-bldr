@@ -169,7 +169,7 @@ export default function Builds() {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="p-4 mx-auto py-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">PC Builds</h1>
@@ -207,30 +207,33 @@ export default function Builds() {
         </div>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={builds}
-        searchKey="name"
-        searchPlaceholder="Search builds..."
-        searchValue={search}
-        onSearchChange={handleSearch}
-        onSearchPrice={handleSearchPrice}
-        onBuildTypeChange={handleBuildTypeChange}
-        showFilter={true}
-        pagination={{
-          total: pagination.total,
-          totalPages: pagination.totalPages,
-          currentPage: pagination.currentPage,
-          itemsPerPage: 10,
-        }}
-        onPageChange={handlePageChange}
-        renderActions={() => (
-          <div className="flex items-center gap-2">
-            {loading && <div className="text-sm text-muted-foreground">Loading...</div>}
-          </div>
-        )}
-      />
-
+      <div className="mt-8 w-full">
+        <div className="inner-white-glow rounded-2xl p-8 shadow-2xl">
+          <DataTable
+            columns={columns}
+            data={builds}
+            searchKey="name"
+            searchPlaceholder="Search builds..."
+            searchValue={search}
+            onSearchChange={handleSearch}
+            onSearchPrice={handleSearchPrice}
+            onBuildTypeChange={handleBuildTypeChange}
+            showFilter={true}
+            pagination={{
+              total: pagination.total,
+              totalPages: pagination.totalPages,
+              currentPage: pagination.currentPage,
+              itemsPerPage: 10,
+            }}
+            onPageChange={handlePageChange}
+            renderActions={() => (
+              <div className="flex items-center gap-2">
+                {loading && <div className="text-sm text-muted-foreground">Loading...</div>}
+              </div>
+            )}
+          />
+        </div>
+      </div>
       {/* Create/Edit Build Dialog */}
       <BuildDialog
         open={dialogOpen}
