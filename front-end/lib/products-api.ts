@@ -9,6 +9,7 @@ export interface GetProductsParams {
   query?: string;
   price_min?: number;
   price_max?: number;
+  periphery_flag?: boolean;
 }
 
 export interface SelectedComponents {
@@ -22,6 +23,7 @@ export interface GetCompatibleProductsParams {
   page_size?: number;
   budget?: number;
   query?: string;
+  periphery_flag?: boolean;
 }
 
 /**
@@ -36,7 +38,7 @@ export const getProducts = async (params: GetProductsParams): Promise<PaginatedI
   if (params.query) searchParams.append('query', params.query);
   if (params.price_min) searchParams.append('price_min', params.price_min.toString());
   if (params.price_max) searchParams.append('price_max', params.price_max.toString());
-
+  if (params.periphery_flag) searchParams.append('periphery_flag', params.periphery_flag.toString());
   const response = await instance.get(`/products?${searchParams.toString()}`);
   return response.data;
 };

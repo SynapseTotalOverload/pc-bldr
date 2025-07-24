@@ -1,6 +1,7 @@
 import { useState, useEffect, ButtonHTMLAttributes } from 'react';
 
-import { FrontendToBackendCategoryMap, PaginatedInterface, ProductConstantMapIds, ProductRead, ProductTypeMapIds } from '@/types/prodcuts-base';
+import { FrontendToBackendCategoryMap, PaginatedInterface, ProductConstantMapIds, ProductRead as ProductReadBase, ProductTypeMapIds } from '@/types/prodcuts-base';
+import { ProductRead as ProductReadAccessories } from '@/types/product-accessories-type';
 import { getCompatibleProducts } from '@/lib/products-api';
 
 interface UseProductsOptions {
@@ -9,7 +10,7 @@ interface UseProductsOptions {
   search?: string;
 }
 
-interface UseProductsResult<T extends ProductRead> {
+interface UseProductsResult<T extends ProductReadBase | ProductReadAccessories> {
   products: T[];
   pagination: {
     total: number;
@@ -21,7 +22,7 @@ interface UseProductsResult<T extends ProductRead> {
   refetch: () => Promise<void>;
 }
 
-export function useProducts<T extends ProductRead>({
+export function useProducts<T extends ProductReadBase | ProductReadAccessories>({
   category,
   page,
   search = '',

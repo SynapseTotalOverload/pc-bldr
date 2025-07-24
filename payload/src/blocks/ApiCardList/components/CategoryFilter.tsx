@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
 import React from 'react'
-import { Cpu, Fan, Monitor, CircuitBoard, HardDrive, Zap, Package, Gamepad2, Briefcase, Wrench, DollarSign, Crown, MoreHorizontal } from 'lucide-react'
+import { Cpu, Fan, Monitor, CircuitBoard, HardDrive, Zap, Package, Gamepad2, Briefcase, Wrench, DollarSign, Crown, MoreHorizontal, Keyboard, Headset, Mouse } from 'lucide-react'
 
 export const PRODUCT_CATEGORIES = [
   { id: '1', name: 'CPU', slug: 'cpu', icon: Cpu },
@@ -24,10 +24,19 @@ export const BUILD_TYPES = [
   { id: 'high-end', name: 'High-end', slug: 'high-end', icon: Crown },
 ]
 
+export const ACCESSORY_CATEGORIES = [
+  { id: '9', name: 'Mouse', slug: 'mouse', icon: Mouse },
+  { id: '10', name: 'Monitor', slug: 'monitor', icon: Monitor },
+  { id: '11', name: 'Keyboard', slug: 'keyboard', icon: Keyboard },
+  { id: '12', name: 'Headset', slug: 'headset', icon: Headset },
+  { id: '13', name: 'Mousepad', slug: 'mousepad', icon: Mouse },
+  { id: '14', name: 'Chair', slug: 'chair', icon: Headset },
+]
+
 type CategoryFilterProps = {
   activeCategory: string | null
   onCategoryChange: (category: string | null) => void
-  cardType: 'product' | 'builds'
+  cardType: 'product' | 'builds' | 'accessories'
 }
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({ 
@@ -35,7 +44,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   onCategoryChange,
   cardType
 }) => {
-  const categories = cardType === 'product' ? PRODUCT_CATEGORIES : BUILD_TYPES
+  const categories = cardType === 'product' ? PRODUCT_CATEGORIES : cardType === 'accessories' ? ACCESSORY_CATEGORIES : BUILD_TYPES
 
   return (
     <div className="relative mb-8">

@@ -20,6 +20,7 @@ export const ApiCardList: Block = {
       label: 'Card type',
       options: [
         { label: 'Products', value: 'product' },
+        { label: 'Accessories', value: 'accessories' },
         { label: 'Builds', value: 'builds' },
       ],
       required: true,
@@ -41,6 +42,23 @@ export const ApiCardList: Block = {
         { label: 'Storage', value: '6' },
         { label: 'Power Supply', value: '7' },
         { label: 'Case', value: '8' },
+      ],
+    },
+    {
+      name: 'accessory_category',
+      type: 'select',
+      label: 'Accessory category',
+      admin: {
+        condition: (_, data) => data?.cardType === 'accessories',
+      },
+      options: [
+        { label: 'All accessories (show filter)', value: '' },
+        { label: 'Mouse', value: '9' },
+        { label: 'Monitor', value: '10' },
+        { label: 'Keyboard', value: '11' },
+        { label: 'Headset', value: '12' },
+        { label: 'Mousepad', value: '13' },
+        { label: 'Chair', value: '14' },
       ],
     },
     {

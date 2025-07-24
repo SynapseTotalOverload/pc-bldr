@@ -14,6 +14,12 @@ from app.schemas.attributes import (
     StorageAttributesUpdateSchema,
     PowerSupplyAttributesUpdateSchema,
     CaseAttributesUpdateSchema,
+    MouseAttributesUpdateSchema,
+    MonitorAttributesUpdateSchema,
+    KeyboardAttributesUpdateSchema,
+    HeadsetAttributesUpdateSchema,
+    MousepadAttributesUpdateSchema,
+    ChairAttributesUpdateSchema,
 )
 from .category import CategoryRead
 
@@ -37,8 +43,8 @@ class ProductCreate(ProductBase):
     @field_validator('category_id')
     @classmethod
     def validate_category_id(cls, v):
-        if v is not None and (v < 1 or v > 8):
-            raise ValueError('category_id must be between 1 and 8')
+        if v is not None and (v < 1 or v > 14):
+            raise ValueError('category_id must be between 1 and 14')
         return v
 
 
@@ -54,8 +60,8 @@ class ProductUpdate(BaseModel):
     @field_validator('category_id')
     @classmethod
     def validate_category_id(cls, v):
-        if v is not None and (v < 1 or v > 8):
-            raise ValueError('category_id must be between 1 and 8')
+        if v is not None and (v < 1 or v > 14):
+            raise ValueError('category_id must be between 1 and 14')
         return v
 
     class Config:
@@ -89,6 +95,12 @@ class ProductRead(ProductBase):
             ("storage_attributes", StorageAttributesUpdateSchema),
             ("power_supply_attributes", PowerSupplyAttributesUpdateSchema),
             ("case_attributes", CaseAttributesUpdateSchema),
+            ("mouse_attributes", MouseAttributesUpdateSchema),
+            ("monitor_attributes", MonitorAttributesUpdateSchema),
+            ("keyboard_attributes", KeyboardAttributesUpdateSchema),
+            ("headset_attributes", HeadsetAttributesUpdateSchema),
+            ("mousepad_attributes", MousepadAttributesUpdateSchema),
+            ("chair_attributes", ChairAttributesUpdateSchema),
         ]
 
         for attr_name, schema in mapping:
@@ -105,6 +117,12 @@ class ProductRead(ProductBase):
                     "storage_attributes": "internal_hard_drive",
                     "power_supply_attributes": "power_supply",
                     "case_attributes": "case",
+                    "mouse_attributes": "mouse",
+                    "monitor_attributes": "monitor",
+                    "keyboard_attributes": "keyboard",
+                    "headset_attributes": "headset",
+                    "mousepad_attributes": "mousepad",
+                    "chair_attributes": "chair",
                 }
                 attrs_dict["type"] = type_mapping.get(attr_name, "unknown")
                 return cls(

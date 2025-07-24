@@ -8,7 +8,13 @@ from app.models import (
     RAMAttributes,
     StorageAttributes,
     PowerSupplyAttributes,
-    CaseAttributes
+    CaseAttributes,
+    MouseAttributes,
+    MonitorAttributes,
+    KeyboardAttributes,
+    HeadsetAttributes,
+    MousepadAttributes,
+    ChairAttributes
 )
 
 
@@ -21,6 +27,12 @@ cat_id_to_attrs_model_map: dict[int,type[BaseAttrsModel]] = {
     6: StorageAttributes,
     7: PowerSupplyAttributes,
     8: CaseAttributes,
+    9: MouseAttributes,
+    10: MonitorAttributes,
+    11: KeyboardAttributes,
+    12: HeadsetAttributes,
+    13: MousepadAttributes,
+    14: ChairAttributes,
 }
 
 class BuildTypeEnum(Enum):

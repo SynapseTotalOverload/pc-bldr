@@ -2,7 +2,7 @@ import { ProductAttributes } from "@/services/types"
 
 
 
-export const Attributes = ({ data, template }: { data: ProductAttributes, template: any }) => {
+export const Attributes = ({ data, template, categoryId }: { data: ProductAttributes, template: any, categoryId?: number }) => {
     console.log('template', template)
     
     return (
@@ -17,7 +17,7 @@ export const Attributes = ({ data, template }: { data: ProductAttributes, templa
                                 <span className="font-semibold text-gray-900">{data.brand}</span>
                             </div>
                         )}
-                        {data.model && template.showModel && (
+                        {data.model && template.showModel && categoryId && categoryId < 9 && (
                             <div className="flex items-center gap-3">
                                 <span className="text-sm text-muted-foreground font-medium">Model:</span>
                                 <span className="font-semibold text-gray-900">{data.model}</span>
@@ -272,6 +272,144 @@ export const Attributes = ({ data, template }: { data: ProductAttributes, templa
                         <div className="bg-gray-50 rounded-lg p-3">
                             <span className="text-sm text-muted-foreground block">Side Panel:</span>
                             <span className="font-semibold text-gray-900">{data.side_panel}</span>
+                        </div>
+                    )}
+                    
+                    {/* Mouse attributes (category 9) */}
+                    {data.connectivity_technology && (template.showConnectivityTechnology !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Connectivity:</span>
+                            <span className="font-semibold text-gray-900">{data.connectivity_technology}</span>
+                        </div>
+                    )}
+                    {data.special_feature && (template.showSpecialFeature !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Special Features:</span>
+                            <span className="font-semibold text-gray-900">{data.special_feature}</span>
+                        </div>
+                    )}
+                    {data.movement_detection_technology && (template.showMovementDetectionTechnology !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Detection Technology:</span>
+                            <span className="font-semibold text-gray-900">{data.movement_detection_technology}</span>
+                        </div>
+                    )}
+                    {data.number_of_buttons && (template.showNumberOfButtons !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Number of Buttons:</span>
+                            <span className="font-semibold text-gray-900">{data.number_of_buttons}</span>
+                        </div>
+                    )}
+                    
+                    {/* Monitor attributes (category 10) */}
+                    {data.screen_size && (template.showScreenSize !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Screen Size:</span>
+                            <span className="font-semibold text-gray-900">{data.screen_size}"</span>
+                        </div>
+                    )}
+                    {data.resolution && (template.showResolution !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Resolution:</span>
+                            <span className="font-semibold text-gray-900">{data.resolution}</span>
+                        </div>
+                    )}
+                    {data.aspect_ratio && (template.showAspectRatio !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Aspect Ratio:</span>
+                            <span className="font-semibold text-gray-900">{data.aspect_ratio}</span>
+                        </div>
+                    )}
+                    {data.screen_surface_description && (template.showScreenSurfaceDescription !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Surface:</span>
+                            <span className="font-semibold text-gray-900">{data.screen_surface_description}</span>
+                        </div>
+                    )}
+                    {data.style && (template.showStyle !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Style:</span>
+                            <span className="font-semibold text-gray-900">{data.style}</span>
+                        </div>
+                    )}
+                    
+                    {/* Keyboard attributes (category 11) */}
+                    {data.pattern && (template.showPattern !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Pattern:</span>
+                            <span className="font-semibold text-gray-900">{data.pattern}</span>
+                        </div>
+                    )}
+                    {data.compatible_devices && (template.showCompatibleDevices !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Compatible Devices:</span>
+                            <span className="font-semibold text-gray-900">{data.compatible_devices}</span>
+                        </div>
+                    )}
+                    {data.keyboard_description && (template.showKeyboardDescription !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Description:</span>
+                            <span className="font-semibold text-gray-900">{data.keyboard_description}</span>
+                        </div>
+                    )}
+                    {data.recommended_uses_for_product && (template.showRecommendedUses !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Recommended Uses:</span>
+                            <span className="font-semibold text-gray-900">{data.recommended_uses_for_product}</span>
+                        </div>
+                    )}
+                    {data.number_of_keys && (template.showNumberOfKeys !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Number of Keys:</span>
+                            <span className="font-semibold text-gray-900">{data.number_of_keys}</span>
+                        </div>
+                    )}
+                    {data.keyboard_backlighting_color_support && (template.showBacklightingSupport !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Backlighting:</span>
+                            <span className="font-semibold text-gray-900">{data.keyboard_backlighting_color_support}</span>
+                        </div>
+                    )}
+                    {data.size && (template.showSize !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Size:</span>
+                            <span className="font-semibold text-gray-900">{data.size}</span>
+                        </div>
+                    )}
+                    
+                    {/* Headset attributes (category 12) */}
+                    {data.par_placement && (template.showParPlacement !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Placement:</span>
+                            <span className="font-semibold text-gray-900">{data.par_placement}</span>
+                        </div>
+                    )}
+                    {data.impedance && (template.showImpedance !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Impedance:</span>
+                            <span className="font-semibold text-gray-900">{data.impedance} Ω</span>
+                        </div>
+                    )}
+                    
+                    {/* Mousepad attributes (category 13) */}
+                    {data.material && (template.showMaterial !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Material:</span>
+                            <span className="font-semibold text-gray-900">{data.material}</span>
+                        </div>
+                    )}
+                    
+                    {/* Chair attributes (category 14) */}
+                    {data.product_dimensions && (template.showProductDimensions !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Dimensions:</span>
+                            <span className="font-semibold text-gray-900">{data.product_dimensions}</span>
+                        </div>
+                    )}
+                    {data.back_style && (template.showBackStyle !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Back Style:</span>
+                            <span className="font-semibold text-gray-900">{data.back_style}</span>
                         </div>
                     )}
                 </div>

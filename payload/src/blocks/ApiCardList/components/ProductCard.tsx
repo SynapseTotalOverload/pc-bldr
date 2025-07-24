@@ -23,7 +23,7 @@ export const ProductCard: React.FC<CardProps> = ({ item, cardType, styling }) =>
     }).format(numericPrice)
   }
 
-  if (cardType === 'product') {
+  if (cardType === 'product' || cardType === 'accessories') {
     const product = item as any
     return (
       <Link href={`/product/${product.id}`} className="group">

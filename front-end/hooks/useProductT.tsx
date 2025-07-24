@@ -2,6 +2,7 @@ import { useState, useEffect, ButtonHTMLAttributes } from 'react';
 
 import { FrontendToBackendCategoryMap, PaginatedInterface, ProductConstantMapIds, ProductRead, ProductTypeMapIds } from '@/types/prodcuts-base';
 import { getCompatibleProducts, getProducts } from '@/lib/products-api';
+import { ProductRead as ProductReadAccessories, FrontendToBackendCategoryMapAccessories, ProductConstantMapIdsAccessories } from '@/types/product-accessories-type';
 
 interface UseProductsOptions {
   category: string;
@@ -9,9 +10,10 @@ interface UseProductsOptions {
   search?: string;
   price_min?: number;
   price_max?: number;
+  periphery_flag?: boolean;
 }
 
-interface UseProductsResult<T extends ProductRead> {
+interface UseProductsResult<T extends ProductRead | ProductReadAccessories> {
   products: T[];
   pagination: {
     total: number;
@@ -23,12 +25,13 @@ interface UseProductsResult<T extends ProductRead> {
   refetch: () => Promise<void>;
 }
 
-export function useProducts<T extends ProductRead>({
+export function useProducts<T extends ProductRead | ProductReadAccessories>({
   category,
   page,
   search = '',
   price_min,
   price_max,
+  periphery_flag = false,
 }: UseProductsOptions): UseProductsResult<T> {
   const [products, setProducts] = useState<T[]>([]);
   const [pagination, setPagination] = useState({
@@ -51,17 +54,21 @@ export function useProducts<T extends ProductRead>({
 
     try {
       const normalizedCategory = category.toLowerCase();
-      const backendKey = FrontendToBackendCategoryMap[normalizedCategory];
-      if (!backendKey || !(backendKey in ProductConstantMapIds)) throw new Error(`Invalid category: ${category}`);
+      const backendKey = periphery_flag ? FrontendToBackendCategoryMapAccessories[normalizedCategory] : FrontendToBackendCategoryMap[normalizedCategory];
+      if (!backendKey) throw new Error(`Invalid category: ${category}`);
+      
+      if (periphery_flag && !(backendKey in ProductConstantMapIdsAccessories)) throw new Error(`Invalid periphery category: ${category}`);
+      if (!periphery_flag && !(backendKey in ProductConstantMapIds)) throw new Error(`Invalid category: ${category}`);
 
       // Use getCompatibleProducts API which supports search via query parameter
       const data = await getProducts({
-        category_id: ProductConstantMapIds[backendKey],
+        category_id: periphery_flag ? ProductConstantMapIdsAccessories[backendKey as keyof typeof ProductConstantMapIdsAccessories] : ProductConstantMapIds[backendKey as keyof typeof ProductConstantMapIds],
         page: page,
         page_size: 20,
         query: search.trim() || undefined,
         price_min: price_min || undefined,
         price_max: price_max || undefined,
+        periphery_flag: periphery_flag || false,
       });
 
       setProducts(data.items as unknown as T[]);

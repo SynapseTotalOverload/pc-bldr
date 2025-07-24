@@ -193,7 +193,11 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
                     <CardTitle>Attributes</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Attributes data={data.attrs as ProductAttributes} template={safeTemplate.blocks[1]}/>
+                    <Attributes 
+                      data={data.attrs as ProductAttributes} 
+                      template={safeTemplate.blocks[1]}
+                      categoryId={data.category?.id}
+                    />
                   </CardContent>
                 </Card>
               )

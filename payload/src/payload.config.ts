@@ -18,6 +18,7 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { Build } from './Build/config'
 import { Product } from './Product/config'
+import { Player } from './Player'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -67,7 +68,7 @@ export default buildConfig({
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3001'
   ].filter(Boolean),
-  globals: [Header, Footer, Build, Product],
+  globals: [Header, Footer, Build, Product, Player],
   plugins: [
     ...plugins,
   ],

@@ -105,12 +105,14 @@ export interface Config {
     footer: Footer;
     build: Build;
     product: Product;
+    player: Player;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     build: BuildSelect<false> | BuildSelect<true>;
     product: ProductSelect<false> | ProductSelect<true>;
+    player: PlayerSelect<false> | PlayerSelect<true>;
   };
   locale: null;
   user: User & {
@@ -839,8 +841,9 @@ export interface FeatureListBlock {
 export interface ApiCardListBlock {
   title?: string | null;
   description?: string | null;
-  cardType: 'product' | 'builds';
+  cardType: 'product' | 'accessories' | 'builds';
   category_id?: ('' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8') | null;
+  accessory_category?: ('' | '9' | '10' | '11' | '12' | '13' | '14') | null;
   build_type?: ('' | 'gaming' | 'office' | 'workstation' | 'budget' | 'high-end' | '--') | null;
   layout?: ('grid' | 'list' | 'carousel') | null;
   /**
@@ -1696,6 +1699,7 @@ export interface ApiCardListBlockSelect<T extends boolean = true> {
   description?: T;
   cardType?: T;
   category_id?: T;
+  accessory_category?: T;
   build_type?: T;
   layout?: T;
   columns?: T;
@@ -2653,6 +2657,63 @@ export interface ProductAttributes {
   blockType: 'productAttributes';
 }
 /**
+ * Global settings for player pages
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "player".
+ */
+export interface Player {
+  id: string;
+  blocks?: (PlayerInfo | SkinsComponents | GearComponents | PCSpecs | SetupStreaming)[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PlayerInfo".
+ */
+export interface PlayerInfo {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'playerInfo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SkinsComponents".
+ */
+export interface SkinsComponents {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'skinsComponents';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GearComponents".
+ */
+export interface GearComponents {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gearComponents';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PCSpecs".
+ */
+export interface PCSpecs {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'pcSpecs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SetupStreaming".
+ */
+export interface SetupStreaming {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'setupStreaming';
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
@@ -2829,6 +2890,64 @@ export interface ProductAttributesSelect<T extends boolean = true> {
   showPower?: T;
   showCabinetType?: T;
   showSidePanel?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "player_select".
+ */
+export interface PlayerSelect<T extends boolean = true> {
+  blocks?:
+    | T
+    | {
+        playerInfo?: T | PlayerInfoSelect<T>;
+        skinsComponents?: T | SkinsComponentsSelect<T>;
+        gearComponents?: T | GearComponentsSelect<T>;
+        pcSpecs?: T | PCSpecsSelect<T>;
+        setupStreaming?: T | SetupStreamingSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PlayerInfo_select".
+ */
+export interface PlayerInfoSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SkinsComponents_select".
+ */
+export interface SkinsComponentsSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GearComponents_select".
+ */
+export interface GearComponentsSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PCSpecs_select".
+ */
+export interface PCSpecsSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SetupStreaming_select".
+ */
+export interface SetupStreamingSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }

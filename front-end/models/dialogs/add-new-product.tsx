@@ -28,6 +28,7 @@ import {
   PowerSupply,
   Case
 } from '@/types/prodcuts-base';
+import { ProductTypeMapNamesAccessories, PRODUCT_TYPE_NAMES as PRODUCT_TYPE_NAMES_ACCESSORIES } from '@/types/product-accessories-type';
 
 interface FormField {
   name: string;
@@ -38,7 +39,7 @@ interface FormField {
   placeholder?: string;
 }
 
-const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames, FormField[]> = {
+const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories, FormField[]> = {
   cpu: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Intel, AMD' },
     { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'Core i7-12700K' },
@@ -118,10 +119,64 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames, FormField[]> = {
     { name: 'cabinet_type', label: 'Cabinet Type', type: 'text', required: true, placeholder: 'Mid Tower, Full Tower' },
     { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, White' },
   ],
+  mouse: [
+    { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Logitech, Razer' },
+    { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, White' },
+    { name: 'connectivity_technology', label: 'Connectivity Technology', type: 'text', required: true, placeholder: 'USB, Bluetooth' },
+    { name: 'special_feature', label: 'Special Features', type: 'text', required: true, placeholder: 'RGB, DPI' },
+    { name: 'movement_detection_technology', label: 'Movement Detection Technology', type: 'text', required: true, placeholder: 'Optical, Laser' },
+    { name: 'number_of_buttons', label: 'Number of Buttons', type: 'integer', required: true, placeholder: '10' },
+  ],
+  monitor: [
+    { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Samsung, LG' },
+    { name: 'screen_size', label: 'Screen Size', type: 'number', required: true, placeholder: '27' },
+    { name: 'resolution', label: 'Resolution', type: 'text', required: true, placeholder: '1920x1080' },
+    { name: 'aspect_ratio', label: 'Aspect Ratio', type: 'text', required: true, placeholder: '16:9' },
+    { name: 'screen_surface_description', label: 'Screen Surface', type: 'text', required: true, placeholder: 'Matte, Glossy' },
+    { name: 'style', label: 'Style', type: 'text', required: true, placeholder: 'Gaming, Professional' },
+  ],
+  keyboard: [
+    { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Logitech, Razer' },
+    { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, White' },
+    { name: 'pattern', label: 'Pattern', type: 'text', required: true, placeholder: 'QWERTY' },
+    { name: 'compatible_devices', label: 'Compatible Devices', type: 'text', required: true, placeholder: 'PC, Mac' },
+    { name: 'connectivity_technology', label: 'Connectivity', type: 'text', required: true, placeholder: 'USB, Wireless' },
+    { name: 'keyboard_description', label: 'Description', type: 'text', required: true, placeholder: 'Mechanical gaming keyboard' },
+    { name: 'recommended_uses_for_product', label: 'Recommended Uses', type: 'text', required: true, placeholder: 'Gaming, Office' },
+    { name: 'special_feature', label: 'Special Features', type: 'text', required: true, placeholder: 'RGB, Macro keys' },
+    { name: 'number_of_keys', label: 'Number of Keys', type: 'integer', required: true, placeholder: '87, 104' },
+    { name: 'keyboard_backlighting_color_support', label: 'Backlighting', type: 'text', required: true, placeholder: 'RGB, White' },
+    { name: 'size', label: 'Size', type: 'text', required: true, placeholder: 'Full-size, TKL' },
+    { name: 'style', label: 'Style', type: 'text', required: true, placeholder: 'Gaming, Professional' },
+  ],
+  headset: [
+    { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Logitech, SteelSeries' },
+    { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, White' },
+    { name: 'par_placement', label: 'Ear Placement', type: 'text', required: true, placeholder: 'Over-ear, On-ear' },
+    { name: 'form_factor', label: 'Form Factor', type: 'text', required: true, placeholder: 'Closed-back, Open-back' },
+    { name: 'impedance', label: 'Impedance', type: 'integer', required: true, placeholder: '32' },
+    { name: 'size', label: 'Size', type: 'text', required: true, placeholder: 'One size fits all' },
+  ],
+  mousepad: [
+    { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'SteelSeries, Razer' },
+    { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, RGB' },
+    { name: 'special_feature', label: 'Special Features', type: 'text', required: true, placeholder: 'RGB, Anti-slip' },
+    { name: 'recommended_uses_for_product', label: 'Recommended Uses', type: 'text', required: true, placeholder: 'Gaming, Office' },
+    { name: 'material', label: 'Material', type: 'text', required: true, placeholder: 'Cloth, Hard plastic' },
+    { name: 'size', label: 'Size', type: 'text', required: true, placeholder: 'Large, Medium' },
+    { name: 'style', label: 'Style', type: 'text', required: true, placeholder: 'Gaming, Professional' },
+  ],
+  chair: [
+    { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Herman Miller, Steelcase' },
+    { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, Gray' },
+    { name: 'product_dimensions', label: 'Dimensions', type: 'text', required: true, placeholder: '27" x 27" x 45"' },
+    { name: 'size', label: 'Size', type: 'text', required: true, placeholder: 'Standard, Large' },
+    { name: 'back_style', label: 'Back Style', type: 'text', required: true, placeholder: 'High-back, Mid-back' },
+  ],
 } as const;
 
 interface FormData {
-  category: keyof ProductTypeMapNames;
+  category: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories;
   asin: string;
   title: string;
   price: string;
@@ -138,18 +193,20 @@ export function AddNewProduct({
   data,
   onOpenChange, 
   onDelete,
-  productId
+  productId,
+  isAccessoriesPage = false
 }: {
-  activeCategory: keyof ProductTypeMapNames, 
+  activeCategory: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories, 
   onHandleSubmit: (data: FormData) => void,
   open?: boolean,
   data?: Partial<FormData>,
   onOpenChange?: (open: boolean) => void,
   onDelete?: (id: string | number) => void,
-  productId?: string | number
+  productId?: string | number,
+  isAccessoriesPage?: boolean
 }) {
   const [internalOpen, setInternalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapNames>(activeCategory);
+  const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories>(activeCategory);
   const [isSubmitAttempted, setIsSubmitAttempted] = useState(false);
   const { toast } = useToast();
 
@@ -267,6 +324,18 @@ export function AddNewProduct({
     return categoryMap[category];
   };
 
+  const getCategoryIdAccessories = (category: keyof ProductTypeMapNamesAccessories): number => {
+    const categoryMap: Record<keyof ProductTypeMapNamesAccessories, number> = {
+      mouse: 9,
+      monitor: 10,
+      keyboard: 11,
+      headset: 12,
+      mousepad: 13,
+      chair: 14,
+    };
+    return categoryMap[category];
+  };
+
   const getCategoryKeyById = (categoryId: number): keyof ProductTypeMapNames | null => {
     const idToCategoryMap: Record<number, keyof ProductTypeMapNames> = {
       1: 'cpu',
@@ -281,15 +350,27 @@ export function AddNewProduct({
     return idToCategoryMap[categoryId] || null;
   };
 
+  const getCategoryKeyByIdAccessories = (categoryId: number): keyof ProductTypeMapNamesAccessories | null => {
+    const idToCategoryMap: Record<number, keyof ProductTypeMapNamesAccessories> = {
+      9: 'mouse',
+      10: 'monitor',
+      11: 'keyboard',
+      12: 'headset',
+      13: 'mousepad',
+      14: 'chair',
+    };
+    return idToCategoryMap[categoryId] || null;
+  };
+
   const convertProductReadToFormData = (productData: any): Partial<FormData> => {
     console.log('🔄 Converting ProductRead to FormData:', productData);
     
     if (!productData) return {};
 
     // Determine category from category.id or fallback to activeCategory
-    let categoryKey: keyof ProductTypeMapNames = activeCategory;
+    let categoryKey: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories = activeCategory;
     if (productData.category?.id) {
-      const detectedCategory = getCategoryKeyById(productData.category.id);
+      const detectedCategory = getCategoryKeyById(productData.category.id) || getCategoryKeyByIdAccessories(productData.category.id);
       if (detectedCategory) {
         categoryKey = detectedCategory;
       }
@@ -485,6 +566,12 @@ export function AddNewProduct({
     try {
       // Convert and validate data types
       const convertedData = convertAndValidateTypes(data);
+      
+      // For accessories, ensure model field is present (set to empty string if not provided)
+      if (isAccessoriesPage && !convertedData.model) {
+        convertedData.model = '';
+      }
+      
       // Call the parent handler with converted data
       onHandleSubmit(convertedData);
 
@@ -545,7 +632,7 @@ export function AddNewProduct({
     }
   };
 
-  const handleCategoryChange = (category: keyof ProductTypeMapNames) => {
+  const handleCategoryChange = (category: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories) => {
     setSelectedCategory(category);
     setIsSubmitAttempted(false); 
     form.setValue('category', category);
@@ -667,7 +754,12 @@ export function AddNewProduct({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <span>{isEditing ? 'Edit Product' : 'Add New Product'}</span>
-            <Badge variant="secondary">{PRODUCT_TYPE_NAMES[selectedCategory]}</Badge>
+            <Badge variant="secondary">
+              {isAccessoriesPage 
+                ? PRODUCT_TYPE_NAMES_ACCESSORIES[selectedCategory as keyof ProductTypeMapNamesAccessories]
+                : PRODUCT_TYPE_NAMES[selectedCategory as keyof ProductTypeMapNames]
+              }
+            </Badge>
           </DialogTitle>
           <DialogDescription>
             {isEditing 
@@ -687,24 +779,49 @@ export function AddNewProduct({
                   <CardDescription>Select the type of product you want to add</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Tabs value={selectedCategory} onValueChange={(value) => handleCategoryChange(value as keyof ProductTypeMapNames)}>
+                  <Tabs value={selectedCategory} onValueChange={(value) => handleCategoryChange(value as keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories)}>
                     <TabsList className="grid w-full grid-cols-4">
-                      {Object.entries(PRODUCT_TYPE_NAMES).map(([key, name]) => (
-                        <TabsTrigger key={key} value={key} className="text-xs">
-                          {name}
-                        </TabsTrigger>
-                      ))}
+                      {isAccessoriesPage ? (
+                        // Show accessories categories
+                        Object.entries(PRODUCT_TYPE_NAMES_ACCESSORIES).map(([key, name]) => (
+                          <TabsTrigger key={key} value={key} className="text-xs">
+                            {name}
+                          </TabsTrigger>
+                        ))
+                      ) : (
+                        // Show PC component categories
+                        Object.entries(PRODUCT_TYPE_NAMES).map(([key, name]) => (
+                          <TabsTrigger key={key} value={key} className="text-xs">
+                            {name}
+                          </TabsTrigger>
+                        ))
+                      )}
                     </TabsList>
-                    {Object.entries(PRODUCT_TYPE_NAMES).map(([key, name]) => (
-                      <TabsContent key={key} value={key} className="mt-4">
-                        <div className="text-sm text-muted-foreground">
-                          {isEditing 
-                            ? `Editing ${name.toLowerCase()} in the catalog`
-                            : `Adding a new ${name.toLowerCase()} to the catalog`
-                          }
-                        </div>
-                      </TabsContent>
-                    ))}
+                    {isAccessoriesPage ? (
+                      // Show accessories descriptions
+                      Object.entries(PRODUCT_TYPE_NAMES_ACCESSORIES).map(([key, name]) => (
+                        <TabsContent key={key} value={key} className="mt-4">
+                          <div className="text-sm text-muted-foreground">
+                            {isEditing 
+                              ? `Editing ${name.toLowerCase()} in the catalog`
+                              : `Adding a new ${name.toLowerCase()} to the catalog`
+                            }
+                          </div>
+                        </TabsContent>
+                      ))
+                    ) : (
+                      // Show PC component descriptions
+                      Object.entries(PRODUCT_TYPE_NAMES).map(([key, name]) => (
+                        <TabsContent key={key} value={key} className="mt-4">
+                          <div className="text-sm text-muted-foreground">
+                            {isEditing 
+                              ? `Editing ${name.toLowerCase()} in the catalog`
+                              : `Adding a new ${name.toLowerCase()} to the catalog`
+                            }
+                          </div>
+                        </TabsContent>
+                      ))
+                    )}
                   </Tabs>
                 </CardContent>
               </Card>
@@ -855,8 +972,19 @@ export function AddNewProduct({
             {/* Product Specific Attributes */}
             <Card>
               <CardHeader>
-                <CardTitle>{PRODUCT_TYPE_NAMES[selectedCategory]} Specifications</CardTitle>
-                <CardDescription>Technical specifications for this {PRODUCT_TYPE_NAMES[selectedCategory]?.toLowerCase()}</CardDescription>
+                <CardTitle>
+                  {isAccessoriesPage 
+                    ? PRODUCT_TYPE_NAMES_ACCESSORIES[selectedCategory as keyof ProductTypeMapNamesAccessories]
+                    : PRODUCT_TYPE_NAMES[selectedCategory as keyof ProductTypeMapNames]
+                  } Specifications
+                </CardTitle>
+                <CardDescription>
+                  Technical specifications for this {
+                    isAccessoriesPage 
+                      ? PRODUCT_TYPE_NAMES_ACCESSORIES[selectedCategory as keyof ProductTypeMapNamesAccessories]?.toLowerCase()
+                      : PRODUCT_TYPE_NAMES[selectedCategory as keyof ProductTypeMapNames]?.toLowerCase()
+                  }
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">

@@ -8,6 +8,7 @@ import { BuildDialog, DeleteBuildDialog } from '@/models/dialogs';
 import BuildViewer from '@/models/dialogs/build-viewer';
 import { BuildRead } from '@/types/prodcuts-base';
 import { Plus } from 'lucide-react';
+import Link from 'next/link';
 import { DataTable } from '@/components/data-table';
 import { useRouter } from 'next/navigation';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -188,13 +189,18 @@ export default function Builds() {
             </Label>
           </div>
           <div className="flex items-center gap-2">
-            <Button 
-              variant="default"
-              className="cursor-pointer"
-              onClick={() => router.push('/configurator')}
-            >
-              Configurator
-            </Button>
+            <Link href="/accessories">
+                <Button>Accessories</Button>
+            </Link>
+            <Link href="/skins">
+                <Button>Skins</Button>
+            </Link>
+            <Link href="/">
+                <Button>Products</Button>
+            </Link>
+            <Link href="/configurator">
+                <Button>Configurator</Button>
+            </Link>
             <Button 
               variant="default"
               className="cursor-pointer"

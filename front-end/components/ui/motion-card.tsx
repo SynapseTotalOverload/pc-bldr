@@ -1,10 +1,11 @@
 import { cn } from '@/lib/utils';
 import { ProductRead } from '@/types/prodcuts-base';
+import { ProductRead as ProductReadAccessories } from '@/types/product-accessories-type';
 import { AnimatePresence, motion } from 'motion/react';
 import { Card as CardComponent } from './card';
 import { useState } from 'react';
 
-export const HoverEffect = ({ products, className }: { products: ProductRead[]; className?: string }) => {
+export const HoverEffect = ({ products, className }: { products: ProductRead[] | ProductReadAccessories[]; className?: string }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (

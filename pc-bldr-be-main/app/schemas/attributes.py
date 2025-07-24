@@ -80,6 +80,60 @@ class CaseAttributesUpdateSchema(BaseAttrsSchema):
     color: Optional[str] = None
 
 
+class MouseAttributesUpdateSchema(BaseAttrsSchema):
+    color: Optional[str] = None
+    connectivity_technology: Optional[str] = None
+    special_feature: Optional[str] = None
+    movement_detection_technology: Optional[str] = None
+    number_of_buttons: Optional[int] = None
+
+
+class MonitorAttributesUpdateSchema(BaseAttrsSchema):
+    screen_size: Optional[float] = None
+    resolution: Optional[str] = None
+    aspect_ratio: Optional[str] = None
+    screen_surface_description: Optional[str] = None
+    style: Optional[str] = None
+
+
+class KeyboardAttributesUpdateSchema(BaseAttrsSchema):
+    pattern: Optional[str] = None
+    compatible_devices: Optional[str] = None
+    connectivity_technology: Optional[str] = None
+    keyboard_description: Optional[str] = None
+    recommended_uses_for_product: Optional[str] = None
+    special_feature: Optional[str] = None
+    number_of_keys: Optional[int] = None
+    keyboard_backlighting_color_support: Optional[str] = None
+    color: Optional[str] = None
+    size: Optional[str] = None
+    style: Optional[str] = None
+
+
+class HeadsetAttributesUpdateSchema(BaseAttrsSchema):
+    color: Optional[str] = None
+    par_placement: Optional[str] = None
+    form_factor: Optional[str] = None
+    impedance: Optional[int] = None
+    size: Optional[str] = None
+
+
+class MousepadAttributesUpdateSchema(BaseAttrsSchema):
+    color: Optional[str] = None
+    special_feature: Optional[str] = None
+    recommended_uses_for_product: Optional[str] = None
+    material: Optional[str] = None
+    size: Optional[str] = None
+    style: Optional[str] = None
+
+
+class ChairAttributesUpdateSchema(BaseAttrsSchema):
+    color: Optional[str] = None
+    product_dimensions: Optional[str] = None
+    size: Optional[str] = None
+    back_style: Optional[str] = None
+
+
 # Union type for all attribute update schemas
 AttributesUpdateUnion = Union[
     CPUAttributesUpdateSchema,
@@ -90,4 +144,10 @@ AttributesUpdateUnion = Union[
     GPUAttributesUpdateSchema,
     PowerSupplyAttributesUpdateSchema,
     CaseAttributesUpdateSchema,
+    MouseAttributesUpdateSchema,
+    MonitorAttributesUpdateSchema,
+    KeyboardAttributesUpdateSchema,
+    HeadsetAttributesUpdateSchema,
+    MousepadAttributesUpdateSchema,
+    ChairAttributesUpdateSchema,
 ]

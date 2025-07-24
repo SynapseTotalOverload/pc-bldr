@@ -359,6 +359,211 @@ const renderCaseAttributes = (attrs: any) => (
   </div>
 );
 
+const renderMouseAttributes = (attrs: any) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Color</span>
+        <span className="font-medium">{attrs.color}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Number of Buttons</span>
+        <span className="font-medium">{attrs.number_of_buttons}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Special Feature</span>
+        <span className="font-medium">{attrs.special_feature}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Movement Detection Technology</span>
+        <span className="font-medium">{attrs.movement_detection_technology}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Connectivity Technology</span>
+        <span className="font-medium">{attrs.connectivity_technology}</span>
+      </div>
+    </div>
+  </div>
+);
+
+const renderMonitorAttributes = (attrs: any) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Screen Size</span>
+        <span className="font-medium">{attrs.screen_size} inches</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Resolution</span>
+        <span className="font-medium">{attrs.resolution}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Aspect Ratio</span>
+        <span className="font-medium">{attrs.aspect_ratio}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Screen Surface Description</span>
+        <span className="font-medium">{attrs.screen_surface_description}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Style</span>
+        <span className="font-medium">{attrs.style}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Style</span>
+        <span className="font-medium">{attrs.style}</span>
+      </div>
+    </div>
+  </div>
+);
+
+const renderKeyboardAttributes = (attrs: any) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Patern</span>
+        <span className="font-medium">{attrs.patern}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Compatible Devices</span>
+        <span className="font-medium">{attrs.compatible_devices}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Connectivity Technology</span>
+        <span className="font-medium">{attrs.connectivity_technology}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Keyboard Description</span>
+        <span className="font-medium">{attrs.keyboard_description}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Recommended Uss For Product</span>
+        <span className="font-medium">{attrs.recommended_use_for_product}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Special Feature</span>
+        <span className="font-medium">{attrs.special_feature}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Number of Keys</span>
+        <span className="font-medium">{attrs.number_of_keys}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Keyboard Backlight</span>
+        <span className="font-medium">{attrs.keyboard_backlight}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Color</span>
+        <span className="font-medium">{attrs.color}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Size</span>
+        <span className="font-medium">{attrs.size}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Style</span>
+        <span className="font-medium">{attrs.style}</span>
+      </div>
+    </div>
+  </div>
+);
+
+const renderHeadsetAttributes = (attrs: any) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Color</span>
+        <span className="font-medium">{attrs.color}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Ear Placement</span>
+        <span className="font-medium">{attrs.par_placement}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Form Factor</span>
+        <span className="font-medium">{attrs.form_factor}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Impedance</span>
+        <span className="font-medium">{attrs.impedance}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Size</span>
+        <span className="font-medium">{attrs.size}</span>
+      </div>
+    </div>
+  </div>
+);
+
+const renderMousepadAttributes = (attrs: any) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Color</span>
+        <span className="font-medium">{attrs.color}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Special Feature</span>
+        <span className="font-medium">{attrs.special_feature}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Recommended Uses For Product</span>
+        <span className="font-medium">{attrs.recommended_uses_for_product}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Material</span>
+        <span className="font-medium">{attrs.material}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Size</span>
+        <span className="font-medium">{attrs.size}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Style</span>
+        <span className="font-medium">{attrs.style}</span>
+      </div>
+    </div>
+  </div>
+);
+
+const renderChairAttributes = (attrs: any) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Color</span>
+        <span className="font-medium">{attrs.color}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Product Description</span>
+        <span className="font-medium">{attrs.product_description}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Back Style</span>
+        <span className="font-medium">{attrs.back_style}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Size</span>
+        <span className="font-medium">{attrs.size}</span>
+      </div>
+    </div>
+  </div>
+);
+
+
 const renderAttributes = (attrs: any) => {
   console.log('🔧 Rendering attributes:', attrs);
   
@@ -389,6 +594,18 @@ const renderAttributes = (attrs: any) => {
       return renderCPUCoolerAttributes(attrs);
     case 'case':
       return renderCaseAttributes(attrs);
+    case 'mouse':
+      return renderMouseAttributes(attrs);
+    case 'monitor':
+      return renderMonitorAttributes(attrs);
+    case 'keyboard':
+      return renderKeyboardAttributes(attrs);
+    case 'headset':
+      return renderHeadsetAttributes(attrs);
+    case 'mousepad':
+      return renderMousepadAttributes(attrs);
+    case 'chair':
+      return renderChairAttributes(attrs);
     default:
       console.log('⚠️ Unknown attribute type:', attrs.type);
       return (
@@ -506,10 +723,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                       <span className="text-muted-foreground">Brand</span>
                       <span className="font-medium">{product.attrs?.brand || 'N/A'}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Model</span>
-                      <span className="font-medium">{product.attrs?.model || 'N/A'}</span>
-                    </div>
+                    {product.category?.id && product.category.id >= 1 && product.category.id <= 8 && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Model</span>
+                        <span className="font-medium">{product.attrs?.model || 'N/A'}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 

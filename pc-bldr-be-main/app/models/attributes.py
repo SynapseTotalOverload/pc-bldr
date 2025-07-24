@@ -100,3 +100,63 @@ class CaseAttributes(BaseAttrsModel):
     side_panel = Column(String)
     cabinet_type = Column(String)
     color = Column(String)
+
+class MouseAttributes(BaseAttrsModel):
+    product = relationship("Product", back_populates="mouse_attributes")
+
+    color = Column(String)
+    connectivity_technology = Column(String)
+    special_feature = Column(String)
+    movement_detection_technology = Column(String)
+    number_of_buttons = Column(Integer)
+
+class MonitorAttributes(BaseAttrsModel):
+    product = relationship("Product", back_populates="monitor_attributes")
+
+    screen_size = Column(Float)
+    resolution = Column(String)
+    aspect_ratio = Column(String)
+    screen_surface_description = Column(String)
+    style = Column(String)
+
+class KeyboardAttributes(BaseAttrsModel):
+    product = relationship("Product", back_populates="keyboard_attributes")
+
+    pattern = Column(String)
+    compatible_devices = Column(String)
+    connectivity_technology = Column(String)
+    keyboard_description = Column(String)
+    recommended_uses_for_product = Column(String)
+    special_feature = Column(String)
+    number_of_keys = Column(Integer)
+    keyboard_backlighting_color_support = Column(String)
+    color = Column(String)
+    size = Column(String)
+    style = Column(String)
+
+class HeadsetAttributes(BaseAttrsModel):
+    product = relationship("Product", back_populates="headset_attributes")
+
+    color = Column(String)
+    par_placement = Column(String)
+    form_factor = Column(String)
+    impedance = Column(Integer)
+    size = Column(String)
+
+class MousepadAttributes(BaseAttrsModel):
+    product = relationship("Product", back_populates="mousepad_attributes")
+
+    color = Column(String)
+    special_feature = Column(String)
+    recommended_uses_for_product = Column(String)
+    material = Column(String)
+    size = Column(String)
+    style = Column(String)
+
+class ChairAttributes(BaseAttrsModel):
+    product = relationship("Product", back_populates="chair_attributes")
+
+    color = Column(String)
+    product_dimensions = Column(String)
+    size = Column(String)
+    back_style = Column(String)

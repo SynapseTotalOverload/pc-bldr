@@ -1,5 +1,28 @@
-import { CPU, CPUCooler, GPU, Motherboard, PowerSupply, ProductAttrs, ProductRead, ProductTypeMapIds, RAM, Storage, Case } from '@/types/prodcuts-base';
+import { 
+  CPU,
+  CPUCooler,
+  GPU,
+  Motherboard,
+  PowerSupply,
+  ProductAttrs,
+  ProductRead,
+  ProductTypeMapIds,
+  RAM,
+  Storage,
+  Case
+} from '@/types/prodcuts-base';
 import { ColumnDef } from '@tanstack/react-table';
+import { 
+  ProductAttrs as ProductAttrsAccessories, 
+  Mouse, 
+  Mousepad, 
+  Headset, 
+  Chair, 
+  ProductTypeMapIds as ProductTypeMapIdsAccessories,
+  ProductRead as ProductReadAccessories,
+  Monitor,
+  Keyboard,
+} from '@/types/product-accessories-type';
 
 function isCPU(attrs: ProductAttrs | null | undefined, categoryId?: number): attrs is CPU {
   return categoryId === 1;
@@ -33,7 +56,29 @@ function isCase(attrs: ProductAttrs | null | undefined, categoryId?: number): at
   return categoryId === 8;
 }
 
+function isMouse(attrs: ProductAttrsAccessories | null | undefined, categoryId?: number): attrs is Mouse {
+  return categoryId === 9;
+}
 
+function isMonitor(attrs: ProductAttrsAccessories | null | undefined, categoryId?: number): attrs is Monitor {
+  return categoryId === 10;
+}
+
+function isKeyboard(attrs: ProductAttrsAccessories | null | undefined, categoryId?: number): attrs is Keyboard {
+  return categoryId === 11;
+}
+
+function isHeadset(attrs: ProductAttrsAccessories | null | undefined, categoryId?: number): attrs is Headset {
+  return categoryId === 12;
+}
+
+function isMousepad(attrs: ProductAttrsAccessories | null | undefined, categoryId?: number): attrs is Mousepad {
+  return categoryId === 13;
+}
+
+function isChair(attrs: ProductAttrsAccessories | null | undefined, categoryId?: number): attrs is Chair {
+  return categoryId === 14;
+}
 
 export const categoryColumnExtensions: {
   [K in keyof ProductTypeMapIds]?: ColumnDef<ProductRead>[];
@@ -559,3 +604,356 @@ export const categoryColumnExtensions: {
     },
   ]
 };
+
+export const categoryColumnExtensionsAccessories: {
+  [K in keyof ProductTypeMapIdsAccessories]?: ColumnDef<ProductReadAccessories>[];
+} = {
+  MOUSE: [
+    {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMouse(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Color',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMouse(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
+    },
+    {
+      header: 'Connectivity Technology',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMouse(attrs, categoryId) && attrs ? attrs.connectivity_technology : '—';
+      },
+    },
+    {
+      header: 'Special Features',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMouse(attrs, categoryId) && attrs ? attrs.special_feature : '—';
+      },
+    },
+    {
+      header: 'Movement Detection Technology',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMouse(attrs, categoryId) && attrs ? attrs.movement_detection_technology : '—';
+      },
+    },
+    {
+      header: 'Number of Buttons',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMouse(attrs, categoryId) && attrs ? attrs.number_of_buttons : '—';
+      },
+    },
+  ],
+  MONITOR: [
+    {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMonitor(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Screen Size',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMonitor(attrs, categoryId) && attrs ? attrs.screen_size : '—';
+      },
+    },
+    {
+      header: 'Resolution',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMonitor(attrs, categoryId) && attrs ? attrs.resolution : '—';
+      },
+    },
+    {
+      header: 'Aspect Ratio',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMonitor(attrs, categoryId) && attrs ? attrs.aspect_ratio : '—';
+      },
+    },
+    {
+      header: 'Screen Surface',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMonitor(attrs, categoryId) && attrs ? attrs.screen_surface_description : '—';
+      },
+    },
+    {
+      header: 'Style',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMonitor(attrs, categoryId) && attrs ? attrs.style : '—';
+      },
+    }
+  ],
+  KEYBOARD: [
+    {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Pattern',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.pattern : '—';
+      },
+    },
+    {
+      header: 'Compatible Devices',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.compatible_devices : '—';
+      },
+    },
+    {
+      header: 'Connectivity Technology',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.connectivity_technology : '—';
+      },
+    },
+    {
+      header: 'Keyboard Description',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.keyboard_description : '—';
+      },
+    },
+    {
+      header: 'Recommended Uses for Product',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.recommended_uses_for_product : '—';
+      },
+    },
+    {
+      header: 'Special Feature',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.special_feature : '—';
+      },
+    },
+    {
+      header: 'Number of Keys',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.number_of_keys : '—';
+      },
+    },
+    {
+      header: 'Keyboard Backlighting Color Support',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.keyboard_backlighting_color_support : '—';
+      },
+    },
+    {
+      header: 'Color',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
+    },
+    {
+      header: 'Size',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.size : '—';
+      },
+    },
+    {
+      header: 'Style',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isKeyboard(attrs, categoryId) && attrs ? attrs.style : '—';
+      },
+    },
+  ],
+  HEADSET: [
+    {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadset(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Color',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadset(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
+    },
+    {
+      header: 'Par Placement',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadset(attrs, categoryId) && attrs ? attrs.par_placement : '—';
+      },
+    },
+    {
+      header: 'Form Factor',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadset(attrs, categoryId) && attrs ? attrs.form_factor : '—';
+      },
+    },
+    {
+      header: 'Impedance',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadset(attrs, categoryId) && attrs ? attrs.impedance : '—';
+      },
+    },
+    {
+      header: 'Size',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadset(attrs, categoryId) && attrs ? attrs.size : '—';
+      },
+    },
+  ],
+  MOUSEPAD: [
+    {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMousepad(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Color',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMousepad(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
+    },
+    {
+      header: 'Special Feature',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMousepad(attrs, categoryId) && attrs ? attrs.special_feature : '—';
+      },
+    },
+    {
+      header: 'Recommended Uses for Product',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMousepad(attrs, categoryId) && attrs ? attrs.recommended_uses_for_product : '—';
+      },
+    },
+    {
+      header: 'Material',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMousepad(attrs, categoryId) && attrs ? attrs.material : '—';
+      },
+    },
+    {
+      header: 'Size',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMousepad(attrs, categoryId) && attrs ? attrs.size : '—';
+      },
+    },
+    {
+      header: 'Style',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMousepad(attrs, categoryId) && attrs ? attrs.style : '—';
+      },
+    },
+  ],
+  CHAIR: [
+    {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isChair(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Color',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isChair(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
+    },
+    {
+      header: 'Product Dimensions',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isChair(attrs, categoryId) && attrs ? attrs.product_dimensions : '—';
+      },
+    },
+    {
+      header: 'Size',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isChair(attrs, categoryId) && attrs ? attrs.size : '—';
+      },
+    },
+    {
+      header: 'Back Style',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isChair(attrs, categoryId) && attrs ? attrs.back_style : '—';
+      },
+    }
+  ]
+}

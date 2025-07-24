@@ -14,6 +14,12 @@ if TYPE_CHECKING:
         StorageAttributes, 
         PowerSupplyAttributes, 
         CaseAttributes,
+        MouseAttributes,
+        MonitorAttributes,
+        KeyboardAttributes,
+        HeadsetAttributes,
+        MousepadAttributes,
+        ChairAttributes,
     )
 
 
@@ -32,6 +38,12 @@ class Product(Base):
     power_supply_attributes: Mapped["PowerSupplyAttributes"] = relationship("PowerSupplyAttributes", back_populates="product", uselist=False)
     ram_attributes: Mapped["RAMAttributes"] = relationship("RAMAttributes", back_populates="product", uselist=False)
     storage_attributes: Mapped["StorageAttributes"] = relationship("StorageAttributes", back_populates="product", uselist=False)
+    mouse_attributes: Mapped["MouseAttributes"] = relationship("MouseAttributes", back_populates="product", uselist=False)
+    monitor_attributes: Mapped["MonitorAttributes"] = relationship("MonitorAttributes", back_populates="product", uselist=False)
+    keyboard_attributes: Mapped["KeyboardAttributes"] = relationship("KeyboardAttributes", back_populates="product", uselist=False)
+    headset_attributes: Mapped["HeadsetAttributes"] = relationship("HeadsetAttributes", back_populates="product", uselist=False)
+    mousepad_attributes: Mapped["MousepadAttributes"] = relationship("MousepadAttributes", back_populates="product", uselist=False)
+    chair_attributes: Mapped["ChairAttributes"] = relationship("ChairAttributes", back_populates="product", uselist=False)
     low_image_url = Column(String, nullable=True)
     high_image_url = Column(String, nullable=True)
 

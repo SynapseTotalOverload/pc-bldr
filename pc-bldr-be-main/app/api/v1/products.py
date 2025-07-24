@@ -70,6 +70,12 @@ def create_product_manually(product: ProductCreate, db: Session = Depends(get_db
     - 6: Storage
     - 7: Power Supply
     - 8: Case
+    - 9: Mouse
+    - 10: Monitor
+    - 11: Keyboard
+    - 12: Headset
+    - 13: Mousepad
+    - 14: Chair
     """
     return ProductRead.from_orm_with_attrs(product_crud.create(db, obj_in=product))
 
@@ -79,7 +85,7 @@ def list_products(
     page_size: int = Query(20, ge=1, le=100),
     category_id: int | None = Query(
         None, 
-        le=8, ge=1, 
+        le=15, ge=1, 
         description=(
             "1 - CPU;\n"
             "2 - CPU Cooler;\n"
@@ -89,7 +95,18 @@ def list_products(
             "6 - ROM;\n"
             "7 - PSU;\n"
             "8 - Case;\n"
+            "9 - Mouse;\n"
+            "10 - Monitor;\n"
+            "11 - Keyboard;\n"
+            "12 - Headset;\n"
+            "13 - Mousepad;\n"
+            "14 - Chair;\n"
             "If None - search in all categories"),
+    ),
+    periphery_flag: bool = Query(
+        False, 
+        description="""If False and category_id is None - return categories 1-8,
+        otherwise - return only categoies 9-14"""
     ),
     price_min: int | None = Query(
         None, 
@@ -112,6 +129,7 @@ def list_products(
         page=page, 
         page_size=page_size, 
         category_id=category_id, 
+        periphery=periphery_flag,
         price_min=price_min, 
         price_max=price_max, 
         query=query

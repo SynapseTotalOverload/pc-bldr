@@ -70,7 +70,7 @@ export interface CardBuild {
 
 export type CardProps = {
   item: CardProduct | CardBuild
-  cardType: 'product' | 'builds'
+  cardType: 'product' | 'accessories' | 'builds'
   styling?: {
     cardStyle?: 'default' | 'elevated' | 'bordered' | 'minimal'
   }
@@ -79,9 +79,10 @@ export type CardProps = {
 export interface ApiCardListBlockProps {
   title?: string
   description?: string
-  cardType?: 'product' | 'builds'
+  cardType?: 'product' | 'accessories' | 'builds'
   category_id?: string
   build_type?: string
+  accessory_category?: string
   apiEndpoint?: string
   apiParams?: {
     search?: string

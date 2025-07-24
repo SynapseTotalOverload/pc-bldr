@@ -9,6 +9,7 @@ import {
   ProductRead,
   FrontendToBackendCategoryMap,
 } from '@/types/prodcuts-base';
+import { ProductTypeMapNamesAccessories } from '@/types/product-accessories-type';
 import { ColumnDef } from '@tanstack/react-table';
 import { categoryColumnExtensions } from '@/models/products-table/columns';
 import Link from 'next/link';
@@ -26,7 +27,7 @@ import { useRouter } from 'next/navigation';
 import { ThemeToggle } from '@/components/theme-provider';
 
 interface FormData {
-  category: keyof ProductTypeMapNames;
+  category: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories;
   asin: string;
   title: string;
   price: string;
@@ -61,8 +62,9 @@ export default function Home() {
   const handleAddProduct = async (data: FormData) => {
     try {
       // Transform data to match backend ProductCreate schema
-      const getCategoryId = (category: keyof ProductTypeMapNames): number => {
-        const categoryMap: Record<keyof ProductTypeMapNames, number> = {
+      const getCategoryId = (category: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories): number => {
+        const categoryMap: Record<keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories, number> = {
+          // PC Components
           cpu: 1,
           cpu_cooler: 2,
           gpu: 3,
@@ -71,6 +73,13 @@ export default function Home() {
           storage: 6,
           power_supply: 7,
           case: 8,
+          // Accessories
+          mouse: 9,
+          monitor: 10,
+          keyboard: 11,
+          headset: 12,
+          mousepad: 13,
+          chair: 14,
         };
         return categoryMap[category];
       };
@@ -80,7 +89,7 @@ export default function Home() {
       const categoryId = getCategoryId(data.category);
       
       // Validate category_id
-      if (!categoryId || categoryId < 1 || categoryId > 8) {
+      if (!categoryId || categoryId < 1 || categoryId > 14) {
         throw new Error(`Invalid category: ${data.category}`);
       }
       
@@ -206,7 +215,7 @@ export default function Home() {
   ];
 
   return (
-          <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
+    <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
       <div className="z-10 w-full items-center justify-between font-mono text-sm">
         <div className="flex items-center justify-between">
           <h1 className="mb-8 text-4xl font-bold">PC Part Picker Products</h1>
@@ -224,9 +233,15 @@ export default function Home() {
                 <LayoutGrid className="h-4 w-4" />
               </ToggleGroupItem>
             </ToggleGroup>
+            <Link href="/accessories">
+                <Button>Accessories</Button>
+              </Link>
+            <Link href="/skins">
+                <Button>Skins</Button>
+              </Link>
             <Link href="/builds">
                 <Button>Builds</Button>
-              </Link>
+            </Link>
             <Link href="/configurator">
               <Button>Configurator</Button>
             </Link>

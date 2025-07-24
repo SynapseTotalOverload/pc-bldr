@@ -160,6 +160,7 @@ export interface ProductAttributes {
   
   color?: string
   
+  // CPU attributes
   architechture?: string
   base_speed?: number
   core_family?: string
@@ -173,11 +174,13 @@ export interface ProductAttributes {
   threads?: number
   turbo_speed?: number
   
+  // CPU Cooler attributes
   fan_rpm_base?: number
   fan_rpm_max?: number
   noise_level_base?: number
   noise_level_max?: number
   
+  // GPU attributes
   base_clock?: number
   chipset?: string
   clock_speed?: number
@@ -187,10 +190,12 @@ export interface ProductAttributes {
   mem_interface?: string
   memory?: number
   
+  // Motherboard attributes
   form_factor?: string
   max_ram_support?: number
   ram_slots?: number
   
+  // RAM attributes
   cas_latency?: string
   one_unit_memory?: number
   quantity?: number
@@ -198,15 +203,51 @@ export interface ProductAttributes {
   ram_type?: string
   total_memory?: number
   
+  // Storage attributes
   cache_mem?: number
   capacity?: number
   mem_type?: string
   
+  // Power Supply attributes
   efficiency?: string
   power?: number
   
+  // Case attributes
   cabinet_type?: string
   side_panel?: string
+  
+  // Mouse attributes (category 9)
+  connectivity_technology?: string
+  special_feature?: string
+  movement_detection_technology?: string
+  number_of_buttons?: number
+  
+  // Monitor attributes (category 10)
+  screen_size?: number
+  resolution?: string
+  aspect_ratio?: string
+  screen_surface_description?: string
+  style?: string
+  
+  // Keyboard attributes (category 11)
+  pattern?: string
+  compatible_devices?: string
+  keyboard_description?: string
+  recommended_uses_for_product?: string
+  number_of_keys?: number
+  keyboard_backlighting_color_support?: string
+  size?: string
+  
+  // Headset attributes (category 12)
+  par_placement?: string
+  impedance?: number
+  
+  // Mousepad attributes (category 13)
+  material?: string
+  
+  // Chair attributes (category 14)
+  product_dimensions?: string
+  back_style?: string
 }
 
 

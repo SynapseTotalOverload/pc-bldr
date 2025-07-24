@@ -11,15 +11,35 @@ const categories = [
   { id: 'case', label: 'Case' },
 ];
 
+const categoriesAccessories = [
+  { id: 'mouse', label: 'Mouse' },
+  { id: 'monitor', label: 'Monitor' },
+  { id: 'keyboard', label: 'Keyboard' },
+  { id: 'headset', label: 'Headset' },
+  { id: 'mousepad', label: 'Mousepad' },
+  { id: 'chair', label: 'Chair' },
+];
+
+const categoriesSkins = [
+  { id: 'knives', label: 'Knives' },
+  { id: 'gloves', label: 'Gloves' },
+  { id: 'pistols', label: 'Pistols' },
+  { id: 'rifles', label: 'Rifles' },
+  { id: 'smg', label: 'SMG' },
+  { id: 'heavy', label: 'Heavy' },
+];
+
 interface CategoryButtonsProps {
   selectedCategory: string | null;
   onSelectCategory: (category: string) => void;
+  isAccessories?: 0 | 1 | 2;
 }
 
-export function CategoryButtons({ selectedCategory, onSelectCategory }: CategoryButtonsProps) {
+export function CategoryButtons({ selectedCategory, onSelectCategory, isAccessories = 0 }: CategoryButtonsProps) {
+  const categoriesActive = isAccessories === 0 ? categories : isAccessories === 1 ? categoriesAccessories : categoriesSkins;
   return (
     <div className="mb-6 flex flex-wrap gap-2">
-      {categories.map((category) => (
+      {categoriesActive.map((category) => (
         <Button
           key={category.id}
           variant={selectedCategory === category.id ? 'default' : 'outline'}

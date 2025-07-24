@@ -21,6 +21,7 @@ export const ApiCardListBlock: React.FC<Props> = ({
   cardType = 'product',
   category_id,
   build_type,
+  accessory_category,
   layout = 'grid',
   columns = '3',
   itemsPerPage = 2,
@@ -52,9 +53,12 @@ export const ApiCardListBlock: React.FC<Props> = ({
 
         let result: ApiResponse | null = null
 
-        if (cardType === 'product') {
+        if (cardType === 'product' || cardType === 'accessories') {
           const searchParams = new URLSearchParams()
 
+          if(cardType === 'accessories') {
+            searchParams.append("periphery_flag", "true")
+          }
           if(activeCategory || category_id) {
             searchParams.append("category_id", activeCategory || category_id || '')
           }
@@ -135,7 +139,7 @@ export const ApiCardListBlock: React.FC<Props> = ({
     }
 
     fetchData()
-  }, [cardType, category_id, build_type, itemsPerPage, activeCategory, page, searchQuery, price_min, price_max])
+  }, [cardType, category_id, build_type, itemsPerPage, accessory_category, activeCategory, page, searchQuery, price_min, price_max])
 
   const handleCategoryChange = (category: string | null) => {
     setActiveCategory(category)
@@ -158,7 +162,8 @@ export const ApiCardListBlock: React.FC<Props> = ({
   }
 
   const shouldShowFilter = (cardType === 'product' && !category_id) || 
-                         (cardType === 'builds' && !build_type)
+                         (cardType === 'builds' && !build_type) ||
+                         (cardType === 'accessories' && !accessory_category)
 
   const gridCols = {
     '1': 'grid-cols-1',

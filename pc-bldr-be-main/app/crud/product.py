@@ -14,6 +14,12 @@ from app.models.attributes import (
     StorageAttributes,
     PowerSupplyAttributes,
     CaseAttributes,
+    MouseAttributes,
+    MonitorAttributes,
+    KeyboardAttributes,
+    HeadsetAttributes,
+    MousepadAttributes,
+    ChairAttributes,
 )
 from app.schemas.product import ProductCreate, ProductUpdate
 from app.schemas.attributes import (
@@ -25,6 +31,12 @@ from app.schemas.attributes import (
     GPUAttributesUpdateSchema,
     PowerSupplyAttributesUpdateSchema,
     CaseAttributesUpdateSchema,
+    MouseAttributesUpdateSchema,
+    MonitorAttributesUpdateSchema,
+    KeyboardAttributesUpdateSchema,
+    HeadsetAttributesUpdateSchema,
+    MousepadAttributesUpdateSchema,
+    ChairAttributesUpdateSchema,
 )
 
 
@@ -39,6 +51,12 @@ class CRUDProduct:
             joinedload(Product.power_supply_attributes),
             joinedload(Product.ram_attributes),
             joinedload(Product.storage_attributes),
+            joinedload(Product.mouse_attributes),
+            joinedload(Product.monitor_attributes),
+            joinedload(Product.keyboard_attributes),
+            joinedload(Product.headset_attributes),
+            joinedload(Product.mousepad_attributes),
+            joinedload(Product.chair_attributes),
         )
 
     def _get_attrs_relationship_name(self, attrs_model):
@@ -52,6 +70,12 @@ class CRUDProduct:
             StorageAttributes: "storage_attributes",
             PowerSupplyAttributes: "power_supply_attributes",
             CaseAttributes: "case_attributes",
+            MouseAttributes: "mouse_attributes",
+            MonitorAttributes: "monitor_attributes",
+            KeyboardAttributes: "keyboard_attributes",
+            HeadsetAttributes: "headset_attributes",
+            MousepadAttributes: "mousepad_attributes",
+            ChairAttributes: "chair_attributes",
         }
         return mapping.get(attrs_model)
 
@@ -66,6 +90,12 @@ class CRUDProduct:
             6: StorageAttributesUpdateSchema,
             7: PowerSupplyAttributesUpdateSchema,
             8: CaseAttributesUpdateSchema,
+            9: MouseAttributesUpdateSchema,
+            10: MonitorAttributesUpdateSchema,
+            11: KeyboardAttributesUpdateSchema,
+            12: HeadsetAttributesUpdateSchema,
+            13: MousepadAttributesUpdateSchema,
+            14: ChairAttributesUpdateSchema,
         }
         return mapping.get(category_id)
 
@@ -143,6 +173,7 @@ class CRUDProduct:
             page: int = 1, 
             page_size: int = 20, 
             category_id: int | None = None, 
+            periphery: bool = False,
             price_min: int | None = None, 
             price_max: int | None = None, 
             query: str | None = None
@@ -157,8 +188,13 @@ class CRUDProduct:
             stmt = stmt.where(Product.category_id == category_id)
             count_stmt = select(func.count()).select_from(Product).where(Product.category_id == category_id)
         else:
-            stmt = stmt.options(*self._get_joinedload_attrs_option())
-            count_stmt = select(func.count()).select_from(Product)
+            if periphery:
+                stmt = stmt.where(Product.category_id.in_([9, 10, 11, 12, 13, 14]))
+                count_stmt = select(func.count()).select_from(Product).where(Product.category_id.in_([9, 10, 11, 12, 13, 14]))
+            else:
+                stmt = stmt.where(Product.category_id.in_([1, 2, 3, 4, 5, 6, 7, 8]))
+                count_stmt = select(func.count()).select_from(Product).where(Product.category_id.in_([1, 2, 3, 4, 5, 6, 7, 8]))
+    
          
         if price_min:
             stmt = stmt.where(Product.price >= price_min)
