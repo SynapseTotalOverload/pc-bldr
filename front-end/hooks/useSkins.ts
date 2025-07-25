@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getSkins, SkinRead, GetSkinsParams } from '@/lib/skins-api';
 
 interface UseSkinsOptions {
@@ -21,6 +21,7 @@ interface UseSkinsResult {
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
+  searchSkins: (searchQuery: string) => Promise<void>;
 }
 
 export function useSkins({
@@ -32,6 +33,7 @@ export function useSkins({
   include_category = false,
 }: UseSkinsOptions): UseSkinsResult {
   const [skins, setSkins] = useState<SkinRead[]>([]);
+  const [currentSearch, setCurrentSearch] = useState(search);
   const [pagination, setPagination] = useState({
     total: 0,
     totalPages: 0,
@@ -41,7 +43,7 @@ export function useSkins({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchSkins = async () => {
+  const fetchSkins = useCallback(async (searchQuery?: string) => {
     setLoading(true);
     setError(null);
 
@@ -56,7 +58,7 @@ export function useSkins({
         include_category,
         ...(category_id && { category_id }),
         ...(weapon && weapon.trim() && { weapon: weapon.trim() }),
-        ...(search && search.trim() && { query: search.trim() }),
+        ...(searchQuery && searchQuery.trim() && { query: searchQuery.trim() }),
       };
 
       const data = await getSkins(params);
@@ -75,17 +77,24 @@ export function useSkins({
     } finally {
       setLoading(false);
     }
-  };
+  }, [category_id, weapon, page, pageSize, include_category]);
+
+  const searchSkins = useCallback(async (searchQuery: string) => {
+    setCurrentSearch(searchQuery);
+    await fetchSkins(searchQuery);
+  }, [fetchSkins]);
 
   useEffect(() => {
-    fetchSkins();
-  }, [category_id, weapon, page, pageSize, search, include_category]);
+    // Only fetch on mount and when non-search parameters change
+    fetchSkins(currentSearch);
+  }, [category_id, weapon, page, pageSize, include_category, fetchSkins, currentSearch]);
 
   return {
     skins,
     pagination,
     loading,
     error,
-    refetch: fetchSkins,
+    refetch: () => fetchSkins(currentSearch),
+    searchSkins,
   };
 }

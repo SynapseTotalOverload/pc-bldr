@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import select, func
+from sqlalchemy import select, func, or_, and_, text
 from sqlalchemy.orm import joinedload, Session
 from fastapi import HTTPException, status
 
@@ -203,14 +203,32 @@ class CRUDProduct:
             stmt = stmt.where(Product.price <= price_max)
             count_stmt = count_stmt.where(Product.price <= price_max)
         if query:
-            stmt = stmt.where(Product.title.ilike(f"%{query}%"))
-            count_stmt = count_stmt.where(Product.title.ilike(f"%{query}%"))
+            # Create search conditions that require ALL words to be present
+            words = [word.strip().lower() for word in query.split() if word.strip()]
+            if words:
+                # Create conditions for each word (ALL must match)
+                word_conditions = []
+                for word_item in words:
+                    # Each word must be found in title OR asin
+                    word_condition = or_(
+                        Product.title.ilike(f"%{word_item}%"),
+                        Product.asin.ilike(f"%{word_item}%")
+                    )
+                    word_conditions.append(word_condition)
+                
+                # ALL word conditions must be true (AND logic)
+                stmt = stmt.where(and_(*word_conditions))
+                count_stmt = count_stmt.where(and_(*word_conditions))
         total = db.scalar(count_stmt)
 
         if category_id:
             stmt = stmt.options(*self._get_joinedload_attrs_option())
+        
+        # Apply ordering by updated_at
+        stmt = stmt.order_by(Product.updated_at.desc())
+        print(stmt)
             
-        return db.scalars(stmt.order_by(Product.updated_at.desc())).all(), total
+        return db.scalars(stmt).all(), total
 
     def update(self, db: Session, *, db_obj: Product, obj_in: ProductUpdate):
         update_data = obj_in.model_dump(exclude_unset=True)
@@ -306,13 +324,8 @@ class CRUDProduct:
                 filters = ComponentFiltersBuilder.form_storage_compability_filters(selected_products)
             elif category_id == 7:  # Power Supply
                 filters = ComponentFiltersBuilder.form_power_supply_compability_filters(selected_products, budget or 0)
-
-                # Skip compatibility filters for PSU if no attributes exist
-                # pass //----------------------------------
             elif category_id == 8:  # Case
-                print(category_id,66666666)
                 filters = ComponentFiltersBuilder.form_case_compability_filters(selected_products)
-                print(filters,77777777)
         
         # Build query
         stmt = (
@@ -325,41 +338,44 @@ class CRUDProduct:
         if category_id:
             CatAttrTable = cat_id_to_attrs_model_map[category_id]
             stmt = stmt.join(CatAttrTable)
-
-            # stmt = stmt.where(Product.category_id == category_id)
-            # count_stmt = select(func.count()).select_from(Product).where(Product.category_id == category_id) //----------------------------------
             
-            # Apply compatibility filters (only if they exist and are not for PSU)
-            # if filters and category_id != 7: //----------------------------------
             if filters:
-                print(filters)
                 stmt = stmt.where(*filters)
-                # count_stmt = count_stmt.where(*filters) //----------------------------------
         else:
             stmt = stmt.options(*self._get_joinedload_attrs_option())
 
-
-
-        
         # Count query
         count_stmt = select(func.count()).select_from(Product)
-        print(stmt,88888888)
         if category_id:
             CatAttrTable = cat_id_to_attrs_model_map[category_id]
             count_stmt = count_stmt.join(CatAttrTable)
             if filters:
                 count_stmt = count_stmt.where(*filters)
-            # count_stmt = select(func.count()).select_from(Product) #----------------------------------
+        
         if query:
-            stmt = stmt.where(Product.title.ilike(f"%{query}%"))
-            count_stmt = count_stmt.where(Product.title.ilike(f"%{query}%"))
+            # Create search conditions that require ALL words to be present
+            words = [word.strip().lower() for word in query.split() if word.strip()]
+            if words:
+                # Create conditions for each word (ALL must match)
+                word_conditions = []
+                for word in words:
+                    # Each word must be found in title OR asin
+                    word_condition = or_(
+                        Product.title.ilike(f"%{word}%"),
+                        Product.asin.ilike(f"%{word}%")
+                    )
+                    word_conditions.append(word_condition)
+                
+                # ALL word conditions must be true (AND logic)
+                stmt = stmt.where(and_(*word_conditions))
+                count_stmt = count_stmt.where(and_(*word_conditions))
         
         total = db.scalar(count_stmt)
         
-        # if category_id:
-        #     stmt = stmt.options(*self._get_joinedload_attrs_option()) //----------------------------------
+        # Apply ordering by updated_at
+        stmt = stmt.order_by(Product.updated_at.desc())
             
-        return db.scalars(stmt.order_by(Product.updated_at.desc())).all(), total
+        return db.scalars(stmt).all(), total
 
     def remove(self, db: Session, *, id_: int):
         obj = db.get(Product, id_)
@@ -391,4 +407,5 @@ class CRUDProduct:
             )
             return result
 
-product_crud = CRUDProduct()
+
+product_crud = CRUDProduct() 

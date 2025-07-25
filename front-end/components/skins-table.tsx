@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import {
   ColumnDef,
   flexRender,
@@ -13,6 +13,74 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Search, X } from 'lucide-react'
+
+// New SearchInput component with button and Enter handling
+interface SearchInputProps {
+  placeholder?: string
+  value: string
+  onSearch: (value: string) => void
+  className?: string
+  loading?: boolean
+}
+
+function SearchInput({ placeholder = "Search...", value, onSearch, className, loading = false }: SearchInputProps) {
+  const [inputValue, setInputValue] = useState(value)
+
+  // Update input value when external value changes
+  React.useEffect(() => {
+    setInputValue(value)
+  }, [value])
+
+  const handleSearch = () => {
+    onSearch(inputValue)
+  }
+
+  const handleClear = () => {
+    setInputValue('')
+    onSearch('')
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch()
+    }
+  }
+
+  return (
+    <div className={`flex items-center space-x-2 ${className}`}>
+      <Input
+        placeholder={placeholder}
+        value={inputValue}
+        onChange={(event) => setInputValue(event.target.value)}
+        onKeyDown={handleKeyDown}
+        disabled={loading}
+        className="h-8 w-[150px] lg:w-[250px]"
+      />
+      <Button
+        type="button"
+        size="sm"
+        onClick={handleSearch}
+        disabled={loading}
+        className="h-8 px-3"
+      >
+        <Search className="h-4 w-4" />
+      </Button>
+      {inputValue && (
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={handleClear}
+          disabled={loading}
+          className="h-8 px-3"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      )}
+    </div>
+  )
+}
 
 interface SkinsTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -21,6 +89,7 @@ interface SkinsTableProps<TData, TValue> {
   searchPlaceholder?: string
   searchValue?: string
   onSearchChange?: (value: string) => void
+  loading?: boolean
   pagination: {
     total: number
     totalPages: number
@@ -38,6 +107,7 @@ export function SkinsTable<TData, TValue>({
   searchPlaceholder = "Search...",
   searchValue = "",
   onSearchChange,
+  loading = false,
   pagination,
   onPageChange,
   renderActions,
@@ -63,11 +133,11 @@ export function SkinsTable<TData, TValue>({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           {searchKey && onSearchChange && (
-            <Input
+            <SearchInput
               placeholder={searchPlaceholder}
               value={searchValue}
-              onChange={(event) => onSearchChange(event.target.value)}
-              className="h-8 w-[150px] lg:w-[250px]"
+              onSearch={onSearchChange}
+              loading={loading}
             />
           )}
         </div>

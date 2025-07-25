@@ -31,11 +31,23 @@ class CRUDSkin:
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
-        return db_obj
+        
+        # Return skin with category loaded
+        stmt = (
+            select(Skin)
+            .where(Skin.id == db_obj.id)
+            .options(joinedload(Skin.category))
+        )
+        return db.scalar(stmt)
 
     def get(self, db: Session, id_: int) -> Optional[Skin]:
         """Get skin by ID with category loaded"""
-        return db.get(Skin, id_)
+        stmt = (
+            select(Skin)
+            .where(Skin.id == id_)
+            .options(joinedload(Skin.category))
+        )
+        return db.scalar(stmt)
 
     def get_multi(
         self, 
@@ -85,8 +97,8 @@ class CRUDSkin:
                 (Skin.weapon.ilike(f"%{query}%"))
             )
         
-        if return_category:
-            stmt = stmt.options(joinedload(Skin.category))
+        # Always load category since SkinRead schema includes it
+        stmt = stmt.options(joinedload(Skin.category))
         
         skins = db.scalars(stmt.order_by(Skin.updated_at.desc())).all()
         total = db.scalar(count_stmt)
@@ -133,11 +145,25 @@ class CRUDSkin:
         db_obj.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(db_obj)
-        return db_obj
+        
+        # Return skin with category loaded
+        stmt = (
+            select(Skin)
+            .where(Skin.id == db_obj.id)
+            .options(joinedload(Skin.category))
+        )
+        return db.scalar(stmt)
 
     def remove(self, db: Session, *, id_: int) -> Skin:
         """Delete skin by ID"""
-        skin = db.get(Skin, id_)
+        # Get skin with category loaded
+        stmt = (
+            select(Skin)
+            .where(Skin.id == id_)
+            .options(joinedload(Skin.category))
+        )
+        skin = db.scalar(stmt)
+        
         if not skin:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -169,11 +195,23 @@ class CRUDSkinCategory:
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
-        return db_obj
+        
+        # Return category with skins loaded
+        stmt = (
+            select(SkinCategory)
+            .where(SkinCategory.id == db_obj.id)
+            .options(joinedload(SkinCategory.skins))
+        )
+        return db.scalar(stmt)
 
     def get(self, db: Session, id_: int) -> Optional[SkinCategory]:
         """Get skin category by ID"""
-        return db.get(SkinCategory, id_)
+        stmt = (
+            select(SkinCategory)
+            .where(SkinCategory.id == id_)
+            .options(joinedload(SkinCategory.skins))
+        )
+        return db.scalar(stmt)
 
     def get_multi(
         self, 
@@ -234,11 +272,25 @@ class CRUDSkinCategory:
         db_obj.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(db_obj)
-        return db_obj
+        
+        # Return category with skins loaded
+        stmt = (
+            select(SkinCategory)
+            .where(SkinCategory.id == db_obj.id)
+            .options(joinedload(SkinCategory.skins))
+        )
+        return db.scalar(stmt)
 
     def remove(self, db: Session, *, id_: int) -> SkinCategory:
         """Delete skin category by ID"""
-        category = db.get(SkinCategory, id_)
+        # Get category with skins loaded
+        stmt = (
+            select(SkinCategory)
+            .where(SkinCategory.id == id_)
+            .options(joinedload(SkinCategory.skins))
+        )
+        category = db.scalar(stmt)
+        
         if not category:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

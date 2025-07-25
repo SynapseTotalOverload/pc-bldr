@@ -52,7 +52,7 @@ export default function Skins() {
         return map[name] || SKIN_CATEGORIES.RIFLES;
     };
 
-    const { skins, pagination, loading, error, refetch } = useSkins({
+    const { skins, pagination, loading, error, refetch, searchSkins } = useSkins({
         category_id: selectedCategory,
         page,
         search,
@@ -61,7 +61,6 @@ export default function Skins() {
     const { toast } = useToast();
 
     const handleDeleteSkin = async (skinId: number) => {
-      if (confirm('Are you sure you want to delete this skin?')) {
         try {
           await deleteSkin(skinId);
           toast({
@@ -69,6 +68,7 @@ export default function Skins() {
             description: 'Skin deleted successfully!',
           });
           refetch();
+          setSearch('');
         } catch (error) {
           console.error('Error deleting skin:', error);
           toast({
@@ -77,7 +77,6 @@ export default function Skins() {
             variant: 'destructive',
           });
         }
-      }
     };
 
     useEffect(() => {
@@ -152,7 +151,8 @@ export default function Skins() {
         <CategoryButtons
           selectedCategory={categoryIdToString(selectedCategory)}
           onSelectCategory={(category) => {
-            setSelectedCategory(categoryStringToId(category));
+            const newCategoryId = categoryStringToId(category);
+            setSelectedCategory(newCategoryId);
             setPage(1);
             setSearch('');
           }}
@@ -160,16 +160,17 @@ export default function Skins() {
         />
           <div className="mt-8 w-full">
             <div className="inner-white-glow rounded-2xl p-8 shadow-2xl">
-                               <SkinsTable
-                 key={`${selectedCategory}-${page}-${search}`}
+              <SkinsTable
                  columns={customSkinsColumns}
                  data={skins}
                   searchKey="full_name"
                   searchPlaceholder="Search skins..."
                   searchValue={search}
+                  loading={loading}
                   onSearchChange={(value) => {
                     setSearch(value);
                     setPage(1);
+                    searchSkins(value);
                   }}
                   pagination={{
                     currentPage: page,
@@ -197,6 +198,7 @@ export default function Skins() {
           refetch();
           setPage(1);
           setSkinToEdit(null);
+          setSearch('');
         }}
         skinToEdit={skinToEdit}
       />
