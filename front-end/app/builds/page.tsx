@@ -201,6 +201,9 @@ export default function Builds() {
             <Link href="/configurator">
                 <Button>Configurator</Button>
             </Link>
+            <Link href="/players">
+              <Button>Players</Button>
+            </Link>
             <Button 
               variant="default"
               className="cursor-pointer"

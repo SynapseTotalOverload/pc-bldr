@@ -162,6 +162,13 @@ export default function Home() {
       accessorKey: 'title',
     },
     {
+      header: 'Asin',
+      accessorKey: 'asin',
+      cell: ({ row }) => {
+        return <span className="font-bold">{row.original.asin?.toString()}</span>;
+      },
+    },
+    {
       header: 'Price',
       accessorKey: 'price',
       cell: ({ row }) => {
@@ -177,7 +184,7 @@ export default function Home() {
     },
     {
       header: 'Link',
-      accessorKey: 'asin',
+      accessorKey: 'link',
       cell: ({ row }) => {
         return (
           <Link
@@ -244,6 +251,9 @@ export default function Home() {
             </Link>
             <Link href="/configurator">
               <Button>Configurator</Button>
+            </Link>
+            <Link href="/players">
+              <Button>Players</Button>
             </Link>
           </div>
         </div>

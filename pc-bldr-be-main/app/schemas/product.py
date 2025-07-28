@@ -31,6 +31,7 @@ class ProductBase(BaseModel):
     rating: Optional[float] = None
     low_image_url: Optional[str] = Field(None, description="Low resolution image URL")
     high_image_url: Optional[str] = Field(None, description="High resolution image URL")
+    display_name: Optional[str] = Field(None, description="Display name combining brand and model from attributes")
     
     class Config:
         from_attributes = True
@@ -56,6 +57,7 @@ class ProductUpdate(BaseModel):
     attrs: Optional[AttributesUpdateUnion] = None
     low_image_url: Optional[str] = None
     high_image_url: Optional[str] = None
+    display_name: Optional[str] = None
 
     @field_validator('category_id')
     @classmethod
@@ -132,6 +134,9 @@ class ProductRead(ProductBase):
                 )
 
         return cls(**obj.__dict__, category=category, attrs=None)
+    
+    class Config:
+        from_attributes = True
 
 
 class ProductCompatibilityRequest(BaseModel):

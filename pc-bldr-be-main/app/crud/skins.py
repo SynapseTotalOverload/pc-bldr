@@ -244,7 +244,7 @@ class CRUDSkinCategory:
         if return_skins:
             stmt = stmt.options(joinedload(SkinCategory.skins))
         
-        categories = db.scalars(stmt.order_by(SkinCategory.name)).all()
+        categories = db.scalars(stmt.order_by(SkinCategory.name)).unique().all()
         total = db.scalar(count_stmt)
         
         return categories, total

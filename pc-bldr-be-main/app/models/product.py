@@ -46,6 +46,7 @@ class Product(Base):
     chair_attributes: Mapped["ChairAttributes"] = relationship("ChairAttributes", back_populates="product", uselist=False)
     low_image_url = Column(String, nullable=True)
     high_image_url = Column(String, nullable=True)
+    display_name = Column(String, nullable=True)
 
     category_id = Column(BigInteger, ForeignKey("category.id", ondelete="SET NULL"))
     category = relationship("Category", back_populates="products")

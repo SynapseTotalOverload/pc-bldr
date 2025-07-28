@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, DateTime, BigInteger, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, DateTime, BigInteger, ForeignKey, Text, func, text
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
@@ -16,6 +16,9 @@ class Skin(Base):
     # Foreign key to skin category
     category_id = Column(BigInteger, ForeignKey("skincategory.id"), nullable=False)
     category = relationship("SkinCategory", back_populates="skins")
+    
+    # Many-to-many relationship with players
+    players = relationship("Player", secondary="player_skins", back_populates="skins")
 
-    created_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
-    updated_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False) 
+    created_at = Column(DateTime, server_default=text("timezone('UTC', now())"), nullable=False)
+    updated_at = Column(DateTime, server_default=text("timezone('UTC', now())"), server_onupdate=text("timezone('UTC', now())"), nullable=False) 

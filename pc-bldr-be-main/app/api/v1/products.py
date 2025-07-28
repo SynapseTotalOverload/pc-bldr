@@ -175,3 +175,12 @@ def update_product(product_id: int, item: ProductUpdate, db: Session = Depends(g
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(product_id: int, db: Session = Depends(get_db)):
     product_crud.remove(db, id_=product_id)
+
+@router.post("/update-display-names", summary="Update display_name for all existing products")
+def update_display_names(db: Session = Depends(get_db)):
+    """
+    Update display_name field for all existing products that don't have it set.
+    This will populate display_name with brand + model from their respective attributes tables.
+    """
+    updated_count = product_crud.update_display_names_for_existing_products(db)
+    return {"message": f"Updated display_name for {updated_count} products"}

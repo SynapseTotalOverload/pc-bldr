@@ -150,6 +150,13 @@ export default function Accessories() {
         accessorKey: 'title',
       },
       {
+        header: 'Asin',
+        accessorKey: 'asin',
+        cell: ({ row }) => {
+          return <span className="font-bold">{row.original.asin?.toString()}</span>;
+        },
+      },
+      {
         header: 'Price',
         accessorKey: 'price',
         cell: ({ row }) => {
@@ -165,7 +172,7 @@ export default function Accessories() {
       },
       {
         header: 'Link',
-        accessorKey: 'asin',
+        accessorKey: 'link',
         cell: ({ row }) => {
           return (
             <Link

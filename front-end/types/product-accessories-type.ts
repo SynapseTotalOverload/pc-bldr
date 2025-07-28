@@ -102,6 +102,7 @@ export interface CategoryRead {
     created_at: string; // ISO string from `datetime`
     category?: CategoryRead;
     attrs: ProductAttrs;
+    display_name?: string;
     low_image_url?: string;
     high_image_url?: string;
   }
@@ -110,6 +111,7 @@ export interface CategoryRead {
     created_at: string; // ISO string from `datetime`
     category?: CategoryRead;
     attrs: T;
+    display_name?: string;
     low_image_url?: string;
     high_image_url?: string;
   }

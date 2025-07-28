@@ -116,6 +116,7 @@ export interface ProductRead extends ProductBase {
   created_at: string; // ISO string from `datetime`
   category?: CategoryRead;
   attrs: ProductAttrs;
+  display_name: string;
   low_image_url?: string;
   high_image_url?: string;
 }
@@ -124,6 +125,7 @@ export interface ProductGenericRead<T extends ProductAttrs> extends ProductBase 
   created_at: string; // ISO string from `datetime`
   category?: CategoryRead;
   attrs: T;
+  display_name: string;
   low_image_url?: string;
   high_image_url?: string;
 }
@@ -146,7 +148,7 @@ export interface BuildRead{
 }
 
 
-export type ProductAttrs = CPU | CPUCooler | Motherboard | RAM | Storage | GPU | PowerSupply | Case;
+export type ProductAttrs = CPU | CPUCooler | Motherboard | RAM | Storage | GPU | PowerSupply | Case | Headset | Keyboard | Mouse | Mousepad | Monitor | Chair;
 
 export interface BaseAttrs {
   brand: string;
@@ -160,6 +162,12 @@ export type Storage = AttributeWithLabel<StorageAttributes>;
 export type GPU = AttributeWithLabel<GPUAttributes>;
 export type PowerSupply = AttributeWithLabel<PowerSupplyAttributes>;
 export type Case = AttributeWithLabel<CaseAttributes>;
+export type Headset = AttributeWithLabel<HeadsetAttributes>;
+export type Keyboard = AttributeWithLabel<KeyboardAttributes>;
+export type Mouse = AttributeWithLabel<MouseAttributes>;
+export type Mousepad = AttributeWithLabel<MousepadAttributes>;
+export type Monitor = AttributeWithLabel<MonitorAttributes>;
+export type Chair = AttributeWithLabel<ChairAttributes>;
 
 export type AttributeWithLabel<T extends { type: string }> = BaseAttrs & T;
 
@@ -241,3 +249,33 @@ export interface CaseAttributes {
   cabinet_type: string;
   color: string;
 }
+
+export interface HeadsetAttributes {
+  type: 'headset';
+  color: string;
+}
+
+export interface KeyboardAttributes {
+  type: 'keyboard';
+  color: string;
+}
+
+export interface MouseAttributes {
+  type: 'mouse';
+  color: string;
+}
+
+export interface MousepadAttributes {
+  type: 'mousepad';
+  color: string;
+}
+export interface MonitorAttributes {
+  type: 'monitor';
+  color: string;
+}
+export interface ChairAttributes {
+  type: 'chair';
+  color: string;
+}
+
+

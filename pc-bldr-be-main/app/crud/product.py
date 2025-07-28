@@ -155,6 +155,14 @@ class CRUDProduct:
             attrs_model = cat_id_to_attrs_model_map.get(category_id)
             new_attrs = attrs_model(product_id=db_obj.id, **attrs_dict)
             db.add(new_attrs)
+            
+            # Update display_name if brand and model are available
+            if attrs_dict.get('brand') and attrs_dict.get('model'):
+                db_obj.display_name = f"{attrs_dict['brand']} {attrs_dict['model']}"
+            elif attrs_dict.get('brand'):
+                db_obj.display_name = attrs_dict['brand']
+            elif attrs_dict.get('model'):
+                db_obj.display_name = attrs_dict['model']
         
         db.commit()
         db.refresh(db_obj, attribute_names=["category"])
@@ -209,10 +217,11 @@ class CRUDProduct:
                 # Create conditions for each word (ALL must match)
                 word_conditions = []
                 for word_item in words:
-                    # Each word must be found in title OR asin
+                    # Each word must be found in title OR asin OR display_name
                     word_condition = or_(
                         Product.title.ilike(f"%{word_item}%"),
-                        Product.asin.ilike(f"%{word_item}%")
+                        Product.asin.ilike(f"%{word_item}%"),
+                        Product.display_name.ilike(f"%{word_item}%")
                     )
                     word_conditions.append(word_condition)
                 
@@ -276,10 +285,26 @@ class CRUDProduct:
                 # Update existing attributes
                 for field, value in attrs_dict.items():
                     setattr(existing_attrs, field, value)
+                
+                # Update display_name based on brand and model
+                if attrs_dict.get('brand') and attrs_dict.get('model'):
+                    db_obj.display_name = f"{attrs_dict['brand']} {attrs_dict['model']}"
+                elif attrs_dict.get('brand'):
+                    db_obj.display_name = attrs_dict['brand']
+                elif attrs_dict.get('model'):
+                    db_obj.display_name = attrs_dict['model']
             else:
                 # Create new attributes record
                 new_attrs = attrs_model(product_id=db_obj.id, **attrs_dict)
                 db.add(new_attrs)
+                
+                # Update display_name based on brand and model
+                if attrs_dict.get('brand') and attrs_dict.get('model'):
+                    db_obj.display_name = f"{attrs_dict['brand']} {attrs_dict['model']}"
+                elif attrs_dict.get('brand'):
+                    db_obj.display_name = attrs_dict['brand']
+                elif attrs_dict.get('model'):
+                    db_obj.display_name = attrs_dict['model']
         db_obj.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(db_obj)
@@ -359,10 +384,11 @@ class CRUDProduct:
                 # Create conditions for each word (ALL must match)
                 word_conditions = []
                 for word in words:
-                    # Each word must be found in title OR asin
+                    # Each word must be found in title OR asin OR display_name
                     word_condition = or_(
                         Product.title.ilike(f"%{word}%"),
-                        Product.asin.ilike(f"%{word}%")
+                        Product.asin.ilike(f"%{word}%"),
+                        Product.display_name.ilike(f"%{word}%")
                     )
                     word_conditions.append(word_condition)
                 
@@ -406,6 +432,43 @@ class CRUDProduct:
                 .all()
             )
             return result
+
+    def update_display_names_for_existing_products(self, db: Session) -> int:
+        """Update display_name for all existing products that don't have it set"""
+        updated_count = 0
+        
+        # Get all products without display_name
+        products = db.query(Product).filter(
+            or_(Product.display_name.is_(None), Product.display_name == '')
+        ).all()
+        
+        for product in products:
+            # Get the appropriate attributes based on category
+            attrs_model = cat_id_to_attrs_model_map.get(product.category_id)
+            if not attrs_model:
+                continue
+                
+            # Get attributes for this product
+            attrs = db.query(attrs_model).filter(attrs_model.product_id == product.id).first()
+            if not attrs:
+                continue
+                
+            # Update display_name based on brand and model
+            if attrs.brand and attrs.model:
+                product.display_name = f"{attrs.brand} {attrs.model}"
+            elif attrs.brand:
+                product.display_name = attrs.brand
+            elif attrs.model:
+                product.display_name = attrs.model
+            else:
+                continue
+                
+            updated_count += 1
+        
+        if updated_count > 0:
+            db.commit()
+            
+        return updated_count
 
 
 product_crud = CRUDProduct() 

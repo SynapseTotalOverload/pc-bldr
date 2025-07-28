@@ -145,6 +145,9 @@ export default function Skins() {
             <Link href="/configurator">
                 <Button>Configurator</Button>
             </Link>
+            <Link href="/players">
+              <Button>Players</Button>
+            </Link>
           </div>
         </div>
 
