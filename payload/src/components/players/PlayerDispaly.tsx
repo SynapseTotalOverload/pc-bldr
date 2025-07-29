@@ -2,25 +2,27 @@
 
 import { PlayerInfo } from './components/player-info'
 import { BlockLists } from './components/block-lists'
+import { PlayerWithRelations } from '@/blocks/ApiPlayerList/types'
 
 interface PlayerDisplayProps {
   blocks: any[]
+  player: PlayerWithRelations
 }
 
 
-export const PlayerDisplay = ({ blocks = [] }: PlayerDisplayProps) => {
+export const PlayerDisplay = ({ blocks = [], player }: PlayerDisplayProps) => {
   const renderBlock = (block: any, index: number) => {
     switch (block.blockType) {
       case 'playerInfo':
-        return <PlayerInfo key={index} />
+        return <PlayerInfo key={index} player={player} />
       case 'skinsComponents':
-        return <BlockLists key={index} title="Skins" info={block.info} />
+        return <BlockLists key={index} title="Skins" info={player.skins} />
       case 'gearComponents':
-        return <BlockLists key={index} title="Gear" info={block.info} />
+        return <BlockLists key={index} title="Gear" info={player.gear_list} />
       case 'pcSpecs':
-        return <BlockLists key={index} title="PC Specs" info={block.info} />
+        return <BlockLists key={index} title="PC Specs" info={player.pc_specs_list} />
       case 'setupStreaming':
-        return <BlockLists key={index} title="Setup Streaming" info={block.info} />
+        return <BlockLists key={index} title="Setup Streaming" info={player.setup_streaming_list} />
       default:
         return null
     }

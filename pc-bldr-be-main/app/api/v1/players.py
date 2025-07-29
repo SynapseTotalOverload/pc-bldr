@@ -7,7 +7,7 @@ from app.crud.gear_list import gear_list_crud
 from app.crud.pc_specs_list import pc_specs_list_crud
 from app.crud.setup_streaming_list import setup_streaming_list_crud
 from app.db.session import get_db
-from app.schemas.player import PlayerCreate, PlayerUpdate, PlayerRead, PlayerWithRelations, PlayerSkinsBatch, PlayerSkinsResponse
+from app.schemas.player import PlayerCreate, PlayerUpdate, PlayerUpdateWithGear, PlayerRead, PlayerWithRelations, PlayerSkinsBatch, PlayerSkinsResponse
 from app.schemas.gear_list import GearListCreate
 from app.schemas.pc_specs_list import PCSpecsListCreate
 from app.schemas.setup_streaming_list import SetupStreamingListCreate
@@ -153,6 +153,26 @@ def update_player(
             detail="Player not found"
         )
     player = player_crud.update(db=db, db_obj=player, obj_in=player_in)
+    return PlayerWithRelations.from_player(player)
+
+
+@router.put("/{player_id}/gear", response_model=PlayerWithRelations)
+def update_player_gear(
+    *,
+    db: Session = Depends(get_db),
+    player_id: int,
+    player_in: PlayerUpdateWithGear,
+) -> PlayerWithRelations:
+    """
+    Update player and related gear lists (gear_list and pc_specs_list).
+    """
+    player = player_crud.get(db=db, id_=player_id)
+    if not player:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Player not found"
+        )
+    player = player_crud.update_player_gear(db=db, db_obj=player, obj_in=player_in)
     return PlayerWithRelations.from_player(player)
 
 

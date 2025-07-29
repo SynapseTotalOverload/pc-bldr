@@ -48,7 +48,15 @@ export function SelectListProductNew({
     const [activeProduct, setActiveProduct] = useState<ProductRead | null>(selectedProduct);
 
     // Function to get product display info
-    const getProductDisplayInfo = (product: ProductRead) => {
+    const getProductDisplayInfo = (product: ProductRead | any) => {
+        // Handle SimpleProduct from backend (has name instead of title)
+        if (product && 'name' in product && !('title' in product)) {
+            return {
+                title: product.display_name || product.name,
+            };
+        }
+        
+        // Handle regular ProductRead
         const baseInfo = {
             title: product.display_name || product.title,
         };
@@ -115,6 +123,7 @@ export function SelectListProductNew({
             setLoading(false);
         }
     };
+    
 
     // Initialize data when user first interacts with select
     const initializeData = () => {
@@ -177,10 +186,10 @@ export function SelectListProductNew({
     }, [value, allProducts, label]);
 
     useEffect(() => {
-        if (selectedProduct && value === selectedProduct.id.toString()) {
-            setActiveProduct(selectedProduct);
-        }
-    }, []);
+        console.log('activeProduct', activeProduct);
+        console.log('selectedProduct', selectedProduct);
+        console.log('value', value);
+    }, [activeProduct, selectedProduct, value]);
 
     return (
         <div className={`space-y-2`}>
@@ -217,7 +226,6 @@ export function SelectListProductNew({
                     onValueChange={handleValueChange}
                     onOpenChange={(open) => {
                         if (open) {
-                            // Initialize data when opening select for the first time
                             initializeData();
                         }
                     }}
@@ -225,7 +233,7 @@ export function SelectListProductNew({
                     <SelectTrigger className="w-full">
                         {activeProduct ? (
                             <span className="text-sm font-medium">
-                                {activeProduct.display_name}
+                                {(activeProduct as any).display_name || (activeProduct as any).name || activeProduct.title}
                             </span>
                         ) : (
                             <span className="text-muted-foreground">{placeholder}</span>

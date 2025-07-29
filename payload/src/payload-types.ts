@@ -206,6 +206,7 @@ export interface Page {
     | FeatureCardBlock
     | FeatureListBlock
     | ApiCardListBlock
+    | ApiPlayerListBlock
     | WhyWorkWithUsBlock
     | HeroMeteorBlock
     | Integration2Block
@@ -865,6 +866,32 @@ export interface ApiCardListBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ApiPlayerListBlock".
+ */
+export interface ApiPlayerListBlock {
+  title?: string | null;
+  description?: string | null;
+  filterBy?: ('all' | 'team' | 'country' | 'query') | null;
+  layout?: ('grid' | 'list' | 'carousel') | null;
+  /**
+   * Number of columns for grid layout
+   */
+  columns?: ('1' | '2' | '3' | '4') | null;
+  /**
+   * 0 = show all items
+   */
+  itemsPerPage?: number | null;
+  showPagination?: boolean | null;
+  styling?: {
+    backgroundColor?: ('default' | 'primary' | 'secondary' | 'accent' | 'muted') | null;
+    cardStyle?: ('default' | 'elevated' | 'bordered' | 'minimal') | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'apiPlayerList';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "WhyWorkWithUsBlock".
  */
 export interface WhyWorkWithUsBlock {
@@ -1498,6 +1525,7 @@ export interface PagesSelect<T extends boolean = true> {
         featureCard?: T | FeatureCardBlockSelect<T>;
         featureList?: T | FeatureListBlockSelect<T>;
         apiCardList?: T | ApiCardListBlockSelect<T>;
+        apiPlayerList?: T | ApiPlayerListBlockSelect<T>;
         whyWorkWithUs?: T | WhyWorkWithUsBlockSelect<T>;
         heroMeteor?: T | HeroMeteorBlockSelect<T>;
         integration2?: T | Integration2BlockSelect<T>;
@@ -1701,6 +1729,27 @@ export interface ApiCardListBlockSelect<T extends boolean = true> {
   category_id?: T;
   accessory_category?: T;
   build_type?: T;
+  layout?: T;
+  columns?: T;
+  itemsPerPage?: T;
+  showPagination?: T;
+  styling?:
+    | T
+    | {
+        backgroundColor?: T;
+        cardStyle?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ApiPlayerListBlock_select".
+ */
+export interface ApiPlayerListBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  filterBy?: T;
   layout?: T;
   columns?: T;
   itemsPerPage?: T;

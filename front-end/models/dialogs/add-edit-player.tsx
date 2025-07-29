@@ -17,6 +17,8 @@ import { createPCSpecsList, updatePCSpecsList } from "@/lib/pc-specs-lists-api"
 import { createGearList, updateGearList } from "@/lib/gear-lists-api"
 import { createSetupStreamingList, updateSetupStreamingList } from "@/lib/setup-streaming-lists-api"
 import { SelectListProductNew } from '@/components/ui/select-list-product-new'
+import { SkinRead } from "@/lib/skins-api"
+import { SelectSkinList } from "@/components/ui/select-skin-list"
 
 
 interface AddEditPlayerDialogProps {
@@ -52,6 +54,9 @@ export function AddEditPlayerDialog({
   const [selectedPowerSupplyId, setSelectedPowerSupplyId] = useState<string>("none")
   const [selectedCaseId, setSelectedCaseId] = useState<string>("none")
   const [pcSpecsListId, setPcSpecsListId] = useState<number | null>(null)
+  const [skinsListId, setSkinsListId] = useState<number | null>(null)
+  const [selectedSkins, setSelectedSkins] = useState<SkinRead[]>([])
+
 
   const [selectedHeadsetId, setSelectedHeadsetId] = useState<string>("none")
   const [selectedKeyboardId, setSelectedKeyboardId] = useState<string>("none")
@@ -79,30 +84,23 @@ export function AddEditPlayerDialog({
         info: player.info || ""
       })
       
-      console.log("player.pc_specs_list", player.pc_specs_list)
       if (player.pc_specs_list) {
         setPcSpecsListId(player.pc_specs_list.id)
         
         // Check if we have full product objects or just IDs
         if (player.pc_specs_list.cpu_id) {
-          console.log('Setting CPU ID from cpu_id:', player.pc_specs_list.cpu_id);
           setSelectedCpuId(player.pc_specs_list.cpu_id.toString())
         } else if (player.pc_specs_list.cpu?.id) {
-          console.log('Setting CPU ID from cpu object:', player.pc_specs_list.cpu.id);
           setSelectedCpuId(player.pc_specs_list.cpu.id.toString())
         } else {
-          console.log('No CPU ID found, setting to none');
           setSelectedCpuId("none")
         }
         
         if (player.pc_specs_list.cpu_cooler_id) {
-          console.log('Setting CPU Cooler ID from cpu_cooler_id:', player.pc_specs_list.cpu_cooler_id);
           setSelectedCpuCoolerId(player.pc_specs_list.cpu_cooler_id.toString())
         } else if (player.pc_specs_list.cpu_cooler?.id) {
-          console.log('Setting CPU Cooler ID from cpu_cooler object:', player.pc_specs_list.cpu_cooler.id);
           setSelectedCpuCoolerId(player.pc_specs_list.cpu_cooler.id.toString())
         } else {
-          console.log('No CPU Cooler ID found, setting to none');
           setSelectedCpuCoolerId("none")
         }
         
@@ -141,18 +139,7 @@ export function AddEditPlayerDialog({
         } else if (player.pc_specs_list.case?.id) {
           setSelectedCaseId(player.pc_specs_list.case.id.toString())
         }
-        
-        // Log final state after setting all values
-        console.log('Final selected IDs:', {
-          cpuId: player.pc_specs_list.cpu_id || player.pc_specs_list.cpu?.id,
-          cpuCoolerId: player.pc_specs_list.cpu_cooler_id || player.pc_specs_list.cpu_cooler?.id,
-          gpuId: player.pc_specs_list.gpu_id || player.pc_specs_list.gpu?.id,
-          motherboardId: player.pc_specs_list.motherboard_id || player.pc_specs_list.motherboard?.id,
-          ramId: player.pc_specs_list.ram_id || player.pc_specs_list.ram?.id,
-          storageId: player.pc_specs_list.storage_id || player.pc_specs_list.storage?.id,
-          powerSupplyId: player.pc_specs_list.power_supply_id || player.pc_specs_list.power_supply?.id,
-          caseId: player.pc_specs_list.case_id || player.pc_specs_list.case?.id,
-        });
+      
       } else {
         setPcSpecsListId(null)
         setSelectedCpuId("none")
@@ -167,11 +154,46 @@ export function AddEditPlayerDialog({
 
       if (player.gear_list) {
         setGearListId(player.gear_list.id)
-        if (player.gear_list.headset_id) setSelectedHeadsetId(player.gear_list.headset_id.toString())
-        if (player.gear_list.keyboard_id) setSelectedKeyboardId(player.gear_list.keyboard_id.toString())
-        if (player.gear_list.mouse_id) setSelectedMouseId(player.gear_list.mouse_id.toString())
-        if (player.gear_list.mousepad_id) setSelectedMousepadId(player.gear_list.mousepad_id.toString())
-        if (player.gear_list.monitor_id) setSelectedMonitorId(player.gear_list.monitor_id.toString())
+        
+        if (player.gear_list.headset_id) {
+          setSelectedHeadsetId(player.gear_list.headset_id.toString())
+        } else if (player.gear_list.headset?.id) {
+          setSelectedHeadsetId(player.gear_list.headset.id.toString())
+        } else {
+          setSelectedHeadsetId("none")
+        }
+        
+        if (player.gear_list.keyboard_id) {
+          setSelectedKeyboardId(player.gear_list.keyboard_id.toString())
+        } else if (player.gear_list.keyboard?.id) {
+          setSelectedKeyboardId(player.gear_list.keyboard.id.toString())
+        } else {
+          setSelectedKeyboardId("none")
+        }
+        
+        if (player.gear_list.mouse_id) {
+          setSelectedMouseId(player.gear_list.mouse_id.toString())
+        } else if (player.gear_list.mouse?.id) {
+          setSelectedMouseId(player.gear_list.mouse.id.toString())
+        } else {
+          setSelectedMouseId("none")
+        }
+        
+        if (player.gear_list.mousepad_id) {
+          setSelectedMousepadId(player.gear_list.mousepad_id.toString())
+        } else if (player.gear_list.mousepad?.id) {
+          setSelectedMousepadId(player.gear_list.mousepad.id.toString())
+        } else {
+          setSelectedMousepadId("none")
+        }
+        
+        if (player.gear_list.monitor_id) {
+          setSelectedMonitorId(player.gear_list.monitor_id.toString())
+        } else if (player.gear_list.monitor?.id) {
+          setSelectedMonitorId(player.gear_list.monitor.id.toString())
+        } else {
+          setSelectedMonitorId("none")
+        }
       } else {
         setGearListId(null)
         setSelectedHeadsetId("none")
@@ -183,7 +205,13 @@ export function AddEditPlayerDialog({
 
       if (player.setup_streaming_list) {
         setSetupStreamingListId(player.setup_streaming_list.id)
-        if (player.setup_streaming_list.chair_id) setSelectedChairId(player.setup_streaming_list.chair_id.toString())
+        if (player.setup_streaming_list.chair_id) {
+          setSelectedChairId(player.setup_streaming_list.chair_id.toString())
+        } else if (player.setup_streaming_list.chair?.id) {
+          setSelectedChairId(player.setup_streaming_list.chair.id.toString())
+        } else {
+          setSelectedChairId("none")
+        }
       } else {
         setSetupStreamingListId(null)
         setSelectedChairId("none")
@@ -248,46 +276,61 @@ export function AddEditPlayerDialog({
 
       let newPcSpecsListId = pcSpecsListId
       
-      if (pcSpecsListId) {
-        await updatePCSpecsList(pcSpecsListId, pcSpecsListData)
-      } else {
-        const newPcSpecsList = await createPCSpecsList(pcSpecsListData)
-        newPcSpecsListId = newPcSpecsList.id
-      }
+      // if (pcSpecsListId) {
+      //   await updatePCSpecsList(pcSpecsListId, pcSpecsListData)
+      // } else {
+      //   const newPcSpecsList = await createPCSpecsList(pcSpecsListData)
+      //   newPcSpecsListId = newPcSpecsList.id
+      // }
 
       const gearListData = {
-        headset_id: selectedHeadsetId !== 'none' ? parseInt(selectedHeadsetId) : undefined,
-        keyboard_id: selectedKeyboardId !== 'none' ? parseInt(selectedKeyboardId) : undefined,
-        mouse_id: selectedMouseId !== 'none' ? parseInt(selectedMouseId) : undefined,
-        mousepad_id: selectedMousepadId !== 'none' ? parseInt(selectedMousepadId) : undefined,
-        monitor_id: selectedMonitorId !== 'none' ? parseInt(selectedMonitorId) : undefined,
+        headset_id: selectedHeadsetId !== 'none' ? parseInt(selectedHeadsetId) : null,
+        keyboard_id: selectedKeyboardId !== 'none' ? parseInt(selectedKeyboardId) : null,
+        mouse_id: selectedMouseId !== 'none' ? parseInt(selectedMouseId) : null,
+        mousepad_id: selectedMousepadId !== 'none' ? parseInt(selectedMousepadId) : null,
+        monitor_id: selectedMonitorId !== 'none' ? parseInt(selectedMonitorId) : null,
       }
 
       let newGearListId = gearListId
-      if (gearListId) {
-        await updateGearList(gearListId, gearListData)
-      } else {
-        const newGearList = await createGearList(gearListData)
-        newGearListId = newGearList.id
-      }
+      // if (gearListId) {
+      //   await updateGearList(gearListId, gearListData)
+      // } else {
+      //   const newGearList = await createGearList(gearListData)
+      //   newGearListId = newGearList.id
+      // }
 
       const setupStreamingListData = {
-        chair_id: selectedChairId !== 'none' ? parseInt(selectedChairId) : undefined,
+        chair_id: selectedChairId !== 'none' ? parseInt(selectedChairId) : null,
       }
 
       let newSetupStreamingListId = setupStreamingListId
-      if (setupStreamingListId) {
-        await updateSetupStreamingList(setupStreamingListId, setupStreamingListData)
-      } else {
-        const newSetupStreamingList = await createSetupStreamingList(setupStreamingListData)
-        newSetupStreamingListId = newSetupStreamingList.id
-      }
+      // if (setupStreamingListId) {
+      //   await updateSetupStreamingList(setupStreamingListId, setupStreamingListData)
+      // } else {
+      //   const newSetupStreamingList = await createSetupStreamingList(setupStreamingListData)
+      //   newSetupStreamingListId = newSetupStreamingList.id
+      // }
+
+
 
       const playerData = {
         ...formData,
-        pc_specs_list_id: newPcSpecsListId,
-        gear_list_id: newGearListId,
-        setup_streaming_list_id: newSetupStreamingListId
+        pc_specs_list_id: newPcSpecsListId || undefined,
+        gear_list_id: newGearListId || undefined,
+        setup_streaming_list_id: newSetupStreamingListId || undefined,
+        gear_list: {
+          id: newGearListId || undefined,
+          ...gearListData
+        },
+        pc_specs_list: {
+          id: newPcSpecsListId || undefined,
+          ...pcSpecsListData
+        },
+        setup_streaming_list: {
+          id: newSetupStreamingListId || undefined,
+          ...setupStreamingListData
+        },
+        skin_ids: selectedSkins.map(skin => skin.id)
       }
 
       await onSave(playerData, mode)
@@ -575,6 +618,20 @@ export function AddEditPlayerDialog({
                 />
             </div>
           </div>
+          )}
+          {mode === 'edit' && (
+            <div>
+              <Label htmlFor="info" className="text-left font-bold">
+                Skins
+              </Label>
+              <SelectSkinList 
+                label="Skins"
+                placeholder="Select skins"
+                searchPlaceholder="Search skins..."
+                onSkinsChange={setSelectedSkins}
+                selectedSkins={player?.skins || []}
+            />
+            </div>
           )}
           <DialogFooter className="flex-shrink-0 border-t pt-4 mt-4">
             <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>

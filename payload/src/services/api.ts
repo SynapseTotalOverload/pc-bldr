@@ -155,6 +155,14 @@ export class ApiService {
     return this.fetchData(`builds/nearest/${budget}?build_type=${params}&limit=${limit}`)
   }
 
+  async getPlayers(params: string) {
+    return this.fetchData(`players?${params}`)
+  }
+
+  async getPlayer(id: number) {
+    return this.fetchData(`players/${id}`)
+  }
+
   /**
    * Generic method for any endpoint
    */

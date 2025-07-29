@@ -1,44 +1,44 @@
-'use client'
+import { PlayerWithRelations } from '@/blocks/ApiPlayerList/types'
 
-export const PlayerInfo = () => {
+export const PlayerInfo = ({ player }: { player: PlayerWithRelations }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 flex gap-4">
       <div className="flex-shrink-0">
         <img
-          src="https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=contain%2Cg=top%2Ch=200%2Cq=99%2Csharpen=1%2Cw=200/wp-content/uploads/s1mple.webp"
-          alt="Player Info"
+          src={player.player_img}
+          alt={player.player_name}
           className="rounded-full w-40 h-40 object-cover"
         />
       </div>
       <div className="flex-1">
-        <h1 className="text-2xl font-bold">s1mple</h1>
+        <h1 className="text-2xl font-bold">{player.player_name}</h1>
         <table className="w-full">
           <tbody>
             <tr>
               <td className="w-24 font-medium text-gray-600">Team:</td>
-              <td className="text-gray-900">NAVI</td>
+              <td className="text-gray-900">{player.team}</td>
             </tr>
             <tr>
               <td className="w-24 font-medium text-gray-600">Country:</td>
-              <td className="text-gray-900">Ukraine</td>
+              <td className="text-gray-900">{player.country}</td>
             </tr>
             <tr>
               <td className="w-24 font-medium text-gray-600">Name:</td>
-              <td className="text-gray-900">Oleg Kostin</td>
+              <td className="text-gray-900">{player.name}</td>
             </tr>
             <tr>
               <td className="w-24 font-medium text-gray-600">Birthday:</td>
-              <td className="text-gray-900">2000-02-02</td>
+              <td className="text-gray-900">{player.birthday}</td>
             </tr>
           </tbody>
         </table>
         <div className="description">
           <p>
-            Oleg Kostin, known as s1mple, is a Ukrainian professional Counter-Strike: Global Offensive player. He is widely regarded as one of the best players in the world and has won numerous awards and titles throughout his career.
+            {player.info}
           </p>
         </div>
       </div>
-      <div className="flex-2">
+      {/* <div className="flex-2">
         <ul className="flex flex-col gap-2">
           <li className="flex items-center gap-2">
             <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@ export const PlayerInfo = () => {
             </svg>
           </li>
         </ul>
-      </div>
+      </div> */}
     </div>
   )
 }

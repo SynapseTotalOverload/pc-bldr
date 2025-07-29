@@ -1,9 +1,9 @@
 from datetime import datetime, date
 from typing import Optional, List, TYPE_CHECKING
 from pydantic import BaseModel, Field, field_validator
-from .gear_list import GearListRead, GearListWithProducts, GearListWithSimpleProducts
-from .pc_specs_list import PCSpecsListRead, PCSpecsListWithProducts, PCSpecsListWithSimpleProducts
-from .setup_streaming_list import SetupStreamingListRead, SetupStreamingListWithProducts, SetupStreamingListWithSimpleProducts
+from .gear_list import GearListRead, GearListWithProducts, GearListWithSimpleProducts, GearListUpdate
+from .pc_specs_list import PCSpecsListRead, PCSpecsListWithProducts, PCSpecsListWithSimpleProducts, PCSpecsListUpdate
+from .setup_streaming_list import SetupStreamingListRead, SetupStreamingListWithProducts, SetupStreamingListWithSimpleProducts, SetupStreamingListUpdate
 from .skin import SkinRead
 
     
@@ -42,6 +42,35 @@ class PlayerUpdate(BaseModel):
     gear_list_id: Optional[int] = None
     pc_specs_list_id: Optional[int] = None
     setup_streaming_list_id: Optional[int] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class PlayerUpdateWithGear(BaseModel):
+    # Player fields
+    player_name: Optional[str] = Field(None, min_length=1, max_length=255)
+    player_img: Optional[str] = None
+    team: Optional[str] = Field(None, max_length=255)
+    country: Optional[str] = Field(None, max_length=100)
+    name: Optional[str] = Field(None, max_length=255)
+    birthday: Optional[date] = None
+    info: Optional[str] = None
+    gear_list_id: Optional[int] = None
+    pc_specs_list_id: Optional[int] = None
+    setup_streaming_list_id: Optional[int] = None
+    
+    # Gear list update fields
+    gear_list: Optional[GearListUpdate] = None
+    
+    # PC specs list update fields
+    pc_specs_list: Optional[PCSpecsListUpdate] = None
+    
+    # Setup streaming list update fields
+    setup_streaming_list: Optional[SetupStreamingListUpdate] = None
+    
+    # Skins update fields
+    skin_ids: Optional[List[int]] = None
     
     class Config:
         from_attributes = True

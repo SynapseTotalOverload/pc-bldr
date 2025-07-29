@@ -9,7 +9,7 @@ import {
   getPlayers, 
   getPlayer, 
   createPlayer, 
-  updatePlayer, 
+  updatePlayerGear, 
   deletePlayer 
 } from '@/lib/players-api';
 
@@ -82,7 +82,7 @@ export const usePlayers = () => {
     setLoading(true);
     setError(null);
     try {
-      const updatedPlayer = await updatePlayer(id, playerData);
+      const updatedPlayer = await updatePlayerGear(id, playerData);
       setPlayers(prev => prev.map(player => 
         player.id === id ? updatedPlayer : player
       ));

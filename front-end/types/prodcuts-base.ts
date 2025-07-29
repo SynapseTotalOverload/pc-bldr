@@ -7,6 +7,7 @@ export interface CategoryRead {
 export interface ProductBase {
   asin: string;
   title: string;
+  display_name: string;
   price?: number;
   rating?: number;
   created_at: string; // ISO string from `datetime`

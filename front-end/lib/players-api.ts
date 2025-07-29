@@ -2,6 +2,7 @@ import { instancePr as axiosInstance } from './axios';
 import { 
   PlayerCreate, 
   PlayerUpdate, 
+  PlayerUpdateWithGear,
   PlayerWithRelations, 
   PlayersResponse,
   PlayerSkinsBatch 
@@ -37,6 +38,13 @@ export const playersApi = {
   // Update player
   updatePlayer: async (id: number, playerData: PlayerUpdate): Promise<PlayerWithRelations> => {
     const response = await axiosInstance.put(`${API_BASE_URL}players/${id}`, playerData);
+    return response.data;
+  },
+
+  // Update player with gear lists
+  updatePlayerGear: async (id: number, playerData: PlayerUpdateWithGear): Promise<PlayerWithRelations> => {
+    console.log("playerData",playerData)
+    const response = await axiosInstance.put(`${API_BASE_URL}players/${id}/gear`, playerData);
     return response.data;
   },
 
@@ -97,6 +105,7 @@ export const {
   getPlayer,
   createPlayer,
   updatePlayer,
+  updatePlayerGear,
   deletePlayer,
   getPlayersByTeam,
   getPlayersByCountry,

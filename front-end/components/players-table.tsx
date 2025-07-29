@@ -138,23 +138,23 @@ export function PlayersTable({
     }
   }
 
-  const handleDeletePlayer = async () => {
-    if (!selectedPlayer) return
-    try {
-      await onDeletePlayer(selectedPlayer.id)
-      toast({
-        title: "Success",
-        description: "Player deleted successfully!",
-      })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete player",
-        variant: "destructive",
-      })
-      throw error
-    }
-  }
+  // const handleDeletePlayer = async () => {
+  //   if (!selectedPlayer) return
+  //   try {
+  //     await onDeletePlayer(selectedPlayer.id)
+  //     toast({
+  //       title: "Success",
+  //       description: "Player deleted successfully!",
+  //     })
+  //   } catch (error) {
+  //     toast({
+  //       title: "Error",
+  //       description: error instanceof Error ? error.message : "Failed to delete player",
+  //       variant: "destructive",
+  //     })
+  //     throw error
+  //   }
+  // }
 
   const handleConfirmDelete = async (playerId: number) => {
     try {

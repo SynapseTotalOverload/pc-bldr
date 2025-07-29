@@ -10,7 +10,10 @@ from app.models.pc_specs_list import PCSpecsList
 from app.models.setup_streaming_list import SetupStreamingList
 from app.models.skin import Skin
 from app.models.product import Product
-from app.schemas.player import PlayerCreate, PlayerUpdate
+from app.schemas.player import PlayerCreate, PlayerUpdate, PlayerUpdateWithGear
+from app.crud.gear_list import gear_list_crud
+from app.crud.pc_specs_list import pc_specs_list_crud
+from app.crud.setup_streaming_list import setup_streaming_list_crud
 
 import logging
 
@@ -450,6 +453,77 @@ class CRUDPlayer:
         db.refresh(player)
         
         return self.get(db, player_id)
+
+    def update_player_gear(self, db: Session, *, db_obj: Player, obj_in: PlayerUpdateWithGear) -> Player:
+        """Update player and related gear lists"""
+        update_data = obj_in.model_dump(exclude_unset=True)
+        
+        # Extract gear list, pc specs list, setup streaming list, and skins updates
+        gear_list_update = update_data.pop("gear_list", None)
+        pc_specs_list_update = update_data.pop("pc_specs_list", None)
+        setup_streaming_list_update = update_data.pop("setup_streaming_list", None)
+        skin_ids = update_data.pop("skin_ids", None)
+        
+        # Validate foreign keys if provided
+        if "gear_list_id" in update_data and update_data["gear_list_id"]:
+            gear_list = db.get(GearList, update_data["gear_list_id"])
+            if not gear_list:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"GearList with id {update_data['gear_list_id']} does not exist"
+                )
+        
+        if "pc_specs_list_id" in update_data and update_data["pc_specs_list_id"]:
+            pc_specs = db.get(PCSpecsList, update_data["pc_specs_list_id"])
+            if not pc_specs:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"PCSpecsList with id {update_data['pc_specs_list_id']} does not exist"
+                )
+        
+        if "setup_streaming_list_id" in update_data and update_data["setup_streaming_list_id"]:
+            setup_streaming = db.get(SetupStreamingList, update_data["setup_streaming_list_id"])
+            if not setup_streaming:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"SetupStreamingList with id {update_data['setup_streaming_list_id']} does not exist"
+                )
+        
+        # Update player fields
+        for field, value in update_data.items():
+            setattr(db_obj, field, value)
+        
+        # Update gear list if provided
+        if gear_list_update and db_obj.gear_list:
+            # Convert dict back to GearListUpdate model
+            from app.schemas.gear_list import GearListUpdate
+            gear_list_update_model = GearListUpdate(**gear_list_update)
+            gear_list_crud.update(db=db, db_obj=db_obj.gear_list, obj_in=gear_list_update_model)
+        
+        # Update pc specs list if provided
+        if pc_specs_list_update and db_obj.pc_specs_list:
+            # Convert dict back to PCSpecsListUpdate model
+            from app.schemas.pc_specs_list import PCSpecsListUpdate
+            pc_specs_list_update_model = PCSpecsListUpdate(**pc_specs_list_update)
+            pc_specs_list_crud.update(db=db, db_obj=db_obj.pc_specs_list, obj_in=pc_specs_list_update_model)
+        
+        # Update setup streaming list if provided
+        if setup_streaming_list_update and db_obj.setup_streaming_list:
+            # Convert dict back to SetupStreamingListUpdate model
+            from app.schemas.setup_streaming_list import SetupStreamingListUpdate
+            setup_streaming_list_update_model = SetupStreamingListUpdate(**setup_streaming_list_update)
+            setup_streaming_list_crud.update(db=db, db_obj=db_obj.setup_streaming_list, obj_in=setup_streaming_list_update_model)
+        
+        # Update skins if provided
+        if skin_ids is not None:
+            self.set_player_skins(db=db, player_id=db_obj.id, skin_ids=skin_ids)
+        
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        
+        # Return updated player with relations
+        return self.get(db, db_obj.id)
 
 
 player_crud = CRUDPlayer() 

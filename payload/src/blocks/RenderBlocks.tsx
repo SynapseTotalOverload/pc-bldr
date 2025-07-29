@@ -10,6 +10,7 @@ import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { FeatureCardBlock } from '@/blocks/FeatureCard/Component'
 import { FeatureListBlock } from '@/blocks/FeatureList/Component'
 import { ApiCardListBlock } from '@/blocks/ApiCardList/Component'
+import { ApiPlayerList } from '@/blocks/ApiPlayerList/Component'
 import { WhyWorkWithUs } from '@/blocks/WhyWorkWithUs/Component'
 import { HeroMeteorComponent } from '@/blocks/HeroMeteor/Component'
 import { Integration2Component } from '@/blocks/Integration2/Component'
@@ -18,6 +19,7 @@ import { Feature157Component } from '@/blocks/Feature157/Component'
 import { Feature251Component } from '@/blocks/Feature251/Component'
 import { Testimonial19Component } from '@/blocks/Testimonial19/Component'
 import { Feature253Component } from '@/blocks/Feature253/Component'
+import { ApiPlayerListComponent } from './ApiPlayerList'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -28,6 +30,7 @@ const blockComponents = {
   featureCard: FeatureCardBlock,
   featureList: FeatureListBlock,
   apiCardList: ApiCardListBlock,
+  apiPlayerList: ApiPlayerListComponent,
   whyWorkWithUs: WhyWorkWithUs,
   heroMeteor: HeroMeteorComponent,
   integration2: Integration2Component,

@@ -1,6 +1,9 @@
+import { PlayerWithRelations } from '@/blocks/ApiPlayerList/types'
 import { PlayerDisplay } from '@/components/players/PlayerDispaly'
+import { playersService } from '@/services/players'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import { cache } from 'react'
+import { Metadata } from 'next'
 
 type Args = {
   params: Promise<{
@@ -20,33 +23,38 @@ export async function generateStaticParams() {
   return []
 }
 
-// export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-//   try {
-//     const { id } = await paramsPromise
-//     const productResponse = await productsService.getProduct(parseInt(id))
-//     const productData = productResponse.data?.[0] || productResponse as ServiceProduct
-//     return {
-//       title: productData.title || 'Product',
-//       description: productData.description || 'Product details'
-//     }
-//   } catch (error) {
-//     console.error('Error fetching product data:', error)
-//     return {
-//       title: 'Product Not Found',
-//       description: 'The requested product could not be found.'
-//     }
-//   }
-// }
+export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+  try {
+    const { id } = await paramsPromise
+    const playerResponse = await playersService.getPlayer(parseInt(id))
+    const playerData = playerResponse as PlayerWithRelations
+    return {
+      title: playerData.player_name || 'Player',
+      description: playerData.info || 'Player details'
+    }
+  } catch (error) {
+    console.error('Error fetching product data:', error)
+    return {
+      title: 'Product Not Found',
+      description: 'The requested product could not be found.'
+    }
+  }
+}
 
 const ProductPageComponent = async ({ params: paramsPromise }: Args) => {
   try {
     const { id } = await paramsPromise
-    const playerConfigRaw = await queryPlayerPageTemplate()
+    const [playerResponse, playerConfigRaw] = await Promise.all([
+      playersService.getPlayer(parseInt(id)),
+      queryPlayerPageTemplate()
+    ])
+
+    const playerData = playerResponse as PlayerWithRelations
     const playerConfig = JSON.parse(JSON.stringify(playerConfigRaw))
 
-    console.log(playerConfig)
+    console.log(playerData)
     
-    return <PlayerDisplay blocks={playerConfig.blocks}/>
+    return <PlayerDisplay blocks={playerConfig.blocks} player={playerData}/>
   } catch (error) {
     console.error('Error loading product page:', error)
     return <div>Product not found</div>

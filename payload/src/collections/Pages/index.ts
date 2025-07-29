@@ -10,6 +10,7 @@ import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { FeatureCard } from '../../blocks/FeatureCard/config'
 import { FeatureList } from '../../blocks/FeatureList/config'
 import { ApiCardList } from '../../blocks/ApiCardList/config'
+import { ApiPlayerList } from '../../blocks/ApiPlayerList/config'
 import { WhyWorkWithUs } from '../../blocks/WhyWorkWithUs/config'
 import { HeroMeteor } from '../../blocks/HeroMeteor/config'
 import { Integration2 } from '../../blocks/Integration2/config'
@@ -86,7 +87,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, FeatureCard, FeatureList, ApiCardList, WhyWorkWithUs, HeroMeteor, Integration2, Feature242, Feature157, Feature251, Testimonial19, Feature253],
+              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, FeatureCard, FeatureList, ApiCardList, ApiPlayerList, WhyWorkWithUs, HeroMeteor, Integration2, Feature242, Feature157, Feature251, Testimonial19, Feature253],
               required: true,
               admin: {
                 initCollapsed: true,
