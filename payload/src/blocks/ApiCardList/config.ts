@@ -59,6 +59,9 @@ export const ApiCardList: Block = {
         { label: 'Headset', value: '12' },
         { label: 'Mousepad', value: '13' },
         { label: 'Chair', value: '14' },
+        { label: 'Microphone', value: '15' },
+        { label: 'Camera', value: '16' },
+        { label: 'Headphones', value: '17' },
       ],
     },
     {

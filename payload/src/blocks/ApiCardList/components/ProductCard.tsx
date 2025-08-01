@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card'
 import { cn } from '@/utilities/ui'
 import { CardProps } from '../types'
 import Link from 'next/link'
-import { Star, Tag, Cpu, Zap, Package, ShoppingCart } from 'lucide-react'
+import { Star, Cpu, Package, ShoppingCart } from 'lucide-react'
 
 export const ProductCard: React.FC<CardProps> = ({ item, cardType, styling }) => {
   const cardStyles = {
@@ -48,6 +48,7 @@ export const ProductCard: React.FC<CardProps> = ({ item, cardType, styling }) =>
               </div>
             </div>
 
+            <img src={product.high_image_url} alt={product.title} className="w-full h-48 object-cover mb-4" />
             <h3 className="font-bold text-lg line-clamp-2 group-hover:text-blue-700 transition-colors duration-200 mb-3">
               {product.title}
             </h3>

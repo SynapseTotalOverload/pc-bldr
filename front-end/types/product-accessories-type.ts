@@ -40,6 +40,9 @@ export interface CategoryRead {
     headset: 'Headset';
     mousepad: 'Mousepad';
     chair: 'Chair';
+    microphone: 'Microphone';
+    camera: 'Camera';
+    headphones: 'Headphones';
   }
   
   export const PRODUCT_TYPE_NAMES: Record<keyof ProductTypeMapNamesAccessories, string> = {
@@ -49,6 +52,9 @@ export interface CategoryRead {
     headset: 'Headset',
     mousepad: 'Mousepad',
     chair: 'Chair',
+    microphone: 'Microphone',
+    camera: 'Camera',
+    headphones: 'Headphones',
   };
   
   export interface ProductTypeMapIds {
@@ -58,6 +64,9 @@ export interface CategoryRead {
     HEADSET: 12;
     MOUSEPAD: 13;
     CHAIR: 14;
+    MICROPHONE: 15;
+    CAMERA: 16;
+    HEADPHONES: 17;
   }
   export const ProductConstantMapIdsAccessories: Record<keyof ProductTypeMapIds, number> = {
     MOUSE: 9,
@@ -66,6 +75,9 @@ export interface CategoryRead {
     HEADSET: 12,
     MOUSEPAD: 13,
     CHAIR: 14,
+    MICROPHONE: 15,
+    CAMERA: 16,
+    HEADPHONES: 17,
   }
   
   export const FrontendToBackendCategoryMapAccessories: Record<string, keyof ProductTypeMapIds> = {
@@ -75,6 +87,9 @@ export interface CategoryRead {
     headset: 'HEADSET',
     mousepad: 'MOUSEPAD',
     chair: 'CHAIR',
+    microphone: 'MICROPHONE',
+    camera: 'CAMERA',
+    headphones: 'HEADPHONES',
   };
   
   export const FrontendToBackendCategoryIdMapAccessories: Record<string, keyof ProductTypeMapIds> = {
@@ -84,6 +99,9 @@ export interface CategoryRead {
     12: 'HEADSET',
     13: 'MOUSEPAD',
     14: 'CHAIR',
+    15: 'MICROPHONE',
+    16: 'CAMERA',
+    17: 'HEADPHONES',
   }
   
   export interface PaginatedInterface<T> {
@@ -125,6 +143,9 @@ export interface CategoryRead {
     headset: ProductGenericRead<Headset>;
     mousepad: ProductGenericRead<Mousepad>;
     chair: ProductGenericRead<Chair>;
+    microphone: ProductGenericRead<Microphone>;
+    camera: ProductGenericRead<Camera>;
+    headphones: ProductGenericRead<Headphones>;
     id: number;
     created_at: string; // ISO string from `datetime`
     updated_at: string; // ISO string from `datetime`
@@ -132,7 +153,7 @@ export interface CategoryRead {
   }
   
   
-  export type ProductAttrs = Mouse | Monitor | Keyboard | Headset | Mousepad | Chair;
+  export type ProductAttrs = Mouse | Monitor | Keyboard | Headset | Mousepad | Chair | Microphone | Camera | Headphones;
   
   export interface BaseAttrs {
     brand: string;
@@ -144,6 +165,9 @@ export interface CategoryRead {
   export type Headset = AttributeWithLabel<HeadsetAttributes>;
   export type Mousepad = AttributeWithLabel<MousepadAttributes>;
   export type Chair = AttributeWithLabel<ChairAttributes>;
+  export type Microphone = AttributeWithLabel<MicrophoneAttributes>;
+  export type Camera = AttributeWithLabel<CameraAttributes>;
+  export type Headphones = AttributeWithLabel<HeadphonesAttributes>;
   
   export type AttributeWithLabel<T extends { type: string }> = BaseAttrs & T;
 
@@ -211,6 +235,44 @@ export interface CategoryRead {
     product_dimensions: string;
     size: string;
     back_style: string;
+  }
+
+  export interface MicrophoneAttributes {
+    type: 'microphone';
+    brand: string;
+    color: string;
+    recommended_uses_for_product: string;
+    connectivity_technology: string;
+    connector_type: string;
+    special_feature: string;
+    compatible_devices: string;
+    included_components: string;
+    polar_pattern: string;
+
+  }
+
+  export interface CameraAttributes {
+    type: 'camera';
+    brand: string;
+    model: string;
+    photo_sensor_technology: string;
+    video_capture_resolution: number;
+    maximum_aperture: number;
+    flash_memory_type: string;
+    supported_audio_format: string;
+    screen_size: number;
+    connectivity_technology: string;
+    color: string;
+  }
+
+  export interface HeadphonesAttributes {
+    type: 'headphones';
+    brand: string;
+    model: string;
+    color: string;
+    impedance: number;
+    form_factor: string;
+    ear_placement: string;
   }
 
   

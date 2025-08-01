@@ -23,6 +23,9 @@ from .attributes import (
     HeadsetAttributes,
     MousepadAttributes,
     ChairAttributes,
+    MicrophoneAttributes,
+    CameraAttributes,
+    HeadphonesAttributes,
     BaseAttrsModel,
 )
 
@@ -51,4 +54,7 @@ __all__ = [
     "HeadsetAttributes",
     "MousepadAttributes",
     "ChairAttributes",
+    "MicrophoneAttributes",
+    "CameraAttributes",
+    "HeadphonesAttributes",
 ]

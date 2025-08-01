@@ -14,28 +14,6 @@ export const ApiPlayerList: Block = {
       label: 'Section description',
     },
     {
-      name: 'filterBy',
-      type: 'select',
-      defaultValue: 'all',
-      label: 'Filter players by',
-      options: [
-        { label: 'All players', value: 'all' },
-        { label: 'Team', value: 'team' },
-        { label: 'Country', value: 'country' },
-        { label: 'Search query', value: 'query' },
-      ],
-    },
-    {
-      name: 'layout',
-      type: 'select',
-      defaultValue: 'grid',
-      options: [
-        { label: 'Grid', value: 'grid' },
-        { label: 'List', value: 'list' },
-        { label: 'Carousel', value: 'carousel' },
-      ],
-    },
-    {
       name: 'columns',
       type: 'select',
       defaultValue: '3',
@@ -66,36 +44,36 @@ export const ApiPlayerList: Block = {
       defaultValue: true,
       label: 'Show pagination',
     },
-    {
-      name: 'styling',
-      type: 'group',
-      label: 'Styling',
-      fields: [
-        {
-          name: 'backgroundColor',
-          type: 'select',
-          defaultValue: 'default',
-          options: [
-            { label: 'Default', value: 'default' },
-            { label: 'Primary', value: 'primary' },
-            { label: 'Secondary', value: 'secondary' },
-            { label: 'Accent', value: 'accent' },
-            { label: 'Muted', value: 'muted' },
-          ],
-        },
-        {
-          name: 'cardStyle',
-          type: 'select',
-          defaultValue: 'default',
-          options: [
-            { label: 'Default', value: 'default' },
-            { label: 'Elevated', value: 'elevated' },
-            { label: 'Bordered', value: 'bordered' },
-            { label: 'Minimal', value: 'minimal' },
-          ],
-        },
-      ],
-    },
+    // {
+    //   name: 'styling',
+    //   type: 'group',
+    //   label: 'Styling',
+    //   fields: [
+    //     {
+    //       name: 'backgroundColor',
+    //       type: 'select',
+    //       defaultValue: 'default',
+    //       options: [
+    //         { label: 'Default', value: 'default' },
+    //         { label: 'Primary', value: 'primary' },
+    //         { label: 'Secondary', value: 'secondary' },
+    //         { label: 'Accent', value: 'accent' },
+    //         { label: 'Muted', value: 'muted' },
+    //       ],
+    //     },
+    //     {
+    //       name: 'cardStyle',
+    //       type: 'select',
+    //       defaultValue: 'default',
+    //       options: [
+    //         { label: 'Default', value: 'default' },
+    //         { label: 'Elevated', value: 'elevated' },
+    //         { label: 'Bordered', value: 'bordered' },
+    //         { label: 'Minimal', value: 'minimal' },
+    //       ],
+    //     },
+    //   ],
+    // },
   ],
   interfaceName: 'ApiPlayerListBlock',
 }

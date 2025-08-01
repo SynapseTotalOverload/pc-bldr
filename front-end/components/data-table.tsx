@@ -25,6 +25,7 @@ import { Card } from './ui/card';
 import { SearchPrice } from './ui/search-price';
 import { SelectBuildType } from '@/components/ui/select-build-type';
 
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -34,6 +35,7 @@ interface DataTableProps<TData, TValue> {
   onSearchPrice?: (from: number, to: number) => void;
   onBuildTypeChange?: (buildType: string | null) => void;
   onSearchChange?: (value: string) => void;
+  onButtonClick?: () => void;
   renderActions?: () => React.ReactNode;
   showFilter?: boolean;
   showColumns?: boolean;
@@ -55,6 +57,7 @@ export function DataTable<TData, TValue>({
   onSearchPrice,
   onBuildTypeChange,
   onSearchChange,
+  onButtonClick,
   renderActions,
   showFilter = false,
   pagination,
@@ -66,24 +69,27 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = useState({});
   const [localSearchValue, setLocalSearchValue] = useState(searchValue);
 
-  // Sync localSearchValue with searchValue prop
-  useEffect(() => {
-    setLocalSearchValue(searchValue);
-  }, [searchValue]);
+  // // Sync localSearchValue with searchValue prop
+  // useEffect(() => {
+  //   setLocalSearchValue(searchValue);
+  //   if(onSearchChange && searchValue) {
+  //     onSearchChange(searchValue);
+  //   }
+  // }, [searchValue]);
 
   // Handle search on Enter key press
-  const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && onSearchChange) {
-      onSearchChange(localSearchValue);
-    }
-  };
+  // const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (event.key === 'Enter' && onSearchChange) {
+  //     onSearchChange(localSearchValue);
+  //   }
+  // };
 
-  // Handle search button click
-  const handleSearchClick = () => {
-    if (onSearchChange) {
-      onSearchChange(localSearchValue);
-    }
-  };
+  // // Handle search button click
+  // const handleSearchClick = () => {
+  //   if (onSearchChange) {
+  //     onSearchChange(localSearchValue);
+  //   }
+  // };
 
   const table = useReactTable({
     data,
@@ -101,6 +107,12 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     pageCount: pagination.totalPages,
   });
+  const clickButton = () => {
+    console.log('clickButton')
+    if(onButtonClick) {
+      onButtonClick();
+    }
+  }
 
   return (
     <Card className="w-full">
@@ -108,12 +120,18 @@ export function DataTable<TData, TValue>({
         <div className="flex items-center py-4 px-4 gap-4">
           {searchKey && (
             <>
+              {renderActions && renderActions()}
               <div className="relative max-w-sm">
                 <Input
                   placeholder={searchPlaceholder}
                   value={localSearchValue}
-                  onChange={(event) => setLocalSearchValue(event.target.value)}
-                  onKeyPress={handleSearchKeyPress}
+                  onChange={(event) => {
+                    setLocalSearchValue(event.target.value);
+                    if(onSearchChange) {
+                      onSearchChange(event.target.value);
+                    }
+                  }}
+                  // onKeyPress={handleSearchKeyPress}
                   className="pr-10"
                 />
                 <Button
@@ -121,11 +139,14 @@ export function DataTable<TData, TValue>({
                   variant="ghost"
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0"
-                  onClick={handleSearchClick}
+                  // onClick={handleSearchClick}
                 >
                   <Search className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
                 </Button>
               </div>
+              {!showFilter && (
+                <Button variant="outline" className="cursor-pointer text-white bg-primary hover:bg-primary/90 hover:text-white" onClick={clickButton}>Search</Button>
+              )}
               {showFilter && (
                 <div className="pl-6">
                   <SearchPrice onSearch={onSearchPrice || (() => {})} />
@@ -133,13 +154,15 @@ export function DataTable<TData, TValue>({
               )}
             </>
           )}
-          {renderActions && renderActions()}
           {showFilter && (
-            <div className="relative">
-              <SelectBuildType onBuildTypeChange={onBuildTypeChange || (() => {console.log("build type changed")})} />
-            </div>
+            <>
+              <div className="relative">
+                <SelectBuildType onBuildTypeChange={onBuildTypeChange || (() => {console.log("build type changed")})} />
+              </div>
+              <Button variant="outline" className="ml-auto cursor-pointer text-white bg-primary hover:bg-primary/90 hover:text-white" onClick={onButtonClick}>Search</Button>
+            </>
           )}
-          
+
           <DropdownMenu>
           
             <DropdownMenuTrigger asChild>

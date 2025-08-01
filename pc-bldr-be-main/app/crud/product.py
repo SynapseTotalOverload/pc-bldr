@@ -20,6 +20,9 @@ from app.models.attributes import (
     HeadsetAttributes,
     MousepadAttributes,
     ChairAttributes,
+    MicrophoneAttributes,
+    CameraAttributes,
+    HeadphonesAttributes,
 )
 from app.schemas.product import ProductCreate, ProductUpdate
 from app.schemas.attributes import (
@@ -37,6 +40,9 @@ from app.schemas.attributes import (
     HeadsetAttributesUpdateSchema,
     MousepadAttributesUpdateSchema,
     ChairAttributesUpdateSchema,
+    MicrophoneAttributesUpdateSchema,
+    CameraAttributesUpdateSchema,
+    HeadphonesAttributesUpdateSchema,
 )
 
 
@@ -57,6 +63,9 @@ class CRUDProduct:
             joinedload(Product.headset_attributes),
             joinedload(Product.mousepad_attributes),
             joinedload(Product.chair_attributes),
+            joinedload(Product.microphone_attributes),
+            joinedload(Product.camera_attributes),
+            joinedload(Product.headphones_attributes),
         )
 
     def _get_attrs_relationship_name(self, attrs_model):
@@ -76,6 +85,9 @@ class CRUDProduct:
             HeadsetAttributes: "headset_attributes",
             MousepadAttributes: "mousepad_attributes",
             ChairAttributes: "chair_attributes",
+            MicrophoneAttributes: "microphone_attributes",
+            CameraAttributes: "camera_attributes",
+            HeadphonesAttributes: "headphones_attributes",
         }
         return mapping.get(attrs_model)
 
@@ -96,6 +108,9 @@ class CRUDProduct:
             12: HeadsetAttributesUpdateSchema,
             13: MousepadAttributesUpdateSchema,
             14: ChairAttributesUpdateSchema,
+            15: MicrophoneAttributesUpdateSchema,
+            16: CameraAttributesUpdateSchema,
+            17: HeadphonesAttributesUpdateSchema,
         }
         return mapping.get(category_id)
 
@@ -148,7 +163,7 @@ class CRUDProduct:
                               if column.name not in ['id', 'product_id', 'created_at', 'updated_at']]
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"For category {category_id} you can only pass in attrs the following fields: {', '.join(valid_fields)}"
+                    detail=f"For category {category_id} you can only pass in attrs the following fields: {', '.join(valid_fields)}. Error: {str(e)}"
                 )
             
             # Create attributes record
@@ -156,7 +171,7 @@ class CRUDProduct:
             new_attrs = attrs_model(product_id=db_obj.id, **attrs_dict)
             db.add(new_attrs)
             
-            # Update display_name if brand and model are available
+            # Update display_name based on brand and model
             if attrs_dict.get('brand') and attrs_dict.get('model'):
                 db_obj.display_name = f"{attrs_dict['brand']} {attrs_dict['model']}"
             elif attrs_dict.get('brand'):
@@ -165,7 +180,7 @@ class CRUDProduct:
                 db_obj.display_name = attrs_dict['model']
         
         db.commit()
-        db.refresh(db_obj, attribute_names=["category"])
+        db.refresh(db_obj)
         return db_obj
 
     def get(self, db: Session, id_: int):
@@ -197,8 +212,8 @@ class CRUDProduct:
             count_stmt = select(func.count()).select_from(Product).where(Product.category_id == category_id)
         else:
             if periphery:
-                stmt = stmt.where(Product.category_id.in_([9, 10, 11, 12, 13, 14]))
-                count_stmt = select(func.count()).select_from(Product).where(Product.category_id.in_([9, 10, 11, 12, 13, 14]))
+                stmt = stmt.where(Product.category_id.in_([9, 10, 11, 12, 13, 14, 15, 16, 17]))
+                count_stmt = select(func.count()).select_from(Product).where(Product.category_id.in_([9, 10, 11, 12, 13, 14, 15, 16, 17]))
             else:
                 stmt = stmt.where(Product.category_id.in_([1, 2, 3, 4, 5, 6, 7, 8]))
                 count_stmt = select(func.count()).select_from(Product).where(Product.category_id.in_([1, 2, 3, 4, 5, 6, 7, 8]))
@@ -273,7 +288,7 @@ class CRUDProduct:
                               if column.name not in ['id', 'product_id', 'created_at', 'updated_at']]
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"For category {category_id} you can only pass in attrs the following fields: {', '.join(valid_fields)}"
+                    detail=f"For category {category_id} you can only pass in attrs the following fields: {', '.join(valid_fields)}. Error: {str(e)}"
                 )
             
             # Get or create attributes record

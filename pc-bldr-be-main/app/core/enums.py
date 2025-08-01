@@ -1,5 +1,5 @@
 from enum import Enum
-from app.models import (
+from app.models.attributes import (
     BaseAttrsModel,
     CPUAttributes,
     CPUCoolerAttributes,
@@ -14,7 +14,10 @@ from app.models import (
     KeyboardAttributes,
     HeadsetAttributes,
     MousepadAttributes,
-    ChairAttributes
+    ChairAttributes,
+    MicrophoneAttributes,
+    CameraAttributes,
+    HeadphonesAttributes
 )
 
 
@@ -33,6 +36,9 @@ cat_id_to_attrs_model_map: dict[int,type[BaseAttrsModel]] = {
     12: HeadsetAttributes,
     13: MousepadAttributes,
     14: ChairAttributes,
+    15: MicrophoneAttributes,
+    16: CameraAttributes,
+    17: HeadphonesAttributes,
 }
 
 class BuildTypeEnum(Enum):

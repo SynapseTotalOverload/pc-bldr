@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, TYPE_CHECKING
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from .product import ProductRead
 
 
@@ -16,6 +16,13 @@ class SetupStreamingListCreate(BaseModel):
     microphone_id: Optional[int] = None
     webcam_id: Optional[int] = None
     
+    @field_validator('chair_id', 'microphone_id', 'webcam_id')
+    @classmethod
+    def validate_product_ids(cls, v):
+        if v == 0:
+            return None
+        return v
+    
     class Config:
         from_attributes = True
 
@@ -24,6 +31,13 @@ class SetupStreamingListUpdate(BaseModel):
     chair_id: Optional[int] = None
     microphone_id: Optional[int] = None
     webcam_id: Optional[int] = None
+    
+    @field_validator('chair_id', 'microphone_id', 'webcam_id')
+    @classmethod
+    def validate_product_ids(cls, v):
+        if v == 0:
+            return None
+        return v
     
     class Config:
         from_attributes = True
@@ -66,7 +80,7 @@ class SetupStreamingListWithProducts(SetupStreamingListRead):
             'updated_at': setupstreaminglist.updated_at,
             'chair': ProductRead.from_orm_with_attrs(setupstreaminglist.chair) if setupstreaminglist.chair else None,
             'microphone': ProductRead.from_orm_with_attrs(setupstreaminglist.microphone) if setupstreaminglist.microphone else None,
-            'webcam': ProductRead.from_orm_with_attrs(setupstreaminglist.webcam) if setupstreaminglist.webcam else None,
+            'camera': ProductRead.from_orm_with_attrs(setupstreaminglist.webcam) if setupstreaminglist.webcam else None,
         }
         return cls(**data)
     
@@ -78,6 +92,8 @@ class SimpleProduct(BaseModel):
     id: int
     name: str
     display_name: Optional[str] = None
+    low_image_url: Optional[str] = None
+    high_image_url: Optional[str] = None
     
     @classmethod
     def from_product(cls, product):
@@ -86,7 +102,9 @@ class SimpleProduct(BaseModel):
         return cls(
             id=product.id, 
             name=product.title,
-            display_name=product.display_name
+            display_name=product.display_name,
+            low_image_url=product.low_image_url,
+            high_image_url=product.high_image_url
         )
     
     class Config:
@@ -99,7 +117,7 @@ class SetupStreamingListWithSimpleProducts(BaseModel):
     updated_at: datetime
     chair: Optional[SimpleProduct] = None
     microphone: Optional[SimpleProduct] = None
-    webcam: Optional[SimpleProduct] = None
+    camera: Optional[SimpleProduct] = None
     
     @classmethod
     def from_setupstreaminglist(cls, setupstreaminglist):
@@ -112,7 +130,7 @@ class SetupStreamingListWithSimpleProducts(BaseModel):
             'updated_at': setupstreaminglist.updated_at,
             'chair': SimpleProduct.from_product(setupstreaminglist.chair) if setupstreaminglist.chair else None,
             'microphone': SimpleProduct.from_product(setupstreaminglist.microphone) if setupstreaminglist.microphone else None,
-            'webcam': SimpleProduct.from_product(setupstreaminglist.webcam) if setupstreaminglist.webcam else None,
+            'camera': SimpleProduct.from_product(setupstreaminglist.webcam) if setupstreaminglist.webcam else None,
         }
         return cls(**data)
     

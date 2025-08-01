@@ -137,6 +137,7 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames | keyof ProductTypeMapNa
   ],
   keyboard: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Logitech, Razer' },
+    { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'C920' },
     { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, White' },
     { name: 'pattern', label: 'Pattern', type: 'text', required: true, placeholder: 'QWERTY' },
     { name: 'compatible_devices', label: 'Compatible Devices', type: 'text', required: true, placeholder: 'PC, Mac' },
@@ -151,6 +152,7 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames | keyof ProductTypeMapNa
   ],
   headset: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Logitech, SteelSeries' },
+    { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'C920' },
     { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, White' },
     { name: 'par_placement', label: 'Ear Placement', type: 'text', required: true, placeholder: 'Over-ear, On-ear' },
     { name: 'form_factor', label: 'Form Factor', type: 'text', required: true, placeholder: 'Closed-back, Open-back' },
@@ -159,6 +161,7 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames | keyof ProductTypeMapNa
   ],
   mousepad: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'SteelSeries, Razer' },
+    { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'C920' },
     { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, RGB' },
     { name: 'special_feature', label: 'Special Features', type: 'text', required: true, placeholder: 'RGB, Anti-slip' },
     { name: 'recommended_uses_for_product', label: 'Recommended Uses', type: 'text', required: true, placeholder: 'Gaming, Office' },
@@ -168,10 +171,43 @@ const CATEGORY_FIELDS: Record<keyof ProductTypeMapNames | keyof ProductTypeMapNa
   ],
   chair: [
     { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Herman Miller, Steelcase' },
+    { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'C920' },
     { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, Gray' },
     { name: 'product_dimensions', label: 'Dimensions', type: 'text', required: true, placeholder: '27" x 27" x 45"' },
     { name: 'size', label: 'Size', type: 'text', required: true, placeholder: 'Standard, Large' },
     { name: 'back_style', label: 'Back Style', type: 'text', required: true, placeholder: 'High-back, Mid-back' },
+  ],
+  microphone: [
+    { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Logitech, Razer' },
+    { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'C920' },
+    { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, White' },
+    { name: 'connectivity_technology', label: 'Connectivity Technology', type: 'text', required: true, placeholder: 'USB, Bluetooth' },
+    { name: 'connector_type', label: 'Connector Type', type: 'text', required: true, placeholder: '3.5mm, USB-C' },
+    { name: 'special_feature', label: 'Special Features', type: 'text', required: true, placeholder: 'USB, Bluetooth' },
+    { name: 'compatible_devices', label: 'Compatible Devices', type: 'text', required: true, placeholder: 'PC, Mac' },
+    { name: 'included_components', label: 'Included Components', type: 'text', required: true, placeholder: 'Microphone, Stand' },
+    { name: 'polar_pattern', label: 'Polar Pattern', type: 'text', required: true, placeholder: 'Cardioid, Omnidirectional' },
+  ],
+  camera: [
+    { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Logitech, Razer' },
+    { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'C920' },
+    { name: 'photo_sensor_technology', label: 'Photo Sensor Technology', type: 'text', required: true, placeholder: 'CMOS' },
+    { name: 'video_capture_resolution', label: 'Video Capture Resolution', type: 'integer', required: true, placeholder: '1080p' },
+    { name: 'maximum_aperture', label: 'Maximum Aperture', type: 'integer', required: true, placeholder: '1.4' },
+    { name: 'flash_memory_type', label: 'Flash Memory Type', type: 'text', required: true, placeholder: 'SD, SDHC, SDXC' },
+    { name: 'connectivity_technology', label: 'Connectivity Technology', type: 'text', required: true, placeholder: 'USB, Bluetooth' },
+    { name: 'video_capture_format', label: 'Video Capture Format', type: 'text', required: true, placeholder: 'H.264, H.265' },
+    { name: 'supported_audio_format', label: 'Supported Audio Format', type: 'text', required: true, placeholder: 'AAC, MP3' },
+    { name: 'screen_size', label: 'Screen Size', type: 'integer', required: true, placeholder: '75"' },
+    { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, White' },
+  ],
+  headphones: [
+    { name: 'brand', label: 'Brand', type: 'text', required: true, placeholder: 'Logitech, Razer' },
+    { name: 'model', label: 'Model', type: 'text', required: true, placeholder: 'C920' },
+    { name: 'color', label: 'Color', type: 'text', required: true, placeholder: 'Black, White' },
+    { name: 'ear_placement', label: 'Ear Placement', type: 'text', required: true, placeholder: 'Over-ear, On-ear' },
+    { name: 'form_factor', label: 'Form Factor', type: 'text', required: true, placeholder: 'Closed-back, Open-back' },
+    { name: 'impedance', label: 'Impedance', type: 'integer', required: true, placeholder: '32' },
   ],
 } as const;
 
@@ -306,23 +342,8 @@ export function AddNewProduct({
         setSelectedCategory(convertedData.category);
       }
       
-      console.log('📝 Form updated with product data in edit mode');
     }
   }, [data, isOpen, activeCategory, form, isEditing]);
-
-  const getCategoryId = (category: keyof ProductTypeMapNames): number => {
-    const categoryMap: Record<keyof ProductTypeMapNames, number> = {
-      cpu: 1,
-      cpu_cooler: 2,
-      gpu: 3,
-      motherboard: 4,
-      ram: 5,
-      storage: 6,
-      power_supply: 7,
-      case: 8,
-    };
-    return categoryMap[category];
-  };
 
   const getCategoryIdAccessories = (category: keyof ProductTypeMapNamesAccessories): number => {
     const categoryMap: Record<keyof ProductTypeMapNamesAccessories, number> = {
@@ -332,6 +353,9 @@ export function AddNewProduct({
       headset: 12,
       mousepad: 13,
       chair: 14,
+      microphone: 15,
+      camera: 16,
+      headphones: 17,
     };
     return categoryMap[category];
   };
@@ -358,12 +382,14 @@ export function AddNewProduct({
       12: 'headset',
       13: 'mousepad',
       14: 'chair',
+      15: 'microphone',
+      16: 'camera',
+      17: 'headphones',
     };
     return idToCategoryMap[categoryId] || null;
   };
 
   const convertProductReadToFormData = (productData: any): Partial<FormData> => {
-    console.log('🔄 Converting ProductRead to FormData:', productData);
     
     if (!productData) return {};
 
@@ -407,7 +433,6 @@ export function AddNewProduct({
   };
 
   const convertAndValidateTypes = (data: FormData): FormData => {
-    console.log("🔍 Converting and validating data types...");
     const convertedData = { ...data };
     const fields = CATEGORY_FIELDS[data.category];
     let hasTypeErrors = false;
@@ -428,13 +453,6 @@ export function AddNewProduct({
           const numValue = parseFloat(stringValue);
           
           if (isNaN(numValue)) {
-            console.error(`❌ Type mismatch for ${field.name}:`, {
-              fieldLabel: field.label,
-              expectedType: 'number',
-              receivedValue: stringValue,
-              receivedType: typeof value,
-              category: data.category
-            });
             hasTypeErrors = true;
             
             toast({
@@ -445,23 +463,11 @@ export function AddNewProduct({
           } else {
             // Successfully converted to number
             convertedData[field.name] = numValue;
-            console.log(`✅ Converted ${field.name}:`, {
-              from: stringValue,
-              to: numValue,
-              type: 'number'
-            });
           }
         } else if (field.type === 'integer') {
           const intValue = parseInt(stringValue, 10);
           
           if (isNaN(intValue)) {
-            console.error(`❌ Type mismatch for ${field.name}:`, {
-              fieldLabel: field.label,
-              expectedType: 'integer',
-              receivedValue: stringValue,
-              receivedType: typeof value,
-              category: data.category
-            });
             hasTypeErrors = true;
             
             toast({
@@ -470,13 +476,6 @@ export function AddNewProduct({
               variant: "destructive",
             });
           } else if (!Number.isInteger(parseFloat(stringValue))) {
-            console.error(`❌ Type mismatch for ${field.name}:`, {
-              fieldLabel: field.label,
-              expectedType: 'integer',
-              receivedValue: stringValue,
-              receivedType: typeof value,
-              category: data.category
-            });
             hasTypeErrors = true;
             
             toast({
@@ -491,10 +490,6 @@ export function AddNewProduct({
         } else if (field.type === 'text') {
           // Keep as string, but log the conversion
           convertedData[field.name] = stringValue;
-          console.log(`✅ Validated ${field.name}:`, {
-            value: stringValue,
-            type: 'text'
-          });
         }
       }
     }
@@ -503,11 +498,6 @@ export function AddNewProduct({
     if (data.price && data.price.toString().trim() !== '') {
       const priceValue = parseFloat(data.price.toString());
       if (isNaN(priceValue)) {
-        console.error(`❌ Type mismatch for price:`, {
-          expectedType: 'number',
-          receivedValue: data.price,
-          receivedType: typeof data.price
-        });
         hasTypeErrors = true;
         toast({
           title: "Type Validation Error",
@@ -516,18 +506,12 @@ export function AddNewProduct({
         });
       } else {
         convertedData.price = priceValue.toString();
-        console.log(`✅ Converted price:`, { from: data.price, to: priceValue });
       }
     }
 
     if (data.rating && data.rating.toString().trim() !== '') {
       const ratingValue = parseFloat(data.rating.toString());
       if (isNaN(ratingValue)) {
-        console.error(`❌ Type mismatch for rating:`, {
-          expectedType: 'number',
-          receivedValue: data.rating,
-          receivedType: typeof data.rating
-        });
         hasTypeErrors = true;
         toast({
           title: "Type Validation Error",
@@ -535,10 +519,6 @@ export function AddNewProduct({
           variant: "destructive",
         });
       } else if (ratingValue < 0 || ratingValue > 5) {
-        console.error(`❌ Value out of range for rating:`, {
-          value: ratingValue,
-          validRange: '0-5'
-        });
         hasTypeErrors = true;
         toast({
           title: "Validation Error",
@@ -547,16 +527,13 @@ export function AddNewProduct({
         });
       } else {
         convertedData.rating = ratingValue.toString();
-        console.log(`✅ Converted rating:`, { from: data.rating, to: ratingValue });
       }
     }
 
     if (hasTypeErrors) {
-      console.error("❌ Type conversion failed. Data will not be submitted.");
       throw new Error("Type validation failed");
     }
 
-    console.log("✅ All type conversions successful:", convertedData);
     return convertedData;
   };
 
@@ -780,18 +757,18 @@ export function AddNewProduct({
                 </CardHeader>
                 <CardContent>
                   <Tabs value={selectedCategory} onValueChange={(value) => handleCategoryChange(value as keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories)}>
-                    <TabsList className="grid w-full grid-cols-4">
+                    <TabsList className="flex flex-wrap w-full gap-1 p-1">
                       {isAccessoriesPage ? (
                         // Show accessories categories
                         Object.entries(PRODUCT_TYPE_NAMES_ACCESSORIES).map(([key, name]) => (
-                          <TabsTrigger key={key} value={key} className="text-xs">
+                          <TabsTrigger key={key} value={key} className="text-xs flex-shrink-0">
                             {name}
                           </TabsTrigger>
                         ))
                       ) : (
                         // Show PC component categories
                         Object.entries(PRODUCT_TYPE_NAMES).map(([key, name]) => (
-                          <TabsTrigger key={key} value={key} className="text-xs">
+                          <TabsTrigger key={key} value={key} className="text-xs flex-shrink-0">
                             {name}
                           </TabsTrigger>
                         ))
@@ -801,12 +778,12 @@ export function AddNewProduct({
                       // Show accessories descriptions
                       Object.entries(PRODUCT_TYPE_NAMES_ACCESSORIES).map(([key, name]) => (
                         <TabsContent key={key} value={key} className="mt-4">
-                          <div className="text-sm text-muted-foreground">
+                          {/* <div className="text-sm text-muted-foreground">
                             {isEditing 
                               ? `Editing ${name.toLowerCase()} in the catalog`
                               : `Adding a new ${name.toLowerCase()} to the catalog`
                             }
-                          </div>
+                          </div> */}
                         </TabsContent>
                       ))
                     ) : (

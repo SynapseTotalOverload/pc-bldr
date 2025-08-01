@@ -39,7 +39,8 @@ export default function Accessories() {
     const router = useRouter()
     const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapNamesAccessories>('mouse');
     const [page, setPage] = useState(1);
-    const [search, setSearch] = useState('');
+    const [searchInput, setSearchInput] = useState(''); // Local search input state
+    const [activeSearch, setActiveSearch] = useState(''); // Active search that triggers API calls
     const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
     const { toast } = useToast();
     const {isState, changeState, toggleState}= useBoolean();
@@ -47,7 +48,7 @@ export default function Accessories() {
     const { products, pagination, error, refetch } = useProducts<ProductRead>({
       category: selectedCategory,
       page,
-      search,
+      search: activeSearch, // Use activeSearch here
       periphery_flag: true,
     });
 
@@ -63,6 +64,9 @@ export default function Accessories() {
             headset: 12,
             mousepad: 13,
             chair: 14,
+            microphone: 15,
+            camera: 16,
+            headphones: 17,
           };
           return categoryMap[category as keyof ProductTypeMapNamesAccessories];
         };
@@ -72,7 +76,7 @@ export default function Accessories() {
         const categoryId = getCategoryId(data.category);
         
         // Validate category_id
-        if (!categoryId || categoryId < 9 || categoryId > 14) {
+        if (!categoryId || categoryId < 9 || categoryId > 17) {
           throw new Error(`Invalid category: ${data.category}`);
         }
         
@@ -109,9 +113,7 @@ export default function Accessories() {
         if (Object.keys(attrs).length > 0) {
           transformedData.attrs = attrs;
         }
-  
-        console.log('Transformed data:', transformedData);
-  
+    
         // Send data to API
         if(selectedProduct){
           await instance.put(`/products/${selectedProduct.id}`, transformedData);
@@ -129,6 +131,12 @@ export default function Accessories() {
         });
       }
     };
+
+    const handleSearchAll = () => {
+      console.log('handleSearchAll')
+      setActiveSearch(searchInput);
+      setPage(1);
+    }
 
     const handleDelete = async (id: number) => {
       try {
@@ -247,6 +255,9 @@ export default function Accessories() {
               <Link href="/configurator">
                   <Button>Configurator</Button>
               </Link>
+              <Link href="/players">
+                  <Button>Players</Button>
+              </Link>
             </div>
           </div>
 
@@ -256,7 +267,8 @@ export default function Accessories() {
             onSelectCategory={(category) => {
               setSelectedCategory(category as keyof ProductTypeMapNamesAccessories);
               setPage(1);
-              setSearch('');
+              setSearchInput(''); // Reset search input
+              setActiveSearch(''); // Reset active search
           }}
           />
 
@@ -269,11 +281,9 @@ export default function Accessories() {
                     data={products}
                     searchKey="title"
                     searchPlaceholder="Search products..."
-                    searchValue={search}
-                    onSearchChange={(value) => {
-                      setSearch(value);
-                      setPage(1);
-                    }}
+                    searchValue={searchInput} // Use searchInput for display
+                    onSearchChange={(value) => setSearchInput(value)} // Update searchInput only
+                    onButtonClick={handleSearchAll}
                     pagination={pagination} 
                     renderActions={() => (
                     <Button onClick={()=>toggleState('addNewProduct')}> <Plus className="h-4 w-4" /> Add new product</Button>

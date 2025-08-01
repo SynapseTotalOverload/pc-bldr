@@ -248,6 +248,22 @@ export interface ProductAttributes {
   // Chair attributes (category 14)
   product_dimensions?: string
   back_style?: string
+  
+  // Microphone attributes (category 15)
+  colour?: string
+  included_components?: string
+  polar_pattern?: string
+  supported_audio_format?: string
+
+  // Headphones attributes (category 17)
+  ear_placement?: string
+
+  // Camera attributes (category 16)
+  photo_sensor_technology?: string
+  video_capture_resolution?: number
+  maximum_aperture?: number
+  flash_memory_type?: number
+  video_capture_format?: string
 }
 
 

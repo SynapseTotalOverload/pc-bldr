@@ -51,8 +51,6 @@ const ProductPageComponent = async ({ params: paramsPromise }: Args) => {
 
     const playerData = playerResponse as PlayerWithRelations
     const playerConfig = JSON.parse(JSON.stringify(playerConfigRaw))
-
-    console.log(playerData)
     
     return <PlayerDisplay blocks={playerConfig.blocks} player={playerData}/>
   } catch (error) {

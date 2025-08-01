@@ -18,6 +18,9 @@ const categoriesAccessories = [
   { id: 'headset', label: 'Headset' },
   { id: 'mousepad', label: 'Mousepad' },
   { id: 'chair', label: 'Chair' },
+  { id: 'microphone', label: 'Microphone' },
+  { id: 'camera', label: 'Camera' },
+  { id: 'headphones', label: 'Headphones' },
 ];
 
 const categoriesSkins = [

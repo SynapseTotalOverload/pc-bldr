@@ -85,7 +85,10 @@ export function SelectListProductNew({
                 'keyboard': 11,
                 'headset': 12,
                 'mousepad': 13,
-                'chair': 14
+                'chair': 14,
+                'microphone': 15,
+                'camera': 16,
+                'earphones': 17
             };
 
             const categoryId = categoryMap[category.toLowerCase()];
@@ -116,6 +119,7 @@ export function SelectListProductNew({
                 currentPage: data.pagination.currentPage,
                 totalPages: data.pagination.totalPages
             });
+
         } catch (error) {
             console.error('Error fetching products:', error);
             setAllProducts([]);
@@ -184,12 +188,6 @@ export function SelectListProductNew({
             setActiveProduct(null);
         }
     }, [value, allProducts, label]);
-
-    useEffect(() => {
-        console.log('activeProduct', activeProduct);
-        console.log('selectedProduct', selectedProduct);
-        console.log('value', value);
-    }, [activeProduct, selectedProduct, value]);
 
     return (
         <div className={`space-y-2`}>

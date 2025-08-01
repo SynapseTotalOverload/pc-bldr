@@ -86,10 +86,6 @@ export default function Skins() {
         }
       }, [router]);
 
-      useEffect(() => {
-        console.log(skins)
-      }, [skins])
-
     // Create custom columns with edit functionality
     const customSkinsColumns: ColumnDef<SkinRead>[] = [
       ...skinsColumns.filter(col => col.id !== 'actions'),

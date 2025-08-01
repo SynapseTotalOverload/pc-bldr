@@ -24,6 +24,11 @@ export interface PlayerUpdateWithGear extends Partial<PlayerBase> {
   gear_list_id?: number;
   pc_specs_list_id?: number;
   setup_streaming_list_id?: number;
+  setup_streaming_list?: {
+    chair_id?: number | null;
+    microphone_id?: number | null;
+    camera_id?: number | null;
+  };
   gear_list?: {
     monitor_id?: number | null;
     mouse_id?: number | null;

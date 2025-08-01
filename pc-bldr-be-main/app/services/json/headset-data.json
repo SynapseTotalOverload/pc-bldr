@@ -1,0 +1,1097 @@
+[
+  {
+    "name": "Razer BlackShark V2 Pro",
+    "asin": "4d0lyVU",
+    "productLink": "https://amzn.to/4d0lyVU",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/razer-blackshark-v2-pro-2023.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "NiKo",
+      "Zekken",
+      "qck",
+      "Meteor"
+    ],
+    "usage": "23.63% (488 of 2065)",
+    "rating": "4.5"
+  },
+  {
+    "name": "Logitech G Pro X Headset",
+    "asin": "2XB6dUR",
+    "productLink": "https://amzn.to/2XB6dUR",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/logitech-g-pro-x-wired.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "m0NESY",
+      "kennyS",
+      "ScreaM",
+      "D0cC"
+    ],
+    "usage": "8.04% (166 of 2065)",
+    "rating": "4"
+  },
+  {
+    "name": "HyperX Cloud II Wireless",
+    "asin": "3ei44rz",
+    "productLink": "https://amzn.to/3ei44rz",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/hyperx-cloud-ii-wireless.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "juanflatroo",
+      "noway",
+      "imoRR",
+      "JamYoung"
+    ],
+    "usage": "2.32% (48 of 2065)",
+    "rating": "3.5"
+  },
+  {
+    "name": "Logitech G Pro X Wireless Headset",
+    "asin": "2XB6dUR",
+    "productLink": "https://amzn.to/2XB6dUR",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/logitech-g-pro-x-wireless-headset.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "Laz",
+      "wippie",
+      "AvovA",
+      "lowel"
+    ],
+    "usage": "2.08% (43 of 2065)",
+    "rating": "4"
+  },
+  {
+    "name": "Razer BlackShark V2",
+    "asin": "3iSYMTU",
+    "productLink": "https://amzn.to/3iSYMTU",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/razer-blackshark-v2.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "Marved",
+      "Victor",
+      "gAuLeS",
+      "k0nfig"
+    ],
+    "usage": "1.74% (36 of 2065)"
+  },
+  {
+    "name": "HyperX Cloud Alpha S",
+    "asin": "3y56oxH",
+    "productLink": "https://amzn.to/3y56oxH",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/hyperx-cloud-alpha-s.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "mezii",
+      "Reet",
+      "trexx",
+      "h4rn"
+    ],
+    "usage": "1.40% (29 of 2065)",
+    "rating": "3.5"
+  },
+  {
+    "name": "Sennheiser GAME ZERO",
+    "asin": "2UX2K1U",
+    "productLink": "https://amzn.to/2UX2K1U",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/sennheiser-game-zero.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Snax",
+      "Patiphan",
+      "Toose",
+      "Walco"
+    ],
+    "usage": "1.11% (23 of 2065)"
+  },
+  {
+    "name": "HyperX Cloud II Pink",
+    "asin": "43cv98e",
+    "productLink": "https://amzn.to/43cv98e",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/hyperx-cloud-ii-pink.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "electronic",
+      "magixx",
+      "Monyet",
+      "foxz"
+    ],
+    "usage": "0.68% (14 of 2065)"
+  },
+  {
+    "name": "SteelSeries Arctis Nova Pro Wireless",
+    "asin": "3P6bKhs",
+    "productLink": "https://amzn.to/3P6bKhs",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/steelseries-arctis-nova-pro-wireless.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "Yes",
+    "mic": "Non-Detachable",
+    "players": [
+      "Twistzz",
+      "frozen",
+      "rain",
+      "broky"
+    ],
+    "usage": "0.63% (13 of 2065)",
+    "rating": "5"
+  },
+  {
+    "name": "ASTRO A40",
+    "asin": "2UY7O67",
+    "productLink": "https://amzn.to/2UY7O67",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/astro-a40.png",
+    "type": "Open-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "Viss",
+      "Assault",
+      "Scoped",
+      "innocents"
+    ],
+    "usage": "0.58% (12 of 2065)"
+  },
+  {
+    "name": "ASTRO A50",
+    "asin": "2GE93Uk",
+    "productLink": "https://amzn.to/2GE93Uk",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/astro-a50.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "pANcada",
+      "Dakotaz",
+      "XAROLA"
+    ],
+    "usage": "0.48% (10 of 2065)"
+  },
+  {
+    "name": "SteelSeries Arctis Pro Wireless",
+    "asin": "2WepsXy",
+    "productLink": "https://amzn.to/2WepsXy",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/steelseries-arctis-pro-wireless.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Martoz",
+      "Kragie",
+      "Kamo",
+      "Replays"
+    ],
+    "usage": "0.48% (10 of 2065)"
+  },
+  {
+    "name": "Sennheiser GSP 600",
+    "asin": "2tm0WE8",
+    "productLink": "https://amzn.to/2tm0WE8",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/sennheiser-gsp-600.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "kressy",
+      "kolor",
+      "Dimaoneshot",
+      "isak"
+    ],
+    "usage": "0.44% (9 of 2065)"
+  },
+  {
+    "name": "beyerdynamic DT 1990 PRO",
+    "asin": "2By1Bqg",
+    "productLink": "https://amzn.to/2By1Bqg",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/beyerdynamic-dt1990-pro.png",
+    "type": "Open-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "No Microphone",
+    "players": [
+      "Mongraal",
+      "Pengu",
+      "oSee",
+      "Fresh"
+    ],
+    "usage": "0.44% (9 of 2065)"
+  },
+  {
+    "name": "JBL Quantum 400",
+    "asin": "3LiQtCv",
+    "productLink": "https://amzn.to/3LiQtCv",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/jbl-quantum-400.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "biguzera",
+      "nqz",
+      "lux",
+      "hardzao"
+    ],
+    "usage": "0.34% (7 of 2065)"
+  },
+  {
+    "name": "SteelSeries Arctis Nova Pro",
+    "asin": "3tMDkrP",
+    "productLink": "https://amzn.to/3tMDkrP",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/steelseries-arctis-nova-pro.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Sonic",
+      "fl0m",
+      "innocent",
+      "HAL"
+    ],
+    "usage": "0.34% (7 of 2065)"
+  },
+  {
+    "name": "Sony INZONE H9",
+    "asin": "49aEOxH",
+    "productLink": "https://amzn.to/49aEOxH",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/sony-inzone-h9.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "Yes",
+    "mic": "Non-Detachable",
+    "players": [
+      "Leo",
+      "Chronicle",
+      "ImperialHal",
+      "Crazyface"
+    ],
+    "usage": "0.29% (6 of 2065)"
+  },
+  {
+    "name": "SteelSeries Arctis 7",
+    "asin": "2I8HGUN",
+    "productLink": "https://amzn.to/2I8HGUN",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/steelseries-arctis-7.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Jemkin",
+      "Pimp",
+      "nellozz",
+      "ErrorTerror"
+    ],
+    "usage": "0.29% (6 of 2065)"
+  },
+  {
+    "name": "HyperX Cloud Revolver S",
+    "asin": "2GoQfZS",
+    "productLink": "https://amzn.to/2GoQfZS",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/hyperx-cloud-revolver-s.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "XigN",
+      "vice",
+      "xns",
+      "AZR"
+    ],
+    "usage": "0.29% (6 of 2065)"
+  },
+  {
+    "name": "Corsair Virtuoso Pro",
+    "asin": "4cBtfmx",
+    "productLink": "https://amzn.to/4cBtfmx",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/corsair-virtuoso-pro.webp",
+    "type": "Open-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "shox",
+      "n0thing",
+      "CouRage",
+      "Huskerrs"
+    ],
+    "usage": "0.24% (5 of 2065)"
+  },
+  {
+    "name": "SteelSeries Arctis Nova Pro Wireless White",
+    "asin": "47QmKKo",
+    "productLink": "https://amzn.to/47QmKKo",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/steelseries-arctis-nova-pro-wireless-white.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "Yes",
+    "mic": "Non-Detachable",
+    "players": [
+      "ropz",
+      "EliGE",
+      "karrigan",
+      "Virtyy"
+    ],
+    "usage": "0.24% (5 of 2065)"
+  },
+  {
+    "name": "Razer BlackShark V2 HyperSpeed",
+    "asin": "4beUSRs",
+    "productLink": "https://amzn.to/4beUSRs",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/razer-blackshark-v2-hyperspeed.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "aspas",
+      "t3xture",
+      "b0RUP",
+      "olimp"
+    ],
+    "usage": "0.24% (5 of 2065)"
+  },
+  {
+    "name": "Corsair Void Pro",
+    "asin": "2X3SOFE",
+    "productLink": "https://amzn.to/2X3SOFE",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/corsair-void-pro.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "faveN",
+      "Milan",
+      "Kalios"
+    ],
+    "usage": "0.24% (5 of 2065)"
+  },
+  {
+    "name": "Logitech G733",
+    "asin": "3VlVo89",
+    "productLink": "https://amzn.to/3VlVo89",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/logitech-g733.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Rip",
+      "Markeloff",
+      "Thiagin"
+    ],
+    "usage": "0.19% (4 of 2065)",
+    "rating": "4"
+  },
+  {
+    "name": "SteelSeries Arctis 5",
+    "asin": "2WZNKlP",
+    "productLink": "https://amzn.to/2WZNKlP",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/steelseries-arctis-5.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Taxi2g",
+      "Summer",
+      "Jarvis",
+      "ChaoticMuch"
+    ],
+    "usage": "0.19% (4 of 2065)"
+  },
+  {
+    "name": "EPOS H6PRO White",
+    "asin": "3Ex7Tpx",
+    "productLink": "https://amzn.to/3Ex7Tpx",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/epos-h6pro-white.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "TMB",
+      "Will",
+      "lollipop21k",
+      "KarQ"
+    ],
+    "usage": "0.19% (4 of 2065)"
+  },
+  {
+    "name": "HyperX Cloud III Wireless Black",
+    "asin": "46lJ4uG",
+    "productLink": "https://amzn.to/46lJ4uG",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/hyperx-cloud-iii-wireless-black.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "ZywOo",
+      "FURIOUSSS",
+      "fREQ"
+    ],
+    "usage": "0.15% (3 of 2065)"
+  },
+  {
+    "name": "Razer Kraken TE",
+    "asin": "3kEqGt2",
+    "productLink": "https://amzn.to/3kEqGt2",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/razer-kraken-te.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Poppin"
+    ],
+    "usage": "0.15% (3 of 2065)",
+    "rating": "4"
+  },
+  {
+    "name": "Logitech G735",
+    "asin": "3T56NqF",
+    "productLink": "https://amzn.to/3T56NqF",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/logitech-g735.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "skywhywalker",
+      "lauNX"
+    ],
+    "usage": "0.15% (3 of 2065)"
+  },
+  {
+    "name": "Fnatic REACT",
+    "asin": "2SzO0rn",
+    "productLink": "https://amzn.to/2SzO0rn",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/fnatic-react-1.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "JW"
+    ],
+    "usage": "0.15% (3 of 2065)",
+    "rating": "4"
+  },
+  {
+    "name": "Sennheiser HD800 S",
+    "asin": "2SQFXFc",
+    "productLink": "https://amzn.to/2SQFXFc",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/sennheiser-hd800-s.png",
+    "type": "Open-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "No Microphone",
+    "players": [
+      "Tfue",
+      "POW3R",
+      "Chap"
+    ],
+    "usage": "0.15% (3 of 2065)"
+  },
+  {
+    "name": "HyperX Cloud Revolver",
+    "asin": "2E8gC3K",
+    "productLink": "https://amzn.to/2E8gC3K",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/hyperx-cloud-revolver.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "ANGE1",
+      "Roieee"
+    ],
+    "usage": "0.15% (3 of 2065)"
+  },
+  {
+    "name": "Xtrfy H3",
+    "asin": "4jfwZMs",
+    "productLink": "https://amzn.to/4jfwZMs",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/xtrfy-h3.webp",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "f0rest",
+      "MaiL09"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Corsair Virtuoso MAX",
+    "asin": "4bFMMBW",
+    "productLink": "https://amzn.to/4bFMMBW",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/corsair-virtuoso-max.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "ryujehong",
+      "Surugamonkey"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Logitech G332",
+    "asin": "3LyDYS5",
+    "productLink": "https://amzn.to/3LyDYS5",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/logitech-g332.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "kovaQ",
+      "J4vix"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Corsair Virtuoso RGB Wireless XT",
+    "asin": "3j11EUh",
+    "productLink": "https://amzn.to/3j11EUh",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/corsair-virtuoso-rgb-wireless-xt.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "KingGeorge"
+    ],
+    "usage": "0.10% (2 of 2065)",
+    "rating": "4"
+  },
+  {
+    "name": "Razer Kraken Pro V2",
+    "asin": "2EcONHT",
+    "productLink": "https://amzn.to/2EcONHT",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/razer-kraken-pro-v2.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Xepher"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "EPOS GSP 500",
+    "asin": "2WytXZz",
+    "productLink": "https://amzn.to/2WytXZz",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/epos-gsp-500.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "prt",
+      "Mellman"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Razer Kraken 7.1 Mercury White Edition",
+    "asin": "2SO1JvD",
+    "productLink": "https://amzn.to/2SO1JvD",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/razer-kraken-7.1-mercury-white-edition.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "LUCAS1",
+      "Peanut"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Xtrfy H2",
+    "asin": "31ZbZF5",
+    "productLink": "https://amzn.to/31ZbZF5",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/xtrfy-h2.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "beastik",
+      "SHOCK"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Sennheiser PC38X",
+    "asin": "2tj6wai",
+    "productLink": "https://amzn.to/2tj6wai",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/sennheiser-pc38x.png",
+    "type": "Open-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "volx",
+      "OXY"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Logitech G935",
+    "asin": "2H27EYE",
+    "productLink": "https://amzn.to/2H27EYE",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/logitech-g935.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Pulga"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Corsair VOID Wireless V2",
+    "asin": "3Ye5s6s",
+    "productLink": "https://amzn.to/3Ye5s6s",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/corsair-void-wireless-v2.webp",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "23savage"
+    ],
+    "usage": "0.05% (1 of 2065)",
+    "rating": "5"
+  },
+  {
+    "name": "Beyerdynamic MMX 200 Wireless",
+    "asin": "42jnmrh",
+    "productLink": "https://amzn.to/42jnmrh",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/beyerdynamic-mmx-200-wireless.png",
+    "type": "",
+    "connection": "",
+    "surroundSound": "",
+    "mic": "",
+    "players": [
+      "ANa"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Fox Gaming FH400",
+    "asin": "4er1Y5P",
+    "productLink": "https://amzn.to/4er1Y5P",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/fox-gaming-fh400.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "fox"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Apple Airpods Max",
+    "asin": "3ziwwrX",
+    "productLink": "https://amzn.to/3ziwwrX",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/apple-airpods-max.png",
+    "type": "",
+    "connection": "",
+    "surroundSound": "",
+    "mic": "",
+    "players": [
+      "C4LLM3SU3"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Focal Clear MG",
+    "asin": "3zMIoC9",
+    "productLink": "https://amzn.to/3zMIoC9",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/focal-clear-mg.png",
+    "type": "Open-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "No Microphone",
+    "players": [
+      "Gale Adelade"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Logitech G435",
+    "asin": "3L5Eqai",
+    "productLink": "https://amzn.to/3L5Eqai",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/logitech-g435.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Nomzz"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Sony WH-1000XM4",
+    "asin": "3UoXs1t",
+    "productLink": "https://amzn.to/3UoXs1t",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/sony-wh-1000xm4.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "Yes",
+    "mic": "Non-Detachable",
+    "players": [
+      "VINI"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Sennheiser HD 599",
+    "asin": "43t63AS",
+    "productLink": "https://amzn.to/43t63AS",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/sennheiser-hd599.png",
+    "type": "Open-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "No Microphone",
+    "players": [
+      "KenBeans"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Corsair HS60 PRO",
+    "asin": "3V1fHbo",
+    "productLink": "https://amzn.to/3V1fHbo",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/corsair-hs60-pro.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "lcf"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "ROG Delta S Core",
+    "asin": "3in6M4L",
+    "productLink": "https://amzn.to/3in6M4L",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/rog-delta-s-core.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "mediocrity"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Audio-Technica ATH-AD700X",
+    "asin": "2Gq2Yvd",
+    "productLink": "https://amzn.to/2Gq2Yvd",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/audio-technica-ath-ad700x.png",
+    "type": "Open-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "No Microphone",
+    "players": [
+      "summit1g"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Corsair Virtuoso White",
+    "asin": "3EYhaXN",
+    "productLink": "https://amzn.to/3EYhaXN",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/corsair-virtuoso-rgb-wireless-white.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "Znorux"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Turtle Beach Elite Atlas Pro",
+    "asin": "2IoLf9F",
+    "productLink": "https://amzn.to/2IoLf9F",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/turtle-beach-elite-atlas-pro.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [
+      "Danteh"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Sennheiser HD 700",
+    "asin": "2IbCG1D",
+    "productLink": "https://amzn.to/2IbCG1D",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/sennheiser-hd-700.png",
+    "type": "Open-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "No Microphone",
+    "players": [
+      "Symfuhny"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "SteelSeries Arctis 1",
+    "asin": "2RA0Bdk",
+    "productLink": "https://amzn.to/2RA0Bdk",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/steelseries-arctis-1.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "H1ghsky1"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "HyperX Cloud Orbit S",
+    "asin": "3533Xw5",
+    "productLink": "https://amzn.to/3533Xw5",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/hyperx-cloud-orbit-s.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "leo_drk"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "HyperX Cloud I",
+    "asin": "2E9sbry",
+    "productLink": "https://amzn.to/2E9sbry",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/hyperx-cloud-i.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "EMSTAR"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Fnatic REACT+",
+    "asin": "2SzO0rn",
+    "productLink": "https://amzn.to/2SzO0rn",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/fnatic-react.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": [
+      "kst"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "ASTRO A10",
+    "asin": "3NiuhZp",
+    "productLink": "https://amzn.to/3NiuhZp",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/astro-a10.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": []
+  },
+  {
+    "name": "SteelSeries Arctis Nova 1",
+    "asin": "46Nh2a8",
+    "productLink": "https://amzn.to/46Nh2a8",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/steelseries-arctis-nova-1.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": []
+  },
+  {
+    "name": "Fallen Gear Pantera Pro Preto",
+    "asin": "471AwZN",
+    "productLink": "https://amzn.to/471AwZN",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/fallen-pantera-pro-preto.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": []
+  },
+  {
+    "name": "ASUS ROG Fusion II 500",
+    "asin": "3oqsCYE",
+    "productLink": "https://amzn.to/3oqsCYE",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-rog-fusion-ii-500.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": []
+  },
+  {
+    "name": "Razer Nari",
+    "asin": "2O3FI7u",
+    "productLink": "https://amzn.to/2O3FI7u",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/2019/03/razernaripngreview.png",
+    "type": "Open-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [],
+    "rating": "3.5"
+  },
+  {
+    "name": "ROCCAT Syn Pro Air",
+    "asin": "3ZbVYXH",
+    "productLink": "https://amzn.to/3ZbVYXH",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/roccat-syn-pro-air-1.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": []
+  },
+  {
+    "name": "SteelSeries Arctis Nova 7 Wireless",
+    "asin": "3Fwh3VW",
+    "productLink": "https://amzn.to/3Fwh3VW",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/steelseries-arctis-nova-7-wireless.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": [],
+    "rating": "4.5"
+  },
+  {
+    "name": "Corsair HS50",
+    "asin": "2JnNWql",
+    "productLink": "https://amzn.to/2JnNWql",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/corsair-hs50.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": []
+  },
+  {
+    "name": "Sennheiser PC 360",
+    "asin": "2E9aaJP",
+    "productLink": "https://amzn.to/2E9aaJP",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/sennheiser-pc-360.png",
+    "type": "Open-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": []
+  },
+  {
+    "name": "Lenovo Legion H500 Pro",
+    "asin": "3E5EJfJ",
+    "productLink": "https://amzn.to/3E5EJfJ",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/lenovo-legion-h500-pro.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": []
+  },
+  {
+    "name": "EPOS GSP 670",
+    "asin": "3vLqRWV",
+    "productLink": "https://amzn.to/3vLqRWV",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/epos-gsp-670.png",
+    "type": "Closed-Back",
+    "connection": "Wireless",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": []
+  },
+  {
+    "name": "HyperX Cloud Orbit",
+    "asin": "2SownK5",
+    "productLink": "https://amzn.to/2SownK5",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/hyperx-cloud-orbit.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Detachable",
+    "players": []
+  },
+  {
+    "name": "JBL Quantum 100",
+    "asin": "3tVNzJ1",
+    "productLink": "https://amzn.to/3tVNzJ1",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/jbl-quantum-100.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": []
+  },
+  {
+    "name": "SteelSeries Arctis Prime",
+    "asin": "2XCgdDd",
+    "productLink": "https://amzn.to/2XCgdDd",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/steelseries-arctis-prime.png",
+    "type": "Closed-Back",
+    "connection": "Wired",
+    "surroundSound": "No",
+    "mic": "Non-Detachable",
+    "players": []
+  }
+]

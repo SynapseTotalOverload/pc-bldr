@@ -16,6 +16,7 @@ class PCSpecsList(Base):
     storage_id = Column(BigInteger, ForeignKey("product.id"), nullable=True)
     power_supply_id = Column(BigInteger, ForeignKey("product.id"), nullable=True)
     case_id = Column(BigInteger, ForeignKey("product.id"), nullable=True)
+
     
     # Relationship back to player
     player = relationship("Player", back_populates="pc_specs_list")

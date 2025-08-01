@@ -10,7 +10,6 @@ interface BlockListsProps {
 }
 
 export const BlockLists = ({ title, info }: BlockListsProps) => { 
-  console.log('BlockLists props:', { title, info })
   
   const getItemsFromSection = () => {
     const items: any[] = []
@@ -40,7 +39,7 @@ export const BlockLists = ({ title, info }: BlockListsProps) => {
     if (title === 'Setup Streaming') {
       if (info.chair) items.push({ ...info.chair, category: 'Chair', type: 'setup' })
       if (info.microphone) items.push({ ...info.microphone, category: 'Microphone', type: 'setup' })
-      if (info.webcam) items.push({ ...info.webcam, category: 'Webcam', type: 'setup' })
+      if (info.camera) items.push({ ...info.camera, category: 'Camera', type: 'setup' })
     }
     
     if (title === 'Skins' && Array.isArray(info)) {
@@ -54,10 +53,6 @@ export const BlockLists = ({ title, info }: BlockListsProps) => {
 
   const items = getItemsFromSection()
 
-  useEffect(() => {
-    console.log(items)
-  }, [items])
-
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
       <h2 className="text-lg font-bold mb-4">{title}</h2>
@@ -65,7 +60,7 @@ export const BlockLists = ({ title, info }: BlockListsProps) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
           {items.map((item, index) => (
             <Link 
-              href={`/products/${item.id}`} 
+              href={title === 'Skins' ? `#` : `/product/${item.id}`} 
               key={`${item.type}-${item.id}-${index}`}
               className="block hover:scale-105 transition-transform duration-200"
             >
@@ -74,7 +69,7 @@ export const BlockLists = ({ title, info }: BlockListsProps) => {
                   id: item.id,
                   title: item.display_name || item.name,
                   category: { id: item.id, name: item.category },
-                  low_image_url: item.image_url || item.img_url || '/placeholder-product.jpg',
+                  low_image_url: item.high_image_url || item.low_image_url || item.image_file,
                   price: 0,
                   rating: 0,
                   asin: '',

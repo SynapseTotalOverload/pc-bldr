@@ -40,7 +40,8 @@ interface FormData {
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapNames>('cpu');
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState(''); // Local search input state
+  const [activeSearch, setActiveSearch] = useState(''); // Active search that triggers API calls  
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
   const { toast } = useToast();
   const {isState, changeState, toggleState}= useBoolean();
@@ -49,7 +50,7 @@ export default function Home() {
   const { products, pagination, error, refetch } = useProducts<ProductRead>({
     category: selectedCategory,
     page,
-    search,
+    search: activeSearch, // Use activeSearch here
   });
 
   useEffect(() => {
@@ -80,6 +81,9 @@ export default function Home() {
           headset: 12,
           mousepad: 13,
           chair: 14,
+          microphone: 15,
+          camera: 16,
+          headphones: 17,
         };
         return categoryMap[category];
       };
@@ -89,7 +93,7 @@ export default function Home() {
       const categoryId = getCategoryId(data.category);
       
       // Validate category_id
-      if (!categoryId || categoryId < 1 || categoryId > 14) {
+      if (!categoryId || categoryId < 1 || categoryId > 17) {
         throw new Error(`Invalid category: ${data.category}`);
       }
       
@@ -141,6 +145,11 @@ export default function Home() {
       });
     }
   };
+    const handleSearchAll = () => {
+      console.log('handleSearchAll')
+      setActiveSearch(searchInput);
+      setPage(1);
+    }
 
   const handleDelete = async (id: number) => {
     try {
@@ -263,7 +272,8 @@ export default function Home() {
           onSelectCategory={(category) => {
             setSelectedCategory(category as keyof ProductTypeMapNames);
             setPage(1);
-            setSearch('');
+            setSearchInput('');
+            setActiveSearch(''); 
           }}
         />
 
@@ -276,11 +286,9 @@ export default function Home() {
                   data={products}
                   searchKey="title"
                   searchPlaceholder="Search products..."
-                  searchValue={search}
-                  onSearchChange={(value) => {
-                    setSearch(value);
-                    setPage(1);
-                  }}
+                  searchValue={searchInput} // Use searchInput for display
+                  onSearchChange={(value) => setSearchInput(value)} // Update searchInput only
+                  onButtonClick={handleSearchAll}
                   pagination={pagination} 
                   renderActions={() => (
                    <Button onClick={()=>toggleState('addNewProduct')}> <Plus className="h-4 w-4" /> Add new product</Button>

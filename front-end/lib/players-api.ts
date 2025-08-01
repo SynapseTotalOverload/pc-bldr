@@ -43,7 +43,6 @@ export const playersApi = {
 
   // Update player with gear lists
   updatePlayerGear: async (id: number, playerData: PlayerUpdateWithGear): Promise<PlayerWithRelations> => {
-    console.log("playerData",playerData)
     const response = await axiosInstance.put(`${API_BASE_URL}players/${id}/gear`, playerData);
     return response.data;
   },

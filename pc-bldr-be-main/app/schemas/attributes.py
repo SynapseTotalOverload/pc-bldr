@@ -133,6 +133,31 @@ class ChairAttributesUpdateSchema(BaseAttrsSchema):
     size: Optional[str] = None
     back_style: Optional[str] = None
 
+class MicrophoneAttributesUpdateSchema(BaseAttrsSchema):
+    connectivity_technology: Optional[str] = None
+    connector_type: Optional[str] = None
+    special_feature: Optional[str] = None
+    compatible_devices: Optional[str] = None
+    color: Optional[str] = None
+    included_components: Optional[str] = None
+    polar_pattern: Optional[str] = None
+
+class CameraAttributesUpdateSchema(BaseAttrsSchema):
+    photo_sensor_technology: Optional[str] = None
+    video_capture_resolution: Optional[int] = None
+    maximum_aperture: Optional[float] = None
+    flash_memory_type: Optional[str] = None
+    video_capture_format: Optional[str] = None
+    supported_audio_format: Optional[str] = None
+    screen_size: Optional[float] = None
+    connectivity_technology: Optional[str] = None
+    color: Optional[str] = None
+
+class HeadphonesAttributesUpdateSchema(BaseAttrsSchema):
+    color: Optional[str] = None
+    ear_placement: Optional[str] = None
+    form_factor: Optional[str] = None
+    impedance: Optional[int] = None
 
 # Union type for all attribute update schemas
 AttributesUpdateUnion = Union[
@@ -150,4 +175,7 @@ AttributesUpdateUnion = Union[
     HeadsetAttributesUpdateSchema,
     MousepadAttributesUpdateSchema,
     ChairAttributesUpdateSchema,
+    MicrophoneAttributesUpdateSchema,
+    CameraAttributesUpdateSchema,
+    HeadphonesAttributesUpdateSchema,
 ]

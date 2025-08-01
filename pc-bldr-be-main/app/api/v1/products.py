@@ -6,6 +6,7 @@ from app.schemas.list_products_with_pagination import ProductListWithPagination,
 from app.schemas.product import ProductRead, ProductUpdate, ProductCreate, ProductCompatibilityRequest
 from app.crud.product import product_crud
 from app.services.keepa import fetch_product_from_keepa
+from app.services.json_attributes_parser import parse_json_attributes, parse_single_json_file
 
 router = APIRouter(prefix="/products", tags=["products"])
 
@@ -76,6 +77,9 @@ def create_product_manually(product: ProductCreate, db: Session = Depends(get_db
     - 12: Headset
     - 13: Mousepad
     - 14: Chair
+    - 15: Microphone
+    - 16: Camera
+    - 17: Headphones
     """
     return ProductRead.from_orm_with_attrs(product_crud.create(db, obj_in=product))
 
@@ -85,15 +89,15 @@ def list_products(
     page_size: int = Query(20, ge=1, le=100),
     category_id: int | None = Query(
         None, 
-        le=15, ge=1, 
+        le=17, ge=1, 
         description=(
             "1 - CPU;\n"
             "2 - CPU Cooler;\n"
             "3 - GPU;\n"
             "4 - Motherboard;\n"
             "5 - RAM;\n"
-            "6 - ROM;\n"
-            "7 - PSU;\n"
+            "6 - Storage;\n"
+            "7 - Power Supply;\n"
             "8 - Case;\n"
             "9 - Mouse;\n"
             "10 - Monitor;\n"
@@ -101,12 +105,15 @@ def list_products(
             "12 - Headset;\n"
             "13 - Mousepad;\n"
             "14 - Chair;\n"
+            "15 - Microphone;\n"
+            "16 - Camera;\n"
+            "17 - Headphones;\n"
             "If None - search in all categories"),
     ),
     periphery_flag: bool = Query(
         False, 
         description="""If False and category_id is None - return categories 1-8,
-        otherwise - return only categoies 9-14"""
+        otherwise - return only categoies 9-17"""
     ),
     price_min: int | None = Query(
         None, 
@@ -184,3 +191,4 @@ def update_display_names(db: Session = Depends(get_db)):
     """
     updated_count = product_crud.update_display_names_for_existing_products(db)
     return {"message": f"Updated display_name for {updated_count} products"}
+

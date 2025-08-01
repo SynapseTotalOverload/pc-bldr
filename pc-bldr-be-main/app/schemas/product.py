@@ -1,11 +1,10 @@
 from datetime import datetime
 from typing import Optional, Dict, Any, Union
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from app.models.product import Product
 from app.schemas.attributes import (
-    AttributesUpdateUnion,
     CPUAttributesUpdateSchema,
     CPUCoolerAttributesUpdateSchema,
     GPUAttributesUpdateSchema,
@@ -20,6 +19,9 @@ from app.schemas.attributes import (
     HeadsetAttributesUpdateSchema,
     MousepadAttributesUpdateSchema,
     ChairAttributesUpdateSchema,
+    MicrophoneAttributesUpdateSchema,
+    CameraAttributesUpdateSchema,
+    HeadphonesAttributesUpdateSchema,
 )
 from .category import CategoryRead
 
@@ -38,15 +40,54 @@ class ProductBase(BaseModel):
 
 
 class ProductCreate(ProductBase):
-    category_id: Optional[int] = None
-    attrs: Optional[AttributesUpdateUnion] = None
+    category_id: int = Field(..., ge=1, le=17, description="Category ID for the product")
+    attrs: Optional[Dict[str, Any]] = Field(None, description="Product attributes as dictionary")
 
     @field_validator('category_id')
     @classmethod
     def validate_category_id(cls, v):
-        if v is not None and (v < 1 or v > 14):
-            raise ValueError('category_id must be between 1 and 14')
+        if v < 1 or v > 17:
+            raise ValueError('category_id must be between 1 and 17')
         return v
+
+    @model_validator(mode='after')
+    def validate_attrs_with_category(self):
+        """Validate attrs against the appropriate schema based on category_id"""
+        if self.attrs is not None:
+            category_id = self.category_id
+            
+            # Map category_id to the appropriate schema
+            schema_mapping = {
+                1: CPUAttributesUpdateSchema,
+                2: CPUCoolerAttributesUpdateSchema,
+                3: GPUAttributesUpdateSchema,
+                4: MotherboardAttributesUpdateSchema,
+                5: RAMAttributesUpdateSchema,
+                6: StorageAttributesUpdateSchema,
+                7: PowerSupplyAttributesUpdateSchema,
+                8: CaseAttributesUpdateSchema,
+                9: MouseAttributesUpdateSchema,
+                10: MonitorAttributesUpdateSchema,
+                11: KeyboardAttributesUpdateSchema,
+                12: HeadsetAttributesUpdateSchema,
+                13: MousepadAttributesUpdateSchema,
+                14: ChairAttributesUpdateSchema,
+                15: MicrophoneAttributesUpdateSchema,
+                16: CameraAttributesUpdateSchema,
+                17: HeadphonesAttributesUpdateSchema,
+            }
+            
+            schema_class = schema_mapping.get(category_id)
+            if schema_class:
+                try:
+                    # Validate attrs against the appropriate schema
+                    validated_attrs = schema_class(**self.attrs)
+                    # Replace attrs with validated data
+                    self.attrs = validated_attrs.model_dump(exclude_none=True)
+                except Exception as e:
+                    raise ValueError(f"Invalid attributes for category {category_id}: {str(e)}")
+        
+        return self
 
 
 class ProductUpdate(BaseModel):
@@ -54,7 +95,7 @@ class ProductUpdate(BaseModel):
     price: Optional[float] = None
     rating: Optional[float] = None
     category_id: Optional[int] = None
-    attrs: Optional[AttributesUpdateUnion] = None
+    attrs: Optional[Dict[str, Any]] = Field(None, description="Product attributes as dictionary")
     low_image_url: Optional[str] = None
     high_image_url: Optional[str] = None
     display_name: Optional[str] = None
@@ -62,9 +103,54 @@ class ProductUpdate(BaseModel):
     @field_validator('category_id')
     @classmethod
     def validate_category_id(cls, v):
-        if v is not None and (v < 1 or v > 14):
-            raise ValueError('category_id must be between 1 and 14')
+        if v is not None and (v < 1 or v > 17):
+            raise ValueError('category_id must be between 1 and 17')
         return v
+
+    @model_validator(mode='after')
+    def validate_attrs_with_category(self):
+        """Validate attrs against the appropriate schema based on category_id"""
+        if self.attrs is not None:
+            # Get category_id - either from the update or we'll need to get it from the existing product
+            category_id = self.category_id
+            
+            if category_id is None:
+                # If category_id is not provided in the update, we can't validate attrs
+                # The validation will be done in the CRUD layer when we have access to the existing product
+                return self
+            
+            # Map category_id to the appropriate schema
+            schema_mapping = {
+                1: CPUAttributesUpdateSchema,
+                2: CPUCoolerAttributesUpdateSchema,
+                3: GPUAttributesUpdateSchema,
+                4: MotherboardAttributesUpdateSchema,
+                5: RAMAttributesUpdateSchema,
+                6: StorageAttributesUpdateSchema,
+                7: PowerSupplyAttributesUpdateSchema,
+                8: CaseAttributesUpdateSchema,
+                9: MouseAttributesUpdateSchema,
+                10: MonitorAttributesUpdateSchema,
+                11: KeyboardAttributesUpdateSchema,
+                12: HeadsetAttributesUpdateSchema,
+                13: MousepadAttributesUpdateSchema,
+                14: ChairAttributesUpdateSchema,
+                15: MicrophoneAttributesUpdateSchema,
+                16: CameraAttributesUpdateSchema,
+                17: HeadphonesAttributesUpdateSchema,
+            }
+            
+            schema_class = schema_mapping.get(category_id)
+            if schema_class:
+                try:
+                    # Validate attrs against the appropriate schema
+                    validated_attrs = schema_class(**self.attrs)
+                    # Replace attrs with validated data
+                    self.attrs = validated_attrs.model_dump(exclude_none=True)
+                except Exception as e:
+                    raise ValueError(f"Invalid attributes for category {category_id}: {str(e)}")
+        
+        return self
 
     class Config:
         from_attributes = True
@@ -103,66 +189,36 @@ class ProductRead(ProductBase):
             ("headset_attributes", HeadsetAttributesUpdateSchema),
             ("mousepad_attributes", MousepadAttributesUpdateSchema),
             ("chair_attributes", ChairAttributesUpdateSchema),
+            ("microphone_attributes", MicrophoneAttributesUpdateSchema),
+            ("camera_attributes", CameraAttributesUpdateSchema),
+            ("headphones_attributes", HeadphonesAttributesUpdateSchema),
         ]
 
-        for attr_name, schema in mapping:
-            attrs_model = getattr(obj, attr_name, None)
-            if attrs_model:
-                attrs_dict = schema.model_validate(attrs_model).model_dump()
-                # Add type field based on attribute name
-                type_mapping = {
-                    "cpu_attributes": "cpu",
-                    "cpu_cooler_attributes": "cpu_cooler", 
-                    "gpu_attributes": "gpu",
-                    "motherboard_attributes": "motherboard",
-                    "ram_attributes": "memory",
-                    "storage_attributes": "internal_hard_drive",
-                    "power_supply_attributes": "power_supply",
-                    "case_attributes": "case",
-                    "mouse_attributes": "mouse",
-                    "monitor_attributes": "monitor",
-                    "keyboard_attributes": "keyboard",
-                    "headset_attributes": "headset",
-                    "mousepad_attributes": "mousepad",
-                    "chair_attributes": "chair",
-                }
-                attrs_dict["type"] = type_mapping.get(attr_name, "unknown")
-                return cls(
-                    **obj.__dict__,
-                    category=category,
-                    attrs=attrs_dict
-                )
+        attrs = None
+        for relationship_name, schema_class in mapping:
+            attrs_obj = getattr(obj, relationship_name, None)
+            if attrs_obj:
+                attrs = schema_class.model_validate(attrs_obj).model_dump()
+                break
 
-        return cls(**obj.__dict__, category=category, attrs=None)
-    
-    class Config:
-        from_attributes = True
+        return cls.model_validate({
+            **obj.__dict__,
+            "category": category,
+            "attrs": attrs
+        })
 
 
 class ProductCompatibilityRequest(BaseModel):
-    """Schema for POST request to get compatible products"""
-    selected_components: Optional[Dict[str, int]] = Field(
-        None, 
-        description="Dictionary of selected component types and their IDs. Keys: cpu, cpu_cooler, gpu, motherboard, ram, storage, psu, case"
-    )
+    selected_components: Dict[str, int] = Field(..., description="Dictionary of selected component IDs")
+    category_id: int = Field(..., ge=1, le=17, description="Category ID to search for compatible products")
     page: int = Field(1, ge=1, description="Page number")
     page_size: int = Field(20, ge=1, le=100, description="Items per page")
-    category_id: Optional[int] = Field(
-        None, 
-        ge=1, 
-        le=8, 
-        description="Filter by category ID (1-CPU, 2-CPU Cooler, 3-GPU, 4-Motherboard, 5-RAM, 6-Storage, 7-PSU, 8-Case)"
-    )
-    budget: Optional[int] = Field(None, description="Budget for power supply estimation")
-
-    query: Optional[str] = Field(None, description="Query string for filtering products")
+    budget: Optional[int] = Field(None, ge=0, description="Maximum budget in USD")
+    query: Optional[str] = Field(None, description="Search query")
 
     @field_validator('category_id')
     @classmethod
     def validate_category_id(cls, v):
-        if v is not None and (v < 1 or v > 8):
-            raise ValueError('category_id must be between 1 and 8')
+        if v < 1 or v > 17:
+            raise ValueError('category_id must be between 1 and 17')
         return v
-
-    class Config:
-        from_attributes = True

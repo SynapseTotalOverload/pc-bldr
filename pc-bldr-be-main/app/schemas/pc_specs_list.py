@@ -22,6 +22,13 @@ class PCSpecsListCreate(BaseModel):
     power_supply_id: Optional[int] = None
     case_id: Optional[int] = None
     
+    @field_validator('cpu_id', 'cpu_cooler_id', 'gpu_id', 'motherboard_id', 'ram_id', 'storage_id', 'power_supply_id', 'case_id')
+    @classmethod
+    def validate_product_ids(cls, v):
+        if v == 0:
+            return None
+        return v
+    
     class Config:
         from_attributes = True
 
@@ -35,6 +42,13 @@ class PCSpecsListUpdate(BaseModel):
     storage_id: Optional[int] = None
     power_supply_id: Optional[int] = None
     case_id: Optional[int] = None
+    
+    @field_validator('cpu_id', 'cpu_cooler_id', 'gpu_id', 'motherboard_id', 'ram_id', 'storage_id', 'power_supply_id', 'case_id')
+    @classmethod
+    def validate_product_ids(cls, v):
+        if v == 0:
+            return None
+        return v
     
     class Config:
         from_attributes = True
@@ -99,6 +113,8 @@ class SimpleProduct(BaseModel):
     id: int
     name: str
     display_name: Optional[str] = None
+    low_image_url: Optional[str] = None
+    high_image_url: Optional[str] = None
     
     @classmethod
     def from_product(cls, product):
@@ -107,7 +123,9 @@ class SimpleProduct(BaseModel):
         return cls(
             id=product.id, 
             name=product.title,
-            display_name=product.display_name
+            display_name=product.display_name,
+            low_image_url=product.low_image_url,
+            high_image_url=product.high_image_url
         )
     
     class Config:

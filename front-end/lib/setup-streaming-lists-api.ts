@@ -5,12 +5,12 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/v
 export interface SetupStreamingListBase {
   chair_id?: number;
   microphone_id?: number;
-  webcam_id?: number;
+  camera_id?: number;
 }
 
-export interface SetupStreamingListCreate extends SetupStreamingListBase {}
+export type SetupStreamingListCreate = SetupStreamingListBase;
 
-export interface SetupStreamingListUpdate extends Partial<SetupStreamingListBase> {}
+export type SetupStreamingListUpdate = Partial<SetupStreamingListBase>;
 
 export interface SetupStreamingListRead extends SetupStreamingListBase {
   id: number;

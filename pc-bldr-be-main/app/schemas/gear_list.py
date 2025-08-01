@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, TYPE_CHECKING
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from .product import ProductRead
     
 
@@ -20,6 +20,13 @@ class GearListCreate(BaseModel):
     mousepad_id: Optional[int] = None
     earphones_id: Optional[int] = None
     
+    @field_validator('monitor_id', 'mouse_id', 'keyboard_id', 'headset_id', 'mousepad_id', 'earphones_id')
+    @classmethod
+    def validate_product_ids(cls, v):
+        if v == 0:
+            return None
+        return v
+    
     class Config:
         from_attributes = True
 
@@ -32,6 +39,13 @@ class GearListUpdate(BaseModel):
     mousepad_id: Optional[int] = None
     earphones_id: Optional[int] = None
     
+    @field_validator('monitor_id', 'mouse_id', 'keyboard_id', 'headset_id', 'mousepad_id', 'earphones_id')
+    @classmethod
+    def validate_product_ids(cls, v):
+        if v == 0:
+            return None
+        return v
+    
     class Config:
         from_attributes = True
 
@@ -40,6 +54,7 @@ class GearListRead(BaseModel):
     id: int
     created_at: datetime
     updated_at: datetime
+    
     
     @classmethod
     def from_gearlist(cls, gearlist):
@@ -91,6 +106,8 @@ class SimpleProduct(BaseModel):
     id: int
     name: str
     display_name: Optional[str] = None
+    low_image_url: Optional[str] = None
+    high_image_url: Optional[str] = None
     
     @classmethod
     def from_product(cls, product):
@@ -99,7 +116,9 @@ class SimpleProduct(BaseModel):
         return cls(
             id=product.id, 
             name=product.title,
-            display_name=product.display_name
+            display_name=product.display_name,
+            low_image_url=product.low_image_url,
+            high_image_url=product.high_image_url
         )
     
     class Config:

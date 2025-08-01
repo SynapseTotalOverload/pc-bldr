@@ -59,8 +59,8 @@ export const ApiCardListBlock: React.FC<Props> = ({
           if(cardType === 'accessories') {
             searchParams.append("periphery_flag", "true")
           }
-          if(activeCategory || category_id) {
-            searchParams.append("category_id", activeCategory || category_id || '')
+          if(activeCategory || category_id || accessory_category) {
+            searchParams.append("category_id", activeCategory || category_id || accessory_category || '')
           }
           if(searchQuery) {
             searchParams.append("query", searchQuery)
@@ -71,6 +71,7 @@ export const ApiCardListBlock: React.FC<Props> = ({
             searchParams.append("price_min", price_min.toString())
             searchParams.append("price_max", price_max.toString())
           }
+          console.log(searchParams.toString())
           const productResult = await productsService.getProducts(searchParams.toString())
 
           result = productResult as ApiResponse

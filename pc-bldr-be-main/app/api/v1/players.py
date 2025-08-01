@@ -22,20 +22,7 @@ def create_player(
     player_in: PlayerCreate,
 ) -> PlayerWithRelations:
     """
-    Create new player.
-    """
-    player = player_crud.create(db=db, obj_in=player_in)
-    return PlayerWithRelations.from_player(player)
-
-
-@router.post("/with-lists", response_model=PlayerWithRelations, status_code=status.HTTP_201_CREATED)
-def create_player_with_lists(
-    *,
-    db: Session = Depends(get_db),
-    player_in: PlayerCreate,
-) -> PlayerWithRelations:
-    """
-    Create new player with empty gear list, PC specs list, and setup streaming list.
+    Create new player with automatic creation of empty lists.
     """
     # Create empty gear list
     gear_list = gear_list_crud.create(db=db, obj_in=GearListCreate())
@@ -57,6 +44,9 @@ def create_player_with_lists(
     # Create player with the list IDs
     player = player_crud.create(db=db, obj_in=PlayerCreate(**player_data))
     return PlayerWithRelations.from_player(player)
+
+
+
 
 
 @router.get("/{player_id}", response_model=PlayerWithRelations)
@@ -183,10 +173,50 @@ def delete_player(
     player_id: int,
 ) -> PlayerRead:
     """
-    Delete player.
+    Delete player and all associated lists (gear list, PC specs list, setup streaming list).
     """
-    player = player_crud.remove(db=db, id_=player_id)
-    return PlayerRead.model_validate(player)
+    # Get player first to access the list IDs
+    player = player_crud.get(db=db, id_=player_id)
+    if not player:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Player not found"
+        )
+    
+    try:
+        # Delete associated lists if they exist
+        if player.gear_list_id:
+            try:
+                gear_list_crud.remove(db=db, id_=player.gear_list_id)
+            except HTTPException:
+                # List might already be deleted, continue
+                pass
+        
+        if player.pc_specs_list_id:
+            try:
+                pc_specs_list_crud.remove(db=db, id_=player.pc_specs_list_id)
+            except HTTPException:
+                # List might already be deleted, continue
+                pass
+        
+        if player.setup_streaming_list_id:
+            try:
+                setup_streaming_list_crud.remove(db=db, id_=player.setup_streaming_list_id)
+            except HTTPException:
+                # List might already be deleted, continue
+                pass
+        
+        # Delete the player
+        deleted_player = player_crud.remove(db=db, id_=player_id)
+        return PlayerRead.model_validate(deleted_player)
+        
+    except Exception as e:
+        # Rollback any changes if something goes wrong
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error deleting player: {str(e)}"
+        )
 
 
 @router.post("/{player_id}/skins/batch", response_model=PlayerSkinsResponse)

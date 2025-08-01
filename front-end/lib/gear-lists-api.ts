@@ -11,9 +11,9 @@ export interface GearListBase {
   earphones_id?: number;
 }
 
-export interface GearListCreate extends GearListBase {}
+export type GearListCreate = GearListBase;
 
-export interface GearListUpdate extends Partial<GearListBase> {}
+export type GearListUpdate = Partial<GearListBase>;
 
 export interface GearListRead extends GearListBase {
   id: number;

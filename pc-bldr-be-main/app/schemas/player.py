@@ -27,6 +27,13 @@ class PlayerCreate(PlayerBase):
     pc_specs_list_id: Optional[int] = None
     setup_streaming_list_id: Optional[int] = None
     
+    @field_validator('gear_list_id', 'pc_specs_list_id', 'setup_streaming_list_id')
+    @classmethod
+    def validate_foreign_keys(cls, v):
+        if v == 0:
+            return None
+        return v
+    
     class Config:
         from_attributes = True
 
@@ -42,6 +49,13 @@ class PlayerUpdate(BaseModel):
     gear_list_id: Optional[int] = None
     pc_specs_list_id: Optional[int] = None
     setup_streaming_list_id: Optional[int] = None
+    
+    @field_validator('gear_list_id', 'pc_specs_list_id', 'setup_streaming_list_id')
+    @classmethod
+    def validate_foreign_keys(cls, v):
+        if v == 0:
+            return None
+        return v
     
     class Config:
         from_attributes = True
@@ -71,6 +85,13 @@ class PlayerUpdateWithGear(BaseModel):
     
     # Skins update fields
     skin_ids: Optional[List[int]] = None
+    
+    @field_validator('gear_list_id', 'pc_specs_list_id', 'setup_streaming_list_id')
+    @classmethod
+    def validate_foreign_keys(cls, v):
+        if v == 0:
+            return None
+        return v
     
     class Config:
         from_attributes = True

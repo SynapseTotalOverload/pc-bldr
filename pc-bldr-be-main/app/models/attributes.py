@@ -160,3 +160,36 @@ class ChairAttributes(BaseAttrsModel):
     product_dimensions = Column(String)
     size = Column(String)
     back_style = Column(String)
+
+class MicrophoneAttributes(BaseAttrsModel):
+    product = relationship("Product", back_populates="microphone_attributes",)
+
+    connectivity_technology = Column(String)
+    connector_type = Column(String)
+    special_feature = Column(String)
+    compatible_devices = Column(String)
+    color = Column(String)
+    included_components = Column(String)
+    polar_pattern = Column(String)
+
+
+class CameraAttributes(BaseAttrsModel):
+    product = relationship("Product", back_populates="camera_attributes")
+
+    photo_sensor_technology = Column(String)
+    video_capture_resolution = Column(Integer)
+    maximum_aperture = Column(Float)
+    flash_memory_type = Column(String)
+    video_capture_format = Column(String)
+    supported_audio_format = Column(String)
+    screen_size = Column(Float)
+    connectivity_technology = Column(String)
+    color = Column(String)
+
+class HeadphonesAttributes(BaseAttrsModel):
+    product = relationship("Product", back_populates="headphones_attributes")
+
+    color = Column(String)
+    ear_placement = Column(String)
+    form_factor = Column(String)
+    impedance = Column(Integer)

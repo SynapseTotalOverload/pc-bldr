@@ -11,6 +11,12 @@ export const SearchPrice = ({ onSearch }: SearchPriceProps) => {
   const [from, setFrom] = useState(0);
   const [to, setTo] = useState(100000);
 
+  const handleSearch = (from: number, to: number) => {
+    setFrom(from);
+    setTo(to);
+    onSearch(from, to);
+  };
+
   return (
     <div className="flex items-center gap-2">
       <Input 
@@ -19,7 +25,7 @@ export const SearchPrice = ({ onSearch }: SearchPriceProps) => {
         min={0}
         max={1000000}
         defaultValue={0}
-        onChange={(e) => setFrom(Number(e.target.value))}
+        onChange={(e) => handleSearch(Number(e.target.value), to)}
       />
       <Input 
         type="number"
@@ -27,11 +33,11 @@ export const SearchPrice = ({ onSearch }: SearchPriceProps) => {
         min={0}
         max={100000}
         defaultValue={100000}
-        onChange={(e) => setTo(Number(e.target.value))}
+        onChange={(e) => handleSearch(from, Number(e.target.value))}
       />
-      <Button className="bg-primary text-white cursor-pointer" onClick={() => onSearch(from, to)}>
+      {/* <Button className="bg-primary text-white cursor-pointer" onClick={handleSearch}>
         <Search className="w-4 h-4" />
-      </Button>
+      </Button> */}
     </div>
   );  
 };

@@ -1,0 +1,894 @@
+[
+  {
+    "name": "ZOWIE XL2566K",
+    "asin": "3OwgWgB",
+    "productLink": "https://amzn.to/3OwgWgB",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/benq-xl2566k.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "360",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "m0NESY",
+      "NiKo",
+      "Zekken",
+      "ropz"
+    ],
+    "usage": "21.31% (440 of 2065)",
+    "rating": "5"
+  },
+  {
+    "name": "ZOWIE XL2546",
+    "asin": "2Goc9fW",
+    "productLink": "https://amzn.to/2Goc9fW",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/zowie-xl2546.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "Sacy",
+      "trent",
+      "Suygetsu",
+      "Patiphan"
+    ],
+    "usage": "9.88% (204 of 2065)",
+    "rating": "4.5"
+  },
+  {
+    "name": "ZOWIE XL2540",
+    "asin": "2GJvibD",
+    "productLink": "https://amzn.to/2GJvibD",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/zowie-xl2540.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "MiniBoo",
+      "EspiranTo",
+      "b0i",
+      "ISSAA"
+    ],
+    "usage": "3.20% (66 of 2065)"
+  },
+  {
+    "name": "Alienware AW2523HF",
+    "asin": "47Bqf6P",
+    "productLink": "https://amzn.to/47Bqf6P",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/alienware-aw2523hf.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "360",
+    "dyAc": "No",
+    "backlightStrobing": "Yes",
+    "players": [
+      "AsianJeff",
+      "Clix",
+      "nAts",
+      "TaySon"
+    ],
+    "usage": "1.69% (35 of 2065)"
+  },
+  {
+    "name": "ZOWIE XL2540K",
+    "asin": "2GJvibD",
+    "productLink": "https://amzn.to/2GJvibD",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/zowie-xl2540k.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "SoOn",
+      "Boye",
+      "Griller",
+      "Vorwenn"
+    ],
+    "usage": "1.55% (32 of 2065)"
+  },
+  {
+    "name": "Alienware AW2521HF",
+    "asin": "34ccopc",
+    "productLink": "https://amzn.to/34ccopc",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/alienware-2521hf.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "Zemie",
+      "Pulga",
+      "Thiefs",
+      "frttt"
+    ],
+    "usage": "1.31% (27 of 2065)"
+  },
+  {
+    "name": "SONY INZONE M10S",
+    "asin": "406JiVj",
+    "productLink": "https://amzn.to/406JiVj",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/sony-inzone-m10s.png",
+    "size": "27",
+    "resolution": "2560×1440",
+    "panel": "OLED",
+    "aspectRatio": "16:9",
+    "refreshRate": "480",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": [
+      "TenZ",
+      "Alfajer",
+      "deko",
+      "Leo"
+    ],
+    "usage": "1.11% (23 of 2065)",
+    "rating": "5"
+  },
+  {
+    "name": "ASUS ROG SWIFT PG258Q",
+    "asin": "2E8Rryb",
+    "productLink": "https://amzn.to/2E8Rryb",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-rog-swift-pg258q.png",
+    "size": "25",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": [
+      "Viss",
+      "Kragie",
+      "Kamo",
+      "Commandment"
+    ],
+    "usage": "1.07% (22 of 2065)"
+  },
+  {
+    "name": "AOC AG251FZ",
+    "asin": "2SOEvFQ",
+    "productLink": "https://amzn.to/2SOEvFQ",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/aoc-ag251fz.png",
+    "size": "25",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "Yes",
+    "players": [
+      "fnx",
+      "Lothar",
+      "Braexco",
+      "Alem4o"
+    ],
+    "usage": "0.77% (16 of 2065)"
+  },
+  {
+    "name": "Omen X25F",
+    "asin": "2X1PsmC",
+    "productLink": "https://amzn.to/2X1PsmC",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/omen-x25f.png",
+    "size": "25",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "Wolfiez",
+      "Fnajen",
+      "BøghmagiC",
+      "kombek"
+    ],
+    "usage": "0.53% (11 of 2065)"
+  },
+  {
+    "name": "ZOWIE XL2546 Divina Blue",
+    "asin": "2Goc9fW",
+    "productLink": "https://amzn.to/2Goc9fW",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/zowie-xl2546-divina-blue.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "tenzki",
+      "ztr",
+      "Pimp",
+      "shalfey"
+    ],
+    "usage": "0.48% (10 of 2065)"
+  },
+  {
+    "name": "ASUS TUF VG258QM",
+    "asin": "3MXzsuX",
+    "productLink": "https://amzn.to/3MXzsuX",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-tuf-vg258qm.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "280",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "kiNgg",
+      "Hardecki",
+      "GRUBINHO",
+      "yvro"
+    ],
+    "usage": "0.44% (9 of 2065)"
+  },
+  {
+    "name": "ASUS TUF VG279QM",
+    "asin": "3yuZ38j",
+    "productLink": "https://amzn.to/3yuZ38j",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-tuf-vg279qm.png",
+    "size": "27",
+    "resolution": "1920×1080",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "280",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": [
+      "Mero",
+      "Faker",
+      "premfn",
+      "yetujey"
+    ],
+    "usage": "0.44% (9 of 2065)"
+  },
+  {
+    "name": "ASUS VG248QE",
+    "asin": "2GoQc0k",
+    "productLink": "https://amzn.to/2GoQc0k",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/acer-vg248qe.png",
+    "size": "23",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "144",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "Avxry",
+      "RazorX",
+      "MOTOR"
+    ],
+    "usage": "0.39% (8 of 2065)"
+  },
+  {
+    "name": "Lenovo Legion Y25-30",
+    "asin": "3RKdtge",
+    "productLink": "https://amzn.to/3RKdtge",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/lenovo-legion-y25-30.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "280",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "Myrwn",
+      "Elyoya",
+      "Fresskowy",
+      "supa"
+    ],
+    "usage": "0.34% (7 of 2065)"
+  },
+  {
+    "name": "Acer Predator XB252Q",
+    "asin": "2E8OAoP",
+    "productLink": "https://amzn.to/2E8OAoP",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/acer-predator-xb252q-2.png",
+    "size": "25",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": [
+      "Nate Hill",
+      "Anas",
+      "Tilt",
+      "Noko"
+    ],
+    "usage": "0.34% (7 of 2065)"
+  },
+  {
+    "name": "ASUS ROG STRIX XG248Q",
+    "asin": "2XTCw6l",
+    "productLink": "https://amzn.to/2XTCw6l",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-rog-strix-xg248q.png",
+    "size": "24",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "starxo",
+      "Jur3ky",
+      "Kalios",
+      "murii"
+    ],
+    "usage": "0.29% (6 of 2065)"
+  },
+  {
+    "name": "ASUS ROG PG27AQDM",
+    "asin": "44aWnfw",
+    "productLink": "https://amzn.to/44aWnfw",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-rog-pg27aqdm.png",
+    "size": "26.5",
+    "resolution": "2560×1440",
+    "panel": "OLED",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "shroud",
+      "Derke",
+      "Redgar",
+      "FKS"
+    ],
+    "usage": "0.24% (5 of 2065)"
+  },
+  {
+    "name": "Samsung Odyssey G7",
+    "asin": "2RfL41K",
+    "productLink": "https://amzn.to/2RfL41K",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/samsung-odyssey-g7.png",
+    "size": "32",
+    "resolution": "3840×2160",
+    "panel": "VA",
+    "aspectRatio": "16:9",
+    "refreshRate": "165",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "Necros",
+      "summit1g",
+      "Harbleu",
+      "emongg"
+    ],
+    "usage": "0.24% (5 of 2065)"
+  },
+  {
+    "name": "ASUS ROG XG258Q",
+    "asin": "2UUXzj2",
+    "productLink": "https://amzn.to/2UUXzj2",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-rog-xg258q.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": [
+      "koldamenta",
+      "TS",
+      "Gnaske",
+      "austin"
+    ],
+    "usage": "0.24% (5 of 2065)"
+  },
+  {
+    "name": "AOC 24G2Z",
+    "asin": "3T15hYL",
+    "productLink": "https://amzn.to/3T15hYL",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/aoc-24g2z.png",
+    "size": "24",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "XAROLA",
+      "splash",
+      "Gordete",
+      "Jini"
+    ],
+    "usage": "0.19% (4 of 2065)"
+  },
+  {
+    "name": "ASUS ROG SWIFT PG279QM",
+    "asin": "2DFYn4i",
+    "productLink": "https://amzn.to/2DFYn4i",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-rog-swift-pg279q.png",
+    "size": "27",
+    "resolution": "2560×1440",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": [
+      "Pengu",
+      "BreaK",
+      "DrLupo",
+      "Pepo"
+    ],
+    "usage": "0.19% (4 of 2065)"
+  },
+  {
+    "name": "GIGABYTE AORUS KD25F",
+    "asin": "2ZgGZfh",
+    "productLink": "https://amzn.to/2ZgGZfh",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/gigabyte-aorus-kd25f.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "Jelty",
+      "Jamside",
+      "Raider464"
+    ],
+    "usage": "0.19% (4 of 2065)"
+  },
+  {
+    "name": "ZOWIE XL2546X+",
+    "asin": "4idtSnE",
+    "productLink": "https://amzn.to/4idtSnE",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/zowie-xl2546x.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "adamb",
+      "Eomzo",
+      "Pollo"
+    ],
+    "usage": "0.15% (3 of 2065)"
+  },
+  {
+    "name": "Alienware AW2723DF",
+    "asin": "4bKNo80",
+    "productLink": "https://amzn.to/4bKNo80",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/alienware-aw2723df.png",
+    "size": "27",
+    "resolution": "2560×1440",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "280",
+    "dyAc": "No",
+    "backlightStrobing": "Yes",
+    "players": [
+      "Hris",
+      "bogur",
+      "Vaske1x"
+    ],
+    "usage": "0.15% (3 of 2065)"
+  },
+  {
+    "name": "Alienware AW2725DF",
+    "asin": "3VdtqgS",
+    "productLink": "https://amzn.to/3VdtqgS",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/alienware-aw2725df.png",
+    "size": "27",
+    "resolution": "2560×1440",
+    "panel": "QD OLED",
+    "aspectRatio": "16:9",
+    "refreshRate": "360",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "GMoney",
+      "sanjog",
+      "Gabzera"
+    ],
+    "usage": "0.15% (3 of 2065)"
+  },
+  {
+    "name": "Acer Predator X25",
+    "asin": "3XFVpER",
+    "productLink": "https://amzn.to/3XFVpER",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/acer-predator-x25.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "360",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "LeonGids",
+      "Shaiiko",
+      "AyarBaffo"
+    ],
+    "usage": "0.15% (3 of 2065)"
+  },
+  {
+    "name": "ViewSonic XG2560",
+    "asin": "2J6eBrH",
+    "productLink": "https://amzn.to/2J6eBrH",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/viewsonic-xg2560.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": [
+      "HaloBT",
+      "Tinka",
+      "Ducky1"
+    ],
+    "usage": "0.15% (3 of 2065)"
+  },
+  {
+    "name": "ASUS ROG Strix XG259QN",
+    "asin": "3WgvDbO",
+    "productLink": "https://amzn.to/3WgvDbO",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-rog-xg259qn.png",
+    "size": "25",
+    "resolution": "1920×1080",
+    "panel": "Fast IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "360",
+    "dyAc": "No",
+    "backlightStrobing": "Yes",
+    "players": [
+      "oozie",
+      "Germán62hz"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "GIGABYTE AORUS FI25F",
+    "asin": "3XNDrRy",
+    "productLink": "https://amzn.to/3XNDrRy",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/aorus-fi25f.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "Yassa",
+      "SALO_MUX"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "LG ULTRAGEAR 27GN950-B",
+    "asin": "3XvwYJm",
+    "productLink": "https://amzn.to/3XvwYJm",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/lg-ultragear-27gn950-b.png",
+    "size": "27",
+    "resolution": "3840×2160",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "144",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "Daltoosh",
+      "Leamonhead"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Dell S2522HG",
+    "asin": "3QsiLuQ",
+    "productLink": "https://amzn.to/3QsiLuQ",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/dell-s2522hg.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "xaniya",
+      "esdesu"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "LG ULTRAGEAR 32GQ950-B",
+    "asin": "3CN6HiK",
+    "productLink": "https://amzn.to/3CN6HiK",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/lg-ultragear-32gq950-b.png",
+    "size": "31.5",
+    "resolution": "3840×2160",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "144",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "HAL",
+      "Huskerrs"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Lenovo Legion Y25-25",
+    "asin": "3xBXG9E",
+    "productLink": "https://amzn.to/3xBXG9E",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/lenovo-legion-y25-25.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": [
+      "Fisker",
+      "Sernik"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Acer Predator XN3",
+    "asin": "3aAeUWp",
+    "productLink": "https://amzn.to/3aAeUWp",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/acer-predator-xn3.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "144",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": [
+      "Toose",
+      "KarQ"
+    ],
+    "usage": "0.10% (2 of 2065)"
+  },
+  {
+    "name": "Samsung C24RG54FQU",
+    "asin": "43d6H7I",
+    "productLink": "https://amzn.to/43d6H7I",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/samsung-c24rg54fqu.webp",
+    "size": "24",
+    "resolution": "1920×1080",
+    "panel": "VA",
+    "aspectRatio": "16:9",
+    "refreshRate": "144",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "Wraxx"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "AOC 25G3ZM",
+    "asin": "3XVf7h3",
+    "productLink": "https://amzn.to/3XVf7h3",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/aoc-25g3zm.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "VA",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "Yes",
+    "players": [
+      "alkarenn"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Acer ED270X",
+    "asin": "3UMPlKj",
+    "productLink": "https://amzn.to/3UMPlKj",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/acer-ed270x.png",
+    "size": "31.5",
+    "resolution": "1920×1080",
+    "panel": "VA",
+    "aspectRatio": "16:9",
+    "refreshRate": "165",
+    "dyAc": "No",
+    "backlightStrobing": "Yes",
+    "players": [
+      "chudy"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Acer XF240Q",
+    "asin": "47FF7jo",
+    "productLink": "https://amzn.to/47FF7jo",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/acer-xf240q.png",
+    "size": "24",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "144",
+    "dyAc": "No",
+    "backlightStrobing": "Yes",
+    "players": [
+      "Jynxzi"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "ASUS ROG SWIFT XG27AQM",
+    "asin": "444eQdm",
+    "productLink": "https://amzn.to/444eQdm",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-rog-swift-xg27aqm.png",
+    "size": "27",
+    "resolution": "2560×1440",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": [
+      "Hiko"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "LG 27GK750F-B",
+    "asin": "3H5ZBqc",
+    "productLink": "https://amzn.to/3H5ZBqc",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/lg-27gk750f-b.png",
+    "size": "27",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "Yes",
+    "players": [],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "HP OMEN X 27",
+    "asin": "3yQNycv",
+    "productLink": "https://amzn.to/3yQNycv",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/omen-x-27.png",
+    "size": "27",
+    "resolution": "2560×1440",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "Yes",
+    "players": [
+      "byali"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Alienware AW2721D",
+    "asin": "2JTcNW2",
+    "productLink": "https://amzn.to/2JTcNW2",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/alienware-aw2721d.png",
+    "size": "27",
+    "resolution": "2560×1440",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": [
+      "Shiv"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "ASUS MG248QR",
+    "asin": "2EbhN2w",
+    "productLink": "https://amzn.to/2EbhN2w",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/asus-mg248qr.png",
+    "size": "24",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "144",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": [
+      "Sharshock"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "Acer XF250Q",
+    "asin": "2V0EKLh",
+    "productLink": "https://amzn.to/2V0EKLh",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/acer-xf250q.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "No",
+    "backlightStrobing": "Yes",
+    "players": [
+      "Scoped"
+    ],
+    "usage": "0.05% (1 of 2065)"
+  },
+  {
+    "name": "HyperX Armada 25",
+    "asin": "42a5oVI",
+    "productLink": "https://amzn.to/42a5oVI",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/hyperx-armada-25.png",
+    "size": "24.5",
+    "resolution": "1920×1080",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "No",
+    "players": []
+  },
+  {
+    "name": "LG UltraGear 32GQ850-B",
+    "asin": "3Y0lu21",
+    "productLink": "https://amzn.to/3Y0lu21",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/lg-ultragear-32gq950-b.png",
+    "size": "31.5",
+    "resolution": "2560×1440",
+    "panel": "IPS",
+    "aspectRatio": "16:9",
+    "refreshRate": "240",
+    "dyAc": "Yes",
+    "backlightStrobing": "Yes",
+    "players": []
+  },
+  {
+    "name": "LG 24GM79G-B",
+    "asin": "2DEDVAL",
+    "productLink": "https://amzn.to/2DEDVAL",
+    "image": "https://prosettings.net/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=72%2Cq=95%2Cw=72/wp-content/uploads/lg-24gm79g-b.png",
+    "size": "24",
+    "resolution": "1920×1080",
+    "panel": "TN",
+    "aspectRatio": "16:9",
+    "refreshRate": "144",
+    "dyAc": "No",
+    "backlightStrobing": "No",
+    "players": []
+  }
+]

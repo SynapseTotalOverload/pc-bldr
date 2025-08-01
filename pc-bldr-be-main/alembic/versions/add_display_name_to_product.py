@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = 'add_display_name_to_product'
-down_revision: Union[str, None] = 'bbc9985e983a'
+down_revision: Union[str, None] = 'fc85e03ac9c5'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -112,7 +112,7 @@ def upgrade() -> None:
         AND product.display_name IS NULL
     """)
     
-    # Mouse attributes
+    # d attributes
     op.execute("""
         UPDATE product 
         SET display_name = CONCAT(mouseattributes.brand, ' ', mouseattributes.model)

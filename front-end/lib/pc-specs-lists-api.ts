@@ -13,9 +13,9 @@ export interface PCSpecsListBase {
   case_id?: number | null;
 }
 
-export interface PCSpecsListCreate extends PCSpecsListBase {}
+export type PCSpecsListCreate = PCSpecsListBase;
 
-export interface PCSpecsListUpdate extends Partial<PCSpecsListBase> {}
+export type PCSpecsListUpdate = Partial<PCSpecsListBase>;
 
 export interface PCSpecsListRead extends PCSpecsListBase {
   id: number;

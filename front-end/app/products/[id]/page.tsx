@@ -564,53 +564,53 @@ const renderChairAttributes = (attrs: any) => (
 );
 
 
-const renderAttributes = (attrs: any) => {
-  console.log('🔧 Rendering attributes:', attrs);
-  
-  if (!attrs || !attrs.type) {
+const renderAttributes = (attrs: any, name: string) => { 
+  if (!attrs || !name) {
     return (
       <div className="text-muted-foreground">
         <p>No attributes available for this product.</p>
+        <pre className="text-xs mt-2 bg-gray-100 p-2 rounded">
+          {JSON.stringify(attrs, null, 2)}
+        </pre>
       </div>
     );
   }
 
-  
-  switch (attrs.type) {
-    case 'cpu':
+  console.log(name)
+  switch (name) {
+    case 'CPU':
       return renderCPUAttributes(attrs);
-    case 'gpu':
-    case 'video_card':
+    case 'GPU':
       return renderGPUAttributes(attrs);
-    case 'memory':
+    case 'RAM':
       return renderRAMAttributes(attrs);
-    case 'internal_hard_drive':
+    case 'ROM':
       return renderStorageAttributes(attrs);
-    case 'motherboard':
+    case 'Motherboard':
       return renderMotherboardAttributes(attrs);
-    case 'power_supply':
+    case 'Power Supply':
       return renderPowerSupplyAttributes(attrs);
-    case 'cpu_cooler':
+    case 'CPU Cooler':
       return renderCPUCoolerAttributes(attrs);
-    case 'case':
+    case 'Case':
       return renderCaseAttributes(attrs);
-    case 'mouse':
+    case 'Mouse':
       return renderMouseAttributes(attrs);
-    case 'monitor':
+    case 'Monitor':
       return renderMonitorAttributes(attrs);
-    case 'keyboard':
+    case 'Keyboard':
       return renderKeyboardAttributes(attrs);
-    case 'headset':
+    case 'Headset':
       return renderHeadsetAttributes(attrs);
-    case 'mousepad':
+    case 'Mousepad':
       return renderMousepadAttributes(attrs);
-    case 'chair':
+    case 'Chair':
       return renderChairAttributes(attrs);
     default:
-      console.log('⚠️ Unknown attribute type:', attrs.type);
       return (
         <div className="text-muted-foreground">
-          <pre className="whitespace-pre-wrap">{JSON.stringify(attrs, null, 2)}</pre>
+          <p>Unknown attribute type: {attrs.type}</p>
+          <pre className="whitespace-pre-wrap text-xs mt-2 bg-gray-100 p-2 rounded">{JSON.stringify(attrs, null, 2)}</pre>
         </div>
       );
   }
@@ -668,8 +668,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     );
   }
 
-  const CategoryIcon = categoryIcons[product.attrs?.type as keyof typeof categoryIcons] || Cpu;
-  const categoryName = PRODUCT_TYPE_NAMES[product.attrs?.type as keyof typeof PRODUCT_TYPE_NAMES] || product.attrs?.type || 'Unknown';
+  const CategoryIcon = categoryIcons[product.category?.name as keyof typeof categoryIcons] || Cpu;
+  const categoryName = PRODUCT_TYPE_NAMES[product.category?.name as keyof typeof PRODUCT_TYPE_NAMES] || product.category?.name || 'Unknown';
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -737,7 +737,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 {/* Technical Specifications */}
                 <div>
                   <h4 className="font-semibold mb-3">Technical Specifications</h4>
-                  {product.attrs ? renderAttributes(product.attrs) : (
+                  {product.attrs ? renderAttributes(product.attrs, product.category?.name || '') : (
                     <div className="text-muted-foreground">
                       <p>No technical specifications available for this product.</p>
                     </div>

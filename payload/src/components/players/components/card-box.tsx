@@ -1,7 +1,6 @@
 import { Product } from "@/services/types"
 
 export const CardBox = ({ item }: { item: Product }) => {
-
     const title = item.title
   return (
     <div className="rounded-lg p-4 relative">

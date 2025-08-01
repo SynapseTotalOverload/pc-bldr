@@ -38,7 +38,8 @@ export interface ProductBase {
 }
 
 export interface ProductCreate extends ProductBase {
-  category_id?: number;
+  category_id: number;
+  attrs?: Record<string, any>; 
 }
 
 
@@ -48,6 +49,10 @@ export interface ProductUpdate {
   price?: number;
   rating?: number;
   category_id?: number;
+  attrs?: Record<string, any>;
+  low_image_url?: string;
+  high_image_url?: string;
+  display_name?: string;
 }
 
 export interface ProductTypeMap {

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Edit, Trash2, Eye } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
+import { LazyLoadImage } from "react-lazy-load-image-component"
 
 export const playersColumns: ColumnDef<PlayerWithRelations>[] = [
   {
@@ -14,11 +15,17 @@ export const playersColumns: ColumnDef<PlayerWithRelations>[] = [
       return (
         <div className="flex items-center gap-3">
           {player.player_img && (
-            <img 
-              src={player.player_img} 
-              alt={player.player_name}
-              className="w-10 h-10 rounded-full object-cover"
-            />
+            <div className="w-10 h-10">
+              <LazyLoadImage 
+                src={player.player_img} 
+                alt={player.player_name}
+                className="w-10 h-10 rounded-full object-cover"
+                effect="opacity"
+                placeholderSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNlNWU3ZWYiLz4KPC9zdmc+"
+                threshold={100}
+                wrapperClassName="w-10 h-10"
+              />
+            </div>
           )}
           <div>
             <div className="font-medium">{player.player_name}</div>
@@ -100,7 +107,6 @@ export const playersColumns: ColumnDef<PlayerWithRelations>[] = [
             variant="ghost"
             size="sm"
             onClick={() => {
-              // Handle delete player
               console.log("Delete player:", player.id)
             }}
           >

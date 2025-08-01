@@ -63,8 +63,11 @@ export function AddEditPlayerDialog({
   const [selectedMouseId, setSelectedMouseId] = useState<string>("none")
   const [selectedMousepadId, setSelectedMousepadId] = useState<string>("none")
   const [selectedMonitorId, setSelectedMonitorId] = useState<string>("none")
+  const [selectedEarphonesId, setSelectedEarphonesId] = useState<string>("none")
 
   const [selectedChairId, setSelectedChairId] = useState<string>("none")
+  const [selectedMicrophoneId, setSelectedMicrophoneId] = useState<string>("none")
+  const [selectedCameraId, setSelectedCameraId] = useState<string>("none")
 
   const [gearListId, setGearListId] = useState<number | null>(null)
   const [setupStreamingListId, setSetupStreamingListId] = useState<number | null>(null)
@@ -194,6 +197,15 @@ export function AddEditPlayerDialog({
         } else {
           setSelectedMonitorId("none")
         }
+
+        if (player.gear_list.earphones_id) {
+          setSelectedEarphonesId(player.gear_list.earphones_id.toString())
+        } else if (player.gear_list.earphones?.id) {
+          setSelectedEarphonesId(player.gear_list.earphones.id.toString())
+        } else {
+          setSelectedEarphonesId("none")
+        }
+
       } else {
         setGearListId(null)
         setSelectedHeadsetId("none")
@@ -201,6 +213,7 @@ export function AddEditPlayerDialog({
         setSelectedMouseId("none")
         setSelectedMousepadId("none")
         setSelectedMonitorId("none")
+        setSelectedEarphonesId("none")
       }
 
       if (player.setup_streaming_list) {
@@ -212,9 +225,25 @@ export function AddEditPlayerDialog({
         } else {
           setSelectedChairId("none")
         }
+        if (player.setup_streaming_list.microphone_id) {
+          setSelectedMicrophoneId(player.setup_streaming_list.microphone_id.toString())
+        } else if (player.setup_streaming_list.microphone?.id) {
+          setSelectedMicrophoneId(player.setup_streaming_list.microphone.id.toString())
+        } else {
+          setSelectedMicrophoneId("none")
+        }
+        if (player.setup_streaming_list.camera_id) {
+          setSelectedCameraId(player.setup_streaming_list.camera_id.toString())
+        } else if (player.setup_streaming_list.camera?.id) {
+          setSelectedCameraId(player.setup_streaming_list.camera.id.toString())
+        } else {
+          setSelectedCameraId("none")
+        }
       } else {
         setSetupStreamingListId(null)
         setSelectedChairId("none")
+        setSelectedMicrophoneId("none")
+        setSelectedCameraId("none")
       }
     } else if (open && mode === 'add') {
       setFormData({
@@ -242,19 +271,12 @@ export function AddEditPlayerDialog({
       setSelectedMouseId("none")
       setSelectedMousepadId("none")
       setSelectedMonitorId("none")
+      setSelectedEarphonesId("none")
 
       setSetupStreamingListId(null)
       setSelectedChairId("none")
-
-      setGearListId(null)
-      setSelectedHeadsetId("none")
-      setSelectedKeyboardId("none")
-      setSelectedMouseId("none")
-      setSelectedMousepadId("none")
-      setSelectedMonitorId("none")
-
-      setSetupStreamingListId(null)
-      setSelectedChairId("none")
+      setSelectedMicrophoneId("none")
+      setSelectedCameraId("none")
     }
   }, [player, mode, open])
 
@@ -275,13 +297,6 @@ export function AddEditPlayerDialog({
       }
 
       let newPcSpecsListId = pcSpecsListId
-      
-      // if (pcSpecsListId) {
-      //   await updatePCSpecsList(pcSpecsListId, pcSpecsListData)
-      // } else {
-      //   const newPcSpecsList = await createPCSpecsList(pcSpecsListData)
-      //   newPcSpecsListId = newPcSpecsList.id
-      // }
 
       const gearListData = {
         headset_id: selectedHeadsetId !== 'none' ? parseInt(selectedHeadsetId) : null,
@@ -289,28 +304,18 @@ export function AddEditPlayerDialog({
         mouse_id: selectedMouseId !== 'none' ? parseInt(selectedMouseId) : null,
         mousepad_id: selectedMousepadId !== 'none' ? parseInt(selectedMousepadId) : null,
         monitor_id: selectedMonitorId !== 'none' ? parseInt(selectedMonitorId) : null,
+        earphones_id: selectedEarphonesId !== 'none' ? parseInt(selectedEarphonesId) : null,
       }
 
       let newGearListId = gearListId
-      // if (gearListId) {
-      //   await updateGearList(gearListId, gearListData)
-      // } else {
-      //   const newGearList = await createGearList(gearListData)
-      //   newGearListId = newGearList.id
-      // }
 
       const setupStreamingListData = {
         chair_id: selectedChairId !== 'none' ? parseInt(selectedChairId) : null,
+        microphone_id: selectedMicrophoneId !== 'none' ? parseInt(selectedMicrophoneId) : null,
+        webcam_id: selectedCameraId !== 'none' ? parseInt(selectedCameraId) : null,
       }
 
       let newSetupStreamingListId = setupStreamingListId
-      // if (setupStreamingListId) {
-      //   await updateSetupStreamingList(setupStreamingListId, setupStreamingListData)
-      // } else {
-      //   const newSetupStreamingList = await createSetupStreamingList(setupStreamingListData)
-      //   newSetupStreamingListId = newSetupStreamingList.id
-      // }
-
 
 
       const playerData = {
@@ -598,6 +603,15 @@ export function AddEditPlayerDialog({
                 placeholder="Select Monitor"
                 periphery_flag={true}
                 />
+                <SelectListProductNew
+                label="Earphones"
+                selectedProduct={player?.gear_list?.earphones || null}
+                value={selectedEarphonesId}
+                onValueChange={setSelectedEarphonesId}
+                category="earphones"
+                placeholder="Select Earphones"
+                periphery_flag={true}
+                />
             </div>
           </div>
           )}
@@ -614,6 +628,24 @@ export function AddEditPlayerDialog({
                 onValueChange={setSelectedChairId}
                 category="chair"
                 placeholder="Select Chair"
+                periphery_flag={true}
+                />
+                <SelectListProductNew
+                label="Microphone"
+                selectedProduct={player?.setup_streaming_list?.microphone || null}
+                value={selectedMicrophoneId}
+                onValueChange={setSelectedMicrophoneId}
+                category="microphone"
+                placeholder="Select Microphone"
+                periphery_flag={true}
+                />
+                <SelectListProductNew
+                label="Camera"
+                selectedProduct={player?.setup_streaming_list?.camera || null}
+                value={selectedCameraId}
+                onValueChange={setSelectedCameraId}
+                category="camera"
+                placeholder="Select Camera"
                 periphery_flag={true}
                 />
             </div>

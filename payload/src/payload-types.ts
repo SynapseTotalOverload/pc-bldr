@@ -844,7 +844,7 @@ export interface ApiCardListBlock {
   description?: string | null;
   cardType: 'product' | 'accessories' | 'builds';
   category_id?: ('' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8') | null;
-  accessory_category?: ('' | '9' | '10' | '11' | '12' | '13' | '14') | null;
+  accessory_category?: ('' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17') | null;
   build_type?: ('' | 'gaming' | 'office' | 'workstation' | 'budget' | 'high-end' | '--') | null;
   layout?: ('grid' | 'list' | 'carousel') | null;
   /**
@@ -871,8 +871,6 @@ export interface ApiCardListBlock {
 export interface ApiPlayerListBlock {
   title?: string | null;
   description?: string | null;
-  filterBy?: ('all' | 'team' | 'country' | 'query') | null;
-  layout?: ('grid' | 'list' | 'carousel') | null;
   /**
    * Number of columns for grid layout
    */
@@ -882,10 +880,6 @@ export interface ApiPlayerListBlock {
    */
   itemsPerPage?: number | null;
   showPagination?: boolean | null;
-  styling?: {
-    backgroundColor?: ('default' | 'primary' | 'secondary' | 'accent' | 'muted') | null;
-    cardStyle?: ('default' | 'elevated' | 'bordered' | 'minimal') | null;
-  };
   id?: string | null;
   blockName?: string | null;
   blockType: 'apiPlayerList';
@@ -1749,17 +1743,9 @@ export interface ApiCardListBlockSelect<T extends boolean = true> {
 export interface ApiPlayerListBlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
-  filterBy?: T;
-  layout?: T;
   columns?: T;
   itemsPerPage?: T;
   showPagination?: T;
-  styling?:
-    | T
-    | {
-        backgroundColor?: T;
-        cardStyle?: T;
-      };
   id?: T;
   blockName?: T;
 }

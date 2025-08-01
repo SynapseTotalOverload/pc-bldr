@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   ColumnDef,
   flexRender,
@@ -26,9 +26,19 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { PlayerWithRelations } from "@/types/players-base"
 import { AddEditPlayerDialog } from "@/models/dialogs/add-edit-player"
+import { PlayerDetailsDialog } from "@/models/dialogs/player-details-dialog"
 import { useToast } from "@/hooks/use-toast"
 import { PlayerCreate, PlayerUpdate } from "@/types/players-base"
 import { Search } from "lucide-react"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 
 interface PlayersTableProps {
@@ -55,6 +65,7 @@ export function PlayersTable({
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerWithRelations | null>(null)
   
   const { toast } = useToast()
@@ -73,8 +84,8 @@ export function PlayersTable({
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    // Handle view player - you can implement this later
-                    console.log("View player:", player.id)
+                    setSelectedPlayer(player)
+                    setDetailsDialogOpen(true)
                   }}
                 >
                   <span className="">View</span>
@@ -137,24 +148,6 @@ export function PlayersTable({
       throw error
     }
   }
-
-  // const handleDeletePlayer = async () => {
-  //   if (!selectedPlayer) return
-  //   try {
-  //     await onDeletePlayer(selectedPlayer.id)
-  //     toast({
-  //       title: "Success",
-  //       description: "Player deleted successfully!",
-  //     })
-  //   } catch (error) {
-  //     toast({
-  //       title: "Error",
-  //       description: error instanceof Error ? error.message : "Failed to delete player",
-  //       variant: "destructive",
-  //     })
-  //     throw error
-  //   }
-  // }
 
   const handleConfirmDelete = async (playerId: number) => {
     try {
@@ -245,23 +238,79 @@ export function PlayersTable({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          Showing {" "}
+          {Math.min(
+            (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+            table.getFilteredRowModel().rows.length
+          )} of{" "}
+          {table.getFilteredRowModel().rows.length} results
+        </div>
+        <div className="flex items-center space-x-6 lg:space-x-8">
+  
+  {table.getPageCount() > 1 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    table.previousPage()
+                  }}
+                  className={!table.getCanPreviousPage() ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+              {Array.from({ length: table.getPageCount() }, (_, i) => i).map((pageIndex) => {
+                const currentPage = table.getState().pagination.pageIndex
+                const totalPages = table.getPageCount()
+                
+                if (
+                  pageIndex === 0 ||
+                  pageIndex === totalPages - 1 ||
+                  (pageIndex >= currentPage - 1 && pageIndex <= currentPage + 1)
+                ) {
+                  return (
+                    <PaginationItem key={pageIndex}>
+                      <PaginationLink
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          table.setPageIndex(pageIndex)
+                        }}
+                        isActive={pageIndex === currentPage}
+                      >
+                        {pageIndex + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                } else if (
+                  pageIndex === currentPage - 2 ||
+                  pageIndex === currentPage + 2
+                ) {
+                  return (
+                    <PaginationItem key={pageIndex}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )
+                }
+                return null
+              })}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    table.nextPage()
+                  }}
+                  className={!table.getCanNextPage() ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
+        </div>
       </div>
 
       {/* Dialogs */}
@@ -278,6 +327,12 @@ export function PlayersTable({
         player={selectedPlayer}
         onSave={handleSavePlayer}
         mode="edit"
+      />
+      
+      <PlayerDetailsDialog
+        player={selectedPlayer}
+        open={detailsDialogOpen}
+        onOpenChange={setDetailsDialogOpen}
       />
     </div>
   )

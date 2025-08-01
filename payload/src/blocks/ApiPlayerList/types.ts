@@ -39,7 +39,7 @@ export interface PlayerWithRelations {
     updated_at: string;
     chair?: { id: number; name: string; display_name: string } | null;
     microphone?: { id: number; name: string; display_name: string } | null;
-    webcam?: { id: number; name: string; display_name: string } | null;
+    camera?: { id: number; name: string; display_name: string } | null;
   } | null;
   skins?: any[];
 }

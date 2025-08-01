@@ -39,7 +39,7 @@ export function SelectProductBuilds({
 }: SelectProductBuildsProps) {
   const getProductDisplayInfo = (product: ProductRead) => {
     const baseInfo = {
-      title: `${product.attrs.brand} ${product.attrs.model}`,
+      title: `${product.attrs.brand} | ${product.attrs.model}`,
       subtitle: '',
       price: product.price ? `$${product.price.toFixed(2)}` : 'Price N/A',
       rating: product.rating,
@@ -125,17 +125,17 @@ export function SelectProductBuilds({
                   <div className="text-sm leading-tight font-medium">
                     {getProductDisplayInfo(selectedProduct).title}
                   </div>
-                  {getProductDisplayInfo(selectedProduct).subtitle && (
+                  {/* {getProductDisplayInfo(selectedProduct).subtitle && (
                     <div className="text-muted-foreground text-xs leading-tight">
                       {getProductDisplayInfo(selectedProduct).subtitle}
                     </div>
-                  )}
-                  <div className="text-xs font-medium text-green-600">
+                  )} */}
+                  {/* <div className="text-xs font-medium text-green-600">
                     {getProductDisplayInfo(selectedProduct).price}
                     {getProductDisplayInfo(selectedProduct).rating && (
                       <span className="ml-2 text-yellow-600">★ {getProductDisplayInfo(selectedProduct).rating}</span>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </SelectItem>
             )}
@@ -178,17 +178,17 @@ export function SelectProductBuilds({
                           <div className="text-sm leading-tight font-medium">
                             {displayInfo.title}
                           </div>
-                          {displayInfo.subtitle && (
+                          {/* {displayInfo.subtitle && (
                             <div className="text-muted-foreground text-xs leading-tight">
                               {displayInfo.subtitle}
                             </div>
-                          )}
-                          <div className="text-xs font-medium text-green-600">
+                          )} */}
+                          {/* <div className="text-xs font-medium text-green-600">
                             {displayInfo.price}
                             {displayInfo.rating && (
                               <span className="ml-2 text-yellow-600">★ {displayInfo.rating}</span>
                             )}
-                          </div>
+                          </div> */}
                         </div>
                       </SelectItem>
                     );

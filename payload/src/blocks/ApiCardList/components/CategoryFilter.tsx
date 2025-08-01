@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
 import React from 'react'
-import { Cpu, Fan, Monitor, CircuitBoard, HardDrive, Zap, Package, Gamepad2, Briefcase, Wrench, DollarSign, Crown, MoreHorizontal, Keyboard, Headset, Mouse } from 'lucide-react'
+import { Cpu, Fan, Monitor, CircuitBoard, HardDrive, Zap, Package, Gamepad2, Briefcase, Wrench, DollarSign, Crown, MoreHorizontal, Keyboard, Headset, Mouse, Camera } from 'lucide-react'
 
 export const PRODUCT_CATEGORIES = [
   { id: '1', name: 'CPU', slug: 'cpu', icon: Cpu },
@@ -13,7 +13,7 @@ export const PRODUCT_CATEGORIES = [
   { id: '5', name: 'RAM', slug: 'ram', icon: HardDrive },
   { id: '6', name: 'Storage', slug: 'storage', icon: HardDrive },
   { id: '7', name: 'Power Supply', slug: 'power-supply', icon: Zap },
-  { id: '8', name: 'Case', slug: 'case', icon: Package }
+  { id: '8', name: 'Case', slug: 'case', icon: Package },
 ]
 
 export const BUILD_TYPES = [
@@ -31,6 +31,9 @@ export const ACCESSORY_CATEGORIES = [
   { id: '12', name: 'Headset', slug: 'headset', icon: Headset },
   { id: '13', name: 'Mousepad', slug: 'mousepad', icon: Mouse },
   { id: '14', name: 'Chair', slug: 'chair', icon: Headset },
+  { id: '15', name: 'Microphone', slug: 'microphone', icon: Headset },
+  { id: '16', name: 'Camera', slug: 'camera', icon: Camera },
+  { id: '17', name: 'Headphones', slug: 'headphones', icon: Headset },
 ]
 
 type CategoryFilterProps = {

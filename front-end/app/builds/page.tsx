@@ -66,38 +66,22 @@ export default function Builds() {
     refetch();
   };
 
-  const handleSearch = (value: string) => {
-
+  const handleSearchAll = () => {
     const queryParams = {
-      search: value || undefined,
-      page: 1,
-      buildType: buildType || undefined,
       price_min: priceMin,
       price_max: priceMax,
-      show_in_site_only: showInSiteOnly,
-    };
-
-    setSearch(value);
-    setPage(1);
-    refetchWithOptions(queryParams);
-  };
-
-  const handleSearchPrice = (from: number, to: number) => {
-
-
-    const queryParams = {
-      price_min: from,
-      price_max: to,
       page: 1,
       search: search || undefined,
       buildType: buildType || undefined,
       show_in_site_only: showInSiteOnly,
     };
-
-    setPriceMin(from);
-    setPriceMax(to);
     setPage(1);
     refetchWithOptions(queryParams);
+  };
+
+  const handleSearchPrice = (from: number, to: number) => {
+    setPriceMin(from);
+    setPriceMax(to);
   };
 
   const handleBuildTypeChange = (newBuildType: string | null) => {
@@ -224,9 +208,10 @@ export default function Builds() {
             searchKey="name"
             searchPlaceholder="Search builds..."
             searchValue={search}
-            onSearchChange={handleSearch}
+            onSearchChange={(value) => setSearch(value)}
             onSearchPrice={handleSearchPrice}
-            onBuildTypeChange={handleBuildTypeChange}
+            onBuildTypeChange={(value) => setBuildType(value || '')}
+            onButtonClick = {handleSearchAll}
             showFilter={true}
             pagination={{
               total: pagination.total,

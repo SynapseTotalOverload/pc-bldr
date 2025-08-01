@@ -14,10 +14,6 @@ import {
 
 export function PartsList({ parts, loading, error }: { parts: ProductRead[]; loading: boolean; error: string | null }) {
 
-  useEffect(() => {
-    console.log(parts);
-  }, [parts]);
-
   // Function to generate tooltip content based on component attributes
   const generateTooltipContent = (part: ProductRead) => {
     const attrs = part.attrs;

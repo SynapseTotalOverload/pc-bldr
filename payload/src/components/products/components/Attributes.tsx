@@ -305,7 +305,7 @@ export const Attributes = ({ data, template, categoryId }: { data: ProductAttrib
                     {data.screen_size && (template.showScreenSize !== false) && (
                         <div className="bg-gray-50 rounded-lg p-3">
                             <span className="text-sm text-muted-foreground block">Screen Size:</span>
-                            <span className="font-semibold text-gray-900">{data.screen_size}"</span>
+                            <span className="font-semibold text-gray-900">{data.screen_size}</span>
                         </div>
                     )}
                     {data.resolution && (template.showResolution !== false) && (
@@ -410,6 +410,63 @@ export const Attributes = ({ data, template, categoryId }: { data: ProductAttrib
                         <div className="bg-gray-50 rounded-lg p-3">
                             <span className="text-sm text-muted-foreground block">Back Style:</span>
                             <span className="font-semibold text-gray-900">{data.back_style}</span>
+                        </div>
+                    )}
+                    {data.included_components && (template.showIncludedComponents !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Included Components:</span>
+                            <span className="font-semibold text-gray-900">{data.included_components}</span>
+                        </div>
+                    )}
+                    {data.polar_pattern && (template.showPolarPattern !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Polar Pattern:</span>
+                            <span className="font-semibold text-gray-900">{data.polar_pattern}</span>
+                        </div>
+                    )}
+                    {data.supported_audio_format && (template.showSupportedAudioFormat !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Supported Audio Format:</span>
+                            <span className="font-semibold text-gray-900">{data.supported_audio_format}</span>
+                        </div>
+                    )}
+                    {data.ear_placement && (template.showEarPlacement !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Ear Placement:</span>
+                            <span className="font-semibold text-gray-900">{data.ear_placement}</span>
+                        </div>
+                    )}
+
+                    {/* Camera attributes (category 16) */}
+                    {data.photo_sensor_technology && (template.showPhotoSensorTechnology !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Photo Sensor Technology:</span>
+                            <span className="font-semibold text-gray-900">{data.photo_sensor_technology}</span>
+                        </div>
+                    )}
+                    {data.video_capture_resolution && (template.showVideoCaptureResolution !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Video Capture Resolution:</span>
+                            <span className="font-semibold text-gray-900">{data.video_capture_resolution}</span>
+                        </div>
+                    )}
+                    {data.maximum_aperture && (template.showMaximumAperture !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Maximum Aperture:</span>
+                            <span className="font-semibold text-gray-900">{data.maximum_aperture}</span>
+                        </div>
+                    )}
+                    {data.flash_memory_type && (template.showFlashMemoryType !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Flash Memory Type:</span>
+                            <span className="font-semibold text-gray-900">{data.flash_memory_type}</span>
+                        </div>
+                    )}
+
+                    {data.video_capture_format && (template.showVideoCaptureFormat !== false) && (
+                        <div className="bg-gray-50 rounded-lg p-3">
+                            <span className="text-sm text-muted-foreground block">Video Capture Format:</span>
+                            <span className="font-semibold text-gray-900">{data.video_capture_format}</span>
                         </div>
                     )}
                 </div>

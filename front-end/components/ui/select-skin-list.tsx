@@ -5,7 +5,7 @@ import { SkinRead } from '@/lib/skins-api'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Loader2, Search } from 'lucide-react'
+import { Loader2, Search, ChevronDown } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSkins } from '@/hooks/useSkins'
 
@@ -27,9 +27,11 @@ export function SelectSkinList({
     const [search, setSearch] = useState("");
     const [selectedSkinsList, setSelectedSkinsList] = useState<SkinRead[]>(selectedSkins);
     const [isInitialized, setIsInitialized] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [allSkins, setAllSkins] = useState<SkinRead[]>([]);
 
     const { skins, pagination, loading, error, refetch, searchSkins } = useSkins({
-        page: 1,
+        page: currentPage,
         pageSize: 40,
         search: isInitialized ? search : "",
     });
@@ -52,6 +54,8 @@ export function SelectSkinList({
 
     const handleSearch = useCallback(async () => {
         if (isInitialized) {
+            setCurrentPage(1);
+            setAllSkins([]);
             await searchSkins(search);
         }
     }, [search, searchSkins, isInitialized]);
@@ -62,16 +66,23 @@ export function SelectSkinList({
         }
     }, [handleSearch]);
 
+    const handleLoadMore = useCallback(async () => {
+        if (pagination.hasMore && !loading) {
+            const nextPage = currentPage + 1;
+            setCurrentPage(nextPage);
+        }
+    }, [pagination.hasMore, loading, currentPage]);
+
     const handleSkinSelect = useCallback((skinId: string) => {
         if (skinId === 'none') return;
         
-        const skin = skins.find(s => s.id.toString() === skinId);
+        const skin = allSkins.find(s => s.id.toString() === skinId);
         if (skin && !selectedSkinsList.find(s => s.id === skin.id)) {
             const newSelectedSkins = [...selectedSkinsList, skin];
             setSelectedSkinsList(newSelectedSkins);
             onSkinsChange?.(newSelectedSkins);
         }
-    }, [skins, selectedSkinsList, onSkinsChange]);
+    }, [allSkins, selectedSkinsList, onSkinsChange]);
 
     const handleSkinRemove = useCallback((skinId: number) => {
         const newSelectedSkins = selectedSkinsList.filter(s => s.id !== skinId);
@@ -84,9 +95,22 @@ export function SelectSkinList({
         setSelectedSkinsList(selectedSkins);
     }, [selectedSkins]);
 
+    // Update allSkins when new skins are loaded
     useEffect(() => {
-        console.log('selectedSkinsList', selectedSkinsList);
-    }, [selectedSkinsList]);
+        if (skins.length > 0) {
+            if (currentPage === 1) {
+                // Reset skins on first page or new search
+                setAllSkins(skins);
+            } else {
+                // Append new skins to existing list
+                setAllSkins(prev => {
+                    const existingIds = new Set(prev.map(s => s.id));
+                    const newSkins = skins.filter(s => !existingIds.has(s.id));
+                    return [...prev, ...newSkins];
+                });
+            }
+        }
+    }, [skins, currentPage]);
 
     return (
         <div className={`space-y-4`}>
@@ -126,18 +150,18 @@ export function SelectSkinList({
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder={placeholder} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-96">
                         <SelectItem value="none" disabled>Select a skin to add</SelectItem>
                         
-                        {loading && skins.length === 0 ? (
+                        {loading && allSkins.length === 0 ? (
                             <div className="text-muted-foreground p-2 text-center text-sm">Loading...</div>
-                        ) : skins.length === 0 && !loading && isInitialized ? (
+                        ) : allSkins.length === 0 && !loading && isInitialized ? (
                             <div className="text-muted-foreground p-2 text-center text-sm">No skins found</div>
                         ) : !isInitialized ? (
                             <div className="text-muted-foreground p-2 text-center text-sm">Open to load skins</div>
                         ) : (
                             <>
-                                {skins.map((skin) => {
+                                {allSkins.map((skin) => {
                                     const displayInfo = getSkinDisplayInfo(skin);
                                     const isSelected = selectedSkinsList.find(s => s.id === skin.id);
                                     
@@ -160,12 +184,28 @@ export function SelectSkinList({
                                         </SelectItem>
                                     );
                                 })}
-                                {loading && skins.length > 0 && (
+                                
+                                {/* Load More Button */}
+                                {pagination.hasMore && !loading && (
+                                    <div className="p-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={handleLoadMore}
+                                            className="w-full"
+                                        >
+                                            Load More Skins
+                                        </Button>
+                                    </div>
+                                )}
+                                
+                                {loading && allSkins.length > 0 && (
                                     <div className="text-muted-foreground p-2 text-center text-sm">Loading more...</div>
                                 )}
-                                {pagination.total > skins.length && !loading && (
+                                
+                                {pagination.total > allSkins.length && !loading && !pagination.hasMore && (
                                     <div className="text-muted-foreground p-2 text-center text-xs">
-                                        Showing {skins.length} of {pagination.total} skins
+                                        Showing {allSkins.length} of {pagination.total} skins
                                     </div>
                                 )}
                             </>

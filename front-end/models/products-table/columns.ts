@@ -22,6 +22,9 @@ import {
   ProductRead as ProductReadAccessories,
   Monitor,
   Keyboard,
+  Microphone,
+  Camera,
+  Headphones,
 } from '@/types/product-accessories-type';
 
 function isCPU(attrs: ProductAttrs | null | undefined, categoryId?: number): attrs is CPU {
@@ -78,6 +81,18 @@ function isMousepad(attrs: ProductAttrsAccessories | null | undefined, categoryI
 
 function isChair(attrs: ProductAttrsAccessories | null | undefined, categoryId?: number): attrs is Chair {
   return categoryId === 14;
+}
+
+function isMicrophone(attrs: ProductAttrsAccessories | null | undefined, categoryId?: number): attrs is Microphone {
+  return categoryId === 15;
+}
+
+function isCamera(attrs: ProductAttrsAccessories | null | undefined, categoryId?: number): attrs is Camera {
+  return categoryId === 16;
+}
+
+function isHeadphones(attrs: ProductAttrsAccessories | null | undefined, categoryId?: number): attrs is Headphones {
+  return categoryId === 17;
 }
 
 export const categoryColumnExtensions: {
@@ -955,5 +970,203 @@ export const categoryColumnExtensionsAccessories: {
         return isChair(attrs, categoryId) && attrs ? attrs.back_style : '—';
       },
     }
-  ]
+  ],
+  MICROPHONE: [
+    {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMicrophone(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Color',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMicrophone(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
+    },
+    {
+      header: 'Connectivity Technology',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMicrophone(attrs, categoryId) && attrs ? attrs.connectivity_technology : '—';
+      },
+    },
+    {
+      header: 'Connector Type',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMicrophone(attrs, categoryId) && attrs ? attrs.connector_type : '—';
+      },
+    },
+    {
+      header: 'Special Feature',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMicrophone(attrs, categoryId) && attrs ? attrs.special_feature : '—';
+      },
+    },
+    {
+      header: 'Compatible Devices',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMicrophone(attrs, categoryId) && attrs ? attrs.compatible_devices : '—';
+      },
+    },
+    {
+      header: 'Included Components',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMicrophone(attrs, categoryId) && attrs ? attrs.included_components : '—';
+      },
+    },
+    {
+      header: 'Polar Pattern',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isMicrophone(attrs, categoryId) && attrs ? attrs.polar_pattern : '—';
+      },
+    },
+  ],
+  CAMERA: [
+    {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCamera(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Model',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCamera(attrs, categoryId) && attrs ? attrs.model : '—';
+      },
+    },
+    {
+      header: 'Photo Sensor Technology',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCamera(attrs, categoryId) && attrs ? attrs.photo_sensor_technology : '—';
+      },
+    },
+    {
+      header: 'Video Capture Resolution',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCamera(attrs, categoryId) && attrs ? attrs.video_capture_resolution : '—';
+      },
+    },
+    {
+      header: 'Maximum Aperture',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCamera(attrs, categoryId) && attrs ? attrs.maximum_aperture : '—';
+      },
+    },
+    {
+      header: 'Flash Memory Type',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCamera(attrs, categoryId) && attrs ? attrs.flash_memory_type : '—';
+      },
+    },
+    {
+      header: 'Supported Audio Format',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCamera(attrs, categoryId) && attrs ? attrs.supported_audio_format : '—';
+      },
+    },
+    {
+      header: 'Screen Size',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCamera(attrs, categoryId) && attrs ? attrs.screen_size : '—';
+      },
+    },
+    {
+      header: 'Connectivity Technology',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCamera(attrs, categoryId) && attrs ? attrs.connectivity_technology : '—';
+      },
+    },
+    {
+      header: 'Color',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isCamera(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
+    },
+  ],
+  HEADPHONES: [
+    {
+      header: 'Brand',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadphones(attrs, categoryId) && attrs ? attrs.brand : '—';
+      },
+    },
+    {
+      header: 'Model',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadphones(attrs, categoryId) && attrs ? attrs.model : '—';
+      },
+    },
+    {
+      header: 'Color',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadphones(attrs, categoryId) && attrs ? attrs.color : '—';
+      },
+    },
+    {
+      header: 'Impedance',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadphones(attrs, categoryId) && attrs ? attrs.impedance : '—';
+      },
+    },
+    {
+      header: 'Form Factor',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadphones(attrs, categoryId) && attrs ? attrs.form_factor : '—';
+      },
+    },
+    {
+      header: 'Ear Placement',
+      accessorFn: (row) => {
+        const attrs = row.attrs;
+        const categoryId = row.category?.id;
+        return isHeadphones(attrs, categoryId) && attrs ? attrs.ear_placement : '—';
+      },
+    },
+  ],
 }
