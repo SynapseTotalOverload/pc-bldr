@@ -418,12 +418,6 @@ const renderMonitorAttributes = (attrs: any) => (
         <span className="font-medium">{attrs.style}</span>
       </div>
     </div>
-    <div className="space-y-3">
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Style</span>
-        <span className="font-medium">{attrs.style}</span>
-      </div>
-    </div>
   </div>
 );
 
@@ -549,7 +543,7 @@ const renderChairAttributes = (attrs: any) => (
       </div>
       <div className="flex justify-between">
         <span className="text-muted-foreground">Product Description</span>
-        <span className="font-medium">{attrs.product_description}</span>
+        <span className="font-medium">{attrs.product_dimensions}</span>
       </div>
       <div className="flex justify-between">
         <span className="text-muted-foreground">Back Style</span>
@@ -563,6 +557,136 @@ const renderChairAttributes = (attrs: any) => (
   </div>
 );
 
+const renderMicrophoneAttributes = (attrs: any) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Color</span>
+        <span className="font-medium">{attrs.color}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Connectivity Technology</span>
+        <span className="font-medium">{attrs.connectivity_technology}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Connector Type</span>
+        <span className="font-medium">{attrs.connector_type}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Special Feature</span>
+        <span className="font-medium">{attrs.special_feature}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Compatible Devices</span>
+        <span className="font-medium">{attrs.compatible_devices}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Included Components</span>
+        <span className="font-medium">{attrs.included_components}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Polar Pattern</span>
+        <span className="font-medium">{attrs.polar_pattern}</span>
+      </div>
+    </div>
+    
+    
+  </div>
+);
+
+const renderCameraAttributes = (attrs: any) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Photo Sensor Technology</span>
+        <span className="font-medium">{attrs.photo_sensor_technology}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Video Capture Resolution</span>
+        <span className="font-medium">{attrs.video_capture_resolution}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Maximum Aperture</span>
+        <span className="font-medium">{attrs.maximum_aperture}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Flash Memory Type</span>
+        <span className="font-medium">{attrs.flash_memory_type}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Supported Audio Format</span>
+        <span className="font-medium">{attrs.supported_audio_format}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Screen Size</span>
+        <span className="font-medium">{attrs.screen_size}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Connectivity Technology</span>
+        <span className="font-medium">{attrs.connectivity_technology}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Color</span>
+        <span className="font-medium">{attrs.color}</span>
+      </div>
+    </div>
+  </div>
+);
+
+const renderHeadphonesAttributes = (attrs: any) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Color</span>
+        <span className="font-medium">{attrs.color}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Impedance</span>
+        <span className="font-medium">{attrs.impedance}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Form Factor</span>
+        <span className="font-medium">{attrs.form_factor}</span>
+      </div>
+    </div>
+    <div className="space-y-3">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">Ear Placement</span>
+        <span className="font-medium">{attrs.ear_placement}</span>
+      </div>
+    </div>
+  </div>
+)
 
 const renderAttributes = (attrs: any, name: string) => { 
   if (!attrs || !name) {
@@ -606,6 +730,12 @@ const renderAttributes = (attrs: any, name: string) => {
       return renderMousepadAttributes(attrs);
     case 'Chair':
       return renderChairAttributes(attrs);
+    case 'Microphone':
+      return renderMicrophoneAttributes(attrs);
+    case 'Camera':
+      return renderCameraAttributes(attrs);
+    case 'Headphones':
+      return renderHeadphonesAttributes(attrs);
     default:
       return (
         <div className="text-muted-foreground">
