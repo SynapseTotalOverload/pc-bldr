@@ -420,9 +420,89 @@ class CRUDProduct:
 
     def remove(self, db: Session, *, id_: int):
         obj = db.get(Product, id_)
-        if obj:
-            db.delete(obj)
-            db.commit()
+        if not obj:
+            raise HTTPException(status_code=404, detail="Продукт не знайдено")
+        
+        # Check if product is referenced in gearlist
+        from app.models.gear_list import GearList
+        gearlist_refs = db.query(GearList).filter(
+            or_(
+                GearList.monitor_id == id_,
+                GearList.mouse_id == id_,
+                GearList.keyboard_id == id_,
+                GearList.headset_id == id_,
+                GearList.mousepad_id == id_,
+                GearList.earphones_id == id_
+            )
+        ).first()
+        
+        if gearlist_refs:
+            raise HTTPException(
+                status_code=400, 
+                detail="This product is referenced in gearlist. It cannot be deleted while it is referenced."
+            )
+        
+        # Check if product is referenced in pc_specs_list
+        from app.models.pc_specs_list import PCSpecsList
+        pc_specs_refs = db.query(PCSpecsList).filter(
+            or_(
+                PCSpecsList.cpu_id == id_,
+                PCSpecsList.cpu_cooler_id == id_,
+                PCSpecsList.gpu_id == id_,
+                PCSpecsList.motherboard_id == id_,
+                PCSpecsList.ram_id == id_,
+                PCSpecsList.storage_id == id_,
+                PCSpecsList.power_supply_id == id_,
+                PCSpecsList.case_id == id_
+            )
+        ).first()
+        
+        if pc_specs_refs:
+            raise HTTPException(
+                status_code=400, 
+                detail="This product is referenced in pc_specs_list. It cannot be deleted while it is referenced."
+            )
+        
+        # Check if product is referenced in build
+        from app.models.build import Build
+        build_refs = db.query(Build).filter(
+            or_(
+                Build.cpu_id == id_,
+                Build.cpu_cooler_id == id_,
+                Build.gpu_id == id_,
+                Build.motherboard_id == id_,
+                Build.ram_id == id_,
+                Build.storage_id == id_,
+                Build.psu_id == id_,
+                Build.case_id == id_
+            )
+        ).first()
+        
+        if build_refs:
+            raise HTTPException(
+                status_code=400, 
+                detail="This product is referenced in build. It cannot be deleted while it is referenced."
+            )
+        
+        # Check if product is referenced in setup_streaming_list
+        from app.models.setup_streaming_list import SetupStreamingList
+        streaming_refs = db.query(SetupStreamingList).filter(
+            or_(
+                SetupStreamingList.chair_id == id_,
+                SetupStreamingList.microphone_id == id_,
+                SetupStreamingList.webcam_id == id_
+            )
+        ).first()
+        
+        if streaming_refs:
+            raise HTTPException(
+                status_code=400, 
+                detail="This product is referenced in setup_streaming_list. It cannot be deleted while it is referenced."
+            )
+        
+        # If no references found, proceed with deletion
+        db.delete(obj)
+        db.commit()
 
     def get_random_per_category(self, db: Session) -> list[Product]:
             subq = (

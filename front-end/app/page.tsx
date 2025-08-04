@@ -25,6 +25,7 @@ import { useBoolean } from '@/hooks/use-boolean';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ThemeToggle } from '@/components/theme-provider';
+import { ErrorModal } from '@/components/ui/error-modal';
 
 interface FormData {
   category: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories;
@@ -52,6 +53,8 @@ export default function Home() {
     page,
     search: activeSearch, // Use activeSearch here
   });
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const isAdmin = localStorage.getItem('isAdmin')
@@ -153,15 +156,12 @@ export default function Home() {
 
   const handleDelete = async (id: number) => {
     try {
-      await instance.delete(`/products/${id}`);
+      const res =await instance.delete(`/products/${id}`);
       await refetch();
     } catch (error) {
-      console.error('Error deleting product:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete product",
-        variant: "destructive",
-      });
+      const errorMessage = "This product is referenced in player list. It cannot be deleted while it is referenced";
+        setErrorMessage(errorMessage);
+        setIsErrorModalOpen(true);
     }
   };
 
@@ -312,6 +312,12 @@ export default function Home() {
         onOpenChange={(value)=>{changeState('addNewProduct', value); setSelectedProduct(null)}}
         productId={selectedProduct?.id}
       />  
+      <ErrorModal
+        isOpen={isErrorModalOpen}
+        onClose={() => setIsErrorModalOpen(false)}
+        title="Cannot Delete Product"
+        message={errorMessage}
+      />
     </main>
   );
 }

@@ -181,7 +181,32 @@ def update_product(product_id: int, item: ProductUpdate, db: Session = Depends(g
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(product_id: int, db: Session = Depends(get_db)):
-    product_crud.remove(db, id_=product_id)
+    """
+    Delete a product by ID.
+    """
+    try:
+        product_crud.remove(db, id_=product_id)
+    except HTTPException as e:
+        # Re-raise HTTP exceptions with Ukrainian messages
+        if e.status_code == 404:
+            raise HTTPException(
+                status_code=404, 
+                detail="Product not found"
+            )
+        elif e.status_code == 400:
+            # This is the case when product has references
+            raise HTTPException(
+                status_code=400, 
+                detail=e.detail
+            )
+        else:
+            raise e
+    except Exception as e:
+        # Handle any other unexpected errors
+        raise HTTPException(
+            status_code=500, 
+            detail="Error deleting product. Please try again."
+        )
 
 @router.post("/update-display-names", summary="Update display_name for all existing products")
 def update_display_names(db: Session = Depends(get_db)):

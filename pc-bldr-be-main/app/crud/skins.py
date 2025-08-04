@@ -26,6 +26,11 @@ class CRUDSkin:
                 detail=f"Category with id {create_data['category_id']} does not exist"
             )
         
+        # Set timestamps
+        current_time = datetime.now(timezone.utc)
+        create_data["created_at"] = current_time
+        create_data["updated_at"] = current_time
+        
         # Create skin object
         db_obj = Skin(**create_data)
         db.add(db_obj)
@@ -50,31 +55,22 @@ class CRUDSkin:
         return db.scalar(stmt)
 
     def get_multi(
-        self, 
-        db: Session, 
-        *, 
-        skip: int = 0, 
-        limit: int = 100,
-        category_id: Optional[int] = None,
-        weapon: Optional[str] = None,
-        query: Optional[str] = None,
-        return_category: bool = False,
-    ) -> tuple[List[Skin], int]:
+    self, 
+    db: Session, 
+    *, 
+    skip: int = 0, 
+    limit: int = 100,
+    category_id: Optional[int] = None,
+    weapon: Optional[str] = None,
+    query: Optional[str] = None,
+    return_category: bool = False,
+) -> tuple[List[Skin], int]:
         """Get multiple skins with pagination and filtering"""
-        # Get total count
-        count_stmt = (
-            select(func.count())
-            .select_from(Skin)
-        )
+        # Build base query
+        stmt = select(Skin)
+        count_stmt = select(func.count()).select_from(Skin)
         
-        # Get skins with pagination
-        stmt = (
-            select(Skin)
-            .offset(skip)
-            .limit(limit)
-        )
-        
-        # Apply filters
+        # Apply filters FIRST
         if category_id:
             stmt = stmt.where(Skin.category_id == category_id)
             count_stmt = count_stmt.where(Skin.category_id == category_id)
@@ -97,10 +93,16 @@ class CRUDSkin:
                 (Skin.weapon.ilike(f"%{query}%"))
             )
         
+        # Apply ORDER BY BEFORE pagination - add secondary sort by id for stability
+        stmt = stmt.order_by(Skin.updated_at.desc(), Skin.id.desc())
+        
+        # Apply pagination AFTER ordering
+        stmt = stmt.offset(skip).limit(limit)
+        
         # Always load category since SkinRead schema includes it
         stmt = stmt.options(joinedload(Skin.category))
         
-        skins = db.scalars(stmt.order_by(Skin.updated_at.desc())).all()
+        skins = db.scalars(stmt).all()
         total = db.scalar(count_stmt)
         
         return skins, total

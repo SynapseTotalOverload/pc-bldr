@@ -21,6 +21,7 @@ import { CategoryButtons } from "@/components/ui/category-buttons";
 import { DataTable } from '@/components/data-table';
 import { HoverEffect } from "@/components/ui/motion-card";
 import { AddNewProduct } from "@/models/dialogs/add-new-product";
+import { ErrorModal } from "@/components/ui/error-modal";
 
 
 
@@ -45,6 +46,8 @@ export default function Accessories() {
     const { toast } = useToast();
     const {isState, changeState, toggleState}= useBoolean();
     const [selectedProduct, setSelectedProduct] = useState<ProductRead | null>(null);
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const { products, pagination, error, refetch } = useProducts<ProductRead>({
       category: selectedCategory,
       page,
@@ -140,15 +143,17 @@ export default function Accessories() {
 
     const handleDelete = async (id: number) => {
       try {
-        await instance.delete(`/products/${id}`);
+        const res = await instance.delete(`/products/${id}`);
+        console.log("res", res)
         await refetch();
-      } catch (error) {
-        console.error('Error deleting product:', error);
         toast({
-          title: "Error",
-          description: "Failed to delete product",
-          variant: "destructive",
+          title: "Success",
+          description: "Product deleted successfully",
         });
+      } catch (error: any) {
+        const errorMessage = "This product is referenced in player list. It cannot be deleted while it is referenced";
+        setErrorMessage(errorMessage);
+        setIsErrorModalOpen(true);
       }
     };
 
@@ -305,6 +310,13 @@ export default function Accessories() {
             onOpenChange={(value)=>{changeState('addNewProduct', value); setSelectedProduct(null)}}
             productId={selectedProduct?.id}
             isAccessoriesPage={true}
+          />
+
+          <ErrorModal
+            isOpen={isErrorModalOpen}
+            onClose={() => setIsErrorModalOpen(false)}
+            title="Cannot Delete Product"
+            message={errorMessage}
           />
 
           {error && <div className="mt-4 text-red-500">Error: {error}</div>}
