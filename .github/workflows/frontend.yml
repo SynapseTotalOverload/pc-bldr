@@ -73,4 +73,5 @@ jobs:
               --restart=always \
               -p 3000:3000 \
               $FULL_IMAGE_NAME
+             docker image prune -af
           "
