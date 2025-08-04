@@ -1,6 +1,6 @@
 import { PlayerWithRelations, PlayersResponse } from '../blocks/ApiPlayerList/types'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/v1/'
+const API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:8000/v1/'
 
 export const playersService = {
   getPlayers: async (params?: {

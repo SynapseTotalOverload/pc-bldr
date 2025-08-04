@@ -35,8 +35,8 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   } catch (error) {
     console.error('Error fetching product data:', error)
     return {
-      title: 'Product Not Found',
-      description: 'The requested product could not be found.'
+      title: 'Player Not Found',
+      description: 'The requested player could not be found.'
     }
   }
 }
@@ -54,8 +54,7 @@ const ProductPageComponent = async ({ params: paramsPromise }: Args) => {
     
     return <PlayerDisplay blocks={playerConfig.blocks} player={playerData}/>
   } catch (error) {
-    console.error('Error loading product page:', error)
-    return <div>Product not found</div>
+    return <div>Player not found</div>
   }
 }
 
