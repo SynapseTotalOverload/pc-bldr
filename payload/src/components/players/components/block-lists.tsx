@@ -3,6 +3,7 @@
 import { CardBox } from "./card-box"
 import Link from 'next/link'
 import { useEffect } from "react"
+import { CardBoxSkin } from "./card-box-skin"
 
 interface BlockListsProps {
   title: string;
@@ -43,6 +44,7 @@ export const BlockLists = ({ title, info }: BlockListsProps) => {
     }
     
     if (title === 'Skins' && Array.isArray(info)) {
+      console.log("info", info)
       info.forEach(skin => {
         if (skin) items.push({ ...skin, category: 'Skin', type: 'skins' })
       })
@@ -64,33 +66,15 @@ export const BlockLists = ({ title, info }: BlockListsProps) => {
               key={`${item.type}-${item.id}-${index}`}
               className="block hover:scale-105 transition-transform duration-200"
             >
-              <CardBox
-                item={{
-                  id: item.id,
-                  title: item.display_name || item.name,
-                  category: { id: item.id, name: item.category },
-                  low_image_url: item.high_image_url || item.low_image_url || item.image_file,
-                  price: 0,
-                  rating: 0,
-                  asin: '',
-                  attrs: { brand: '', model: '' },
-                  architechture: '',
-                  base_speed: 0,
-                  brand: '',
-                  core_family: '',
-                  cores: 0,
-                  generation: '',
-                  integrated_graphics: '',
-                  memory_speed: 0,
-                  memory_type: '',
-                  model: '',
-                  series: '',
-                  socket_type: '',
-                  threads: 0,
-                  turbo_speed: 0,
-                  created_at: new Date().toISOString()
-                }}
-              />
+              {item.type === 'skins' ? (
+                <CardBoxSkin
+                  item={item}
+                />
+              ) : (
+                <CardBox
+                  item={item}
+                />
+              )}
             </Link>
           ))}
         </div>

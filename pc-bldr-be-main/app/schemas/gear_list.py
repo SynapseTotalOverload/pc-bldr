@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional, TYPE_CHECKING
 from pydantic import BaseModel, Field, field_validator
 from .product import ProductRead
@@ -31,20 +31,25 @@ class GearListCreate(BaseModel):
         from_attributes = True
 
 
+class PropertyStatUpdate(BaseModel):
+    data_change: Optional[bool] = None
+    id_change: Optional[bool] = None
+    id: Optional[int] = None
+    old_id: Optional[int] = None
+    usage_start_datetime: Optional[date] = None
+
+
 class GearListUpdate(BaseModel):
-    monitor_id: Optional[int] = None
-    mouse_id: Optional[int] = None
-    keyboard_id: Optional[int] = None
-    headset_id: Optional[int] = None
-    mousepad_id: Optional[int] = None
-    earphones_id: Optional[int] = None
+    id: Optional[int] = None
+
+    monitor: Optional[PropertyStatUpdate] = None
+    mouse: Optional[PropertyStatUpdate] = None
+    keyboard: Optional[PropertyStatUpdate] = None
+    headset: Optional[PropertyStatUpdate] = None
+    mousepad: Optional[PropertyStatUpdate] = None
+    earphones: Optional[PropertyStatUpdate] = None
     
-    @field_validator('monitor_id', 'mouse_id', 'keyboard_id', 'headset_id', 'mousepad_id', 'earphones_id')
-    @classmethod
-    def validate_product_ids(cls, v):
-        if v == 0:
-            return None
-        return v
+
     
     class Config:
         from_attributes = True

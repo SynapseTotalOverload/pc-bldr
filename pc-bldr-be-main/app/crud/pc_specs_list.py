@@ -152,6 +152,47 @@ class CRUDPCSpecsList:
         
         # Return updated PC specs list with products
         return self.get(db, db_obj.id)
+    
+    def update_by_model(self, db: Session, *, db_obj: PCSpecsList, obj_in: PCSpecsListUpdate) -> PCSpecsList:
+        """Update PC specs list by model"""
+        if obj_in.case:
+            if obj_in.case.id_change:
+                db_obj.case_id = obj_in.case.id
+        
+        if obj_in.cpu:
+            if obj_in.cpu.id_change:
+                db_obj.cpu_id = obj_in.cpu.id
+        
+        if obj_in.cpu_cooler:
+            if obj_in.cpu_cooler.id_change:
+                db_obj.cpu_cooler_id = obj_in.cpu_cooler.id
+
+        if obj_in.gpu:
+            if obj_in.gpu.id_change:
+                db_obj.gpu_id = obj_in.gpu.id
+
+        if obj_in.motherboard:
+            if obj_in.motherboard.id_change:
+                db_obj.motherboard_id = obj_in.motherboard.id
+
+        if obj_in.ram:
+            if obj_in.ram.id_change:
+                db_obj.ram_id = obj_in.ram.id
+
+        if obj_in.storage:
+            if obj_in.storage.id_change:
+                db_obj.storage_id = obj_in.storage.id
+
+        if obj_in.power_supply:
+            if obj_in.power_supply.id_change:
+                db_obj.power_supply_id = obj_in.power_supply.id
+
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+        
 
     def remove(self, db: Session, *, id_: int) -> PCSpecsList:
         """Delete PC specs list"""

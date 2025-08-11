@@ -7,6 +7,7 @@ from app.api.v1.players import router as players_router
 from app.api.v1.gear_lists import router as gear_lists_router
 from app.api.v1.pc_specs_lists import router as pc_specs_lists_router
 from app.api.v1.setup_streaming_lists import router as setup_streaming_lists_router
+from app.api.v1.product_usage_graphs import router as product_usage_graphs_router
 
 router = APIRouter(prefix="/v1")
 
@@ -17,3 +18,4 @@ router.include_router(players_router)
 router.include_router(gear_lists_router)
 router.include_router(pc_specs_lists_router)
 router.include_router(setup_streaming_lists_router)
+router.include_router(product_usage_graphs_router)

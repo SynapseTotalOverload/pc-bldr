@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional, TYPE_CHECKING
 from pydantic import BaseModel, Field, field_validator
 from .product import ProductRead
@@ -27,17 +27,18 @@ class SetupStreamingListCreate(BaseModel):
         from_attributes = True
 
 
+class PropertyStatUpdate(BaseModel):
+    data_change: Optional[bool] = None
+    id_change: Optional[bool] = None
+    id: Optional[int] = None
+    old_id: Optional[int] = None
+    usage_start_datetime: Optional[date] = None
+
 class SetupStreamingListUpdate(BaseModel):
-    chair_id: Optional[int] = None
-    microphone_id: Optional[int] = None
-    webcam_id: Optional[int] = None
-    
-    @field_validator('chair_id', 'microphone_id', 'webcam_id')
-    @classmethod
-    def validate_product_ids(cls, v):
-        if v == 0:
-            return None
-        return v
+    id: Optional[int] = None
+    camera: Optional[PropertyStatUpdate] = None
+    chair: Optional[PropertyStatUpdate] = None
+    microphone: Optional[PropertyStatUpdate] = None
     
     class Config:
         from_attributes = True

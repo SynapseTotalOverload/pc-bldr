@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ProductAttributes, Product } from '@/services/types'
+import { ProductAttributes, Product, ProductUsageGraphResponse } from '@/services/types'
 import { Attributes } from './components/Attributes'
 import ImgProduct from './components/ImgProdut'
 import { Button } from '@payloadcms/ui'
 import Link from 'next/link'
+import Graph from './components/Graph'
+import { useGraphById } from '@/hooks/useGraphById'
 
 interface ProductDisplayProps {
   data: Product
@@ -15,6 +17,8 @@ interface ProductDisplayProps {
 
 export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
   const [error, setError] = useState<string | null>(null)
+  const [startDate, setStartDate] = useState<string>('2024-01-01')
+  const [endDate, setEndDate] = useState<string>(new Date().toISOString().split('T')[0])
   
   const safeTemplate = typeof template === 'function' ? undefined : template
 
@@ -63,7 +67,9 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-muted-foreground">Category</p>
-                  <p className="font-medium capitalize">{data.category.name}</p>
+                  <p className="font-medium capitalize">
+                    {typeof data.category === 'string' ? data.category : (data.category as any)?.name || 'N/A'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Price</p>
@@ -111,7 +117,9 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
                       {block.showCategory && data.category && (
                         <div>
                           <p className="text-sm text-muted-foreground">Category</p>
-                          <p className="font-medium capitalize">{data.category.name}</p>
+                          <p className="font-medium capitalize">
+                            {typeof data.category === 'string' ? data.category : (data.category as any)?.name || 'N/A'}
+                          </p>
                         </div>
                       )}
                       {block.showPrice && (
@@ -196,7 +204,21 @@ export const ProductDisplay = ({ data, template }: ProductDisplayProps) => {
                     <Attributes 
                       data={data.attrs as ProductAttributes} 
                       template={safeTemplate.blocks[1]}
-                      categoryId={data.category?.id}
+                      categoryId={typeof data.category === 'object' ? (data.category as any)?.id : undefined}
+                    />
+                  </CardContent>
+                </Card>
+              )
+            case 'productGraph':
+              if (!block.showGraph) return null
+              return (
+                <Card key={index} className="mb-6">
+                  <CardHeader>
+                    <CardTitle>{block.heading || 'Product Graph'}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Graph 
+                      productId={data.id}
                     />
                   </CardContent>
                 </Card>

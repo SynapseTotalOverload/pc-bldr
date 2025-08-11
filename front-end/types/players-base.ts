@@ -6,6 +6,15 @@ export interface PlayerBase {
   name?: string;
   birthday?: string;
   info?: string;
+  note?: string;
+  user_urls?: {
+    youtube?: string;
+    twitter?: string;
+    twitch?: string;
+    tiktok?: string;
+    instagram?: string;
+    discord?: string;
+  };
 }
 
 export interface PlayerCreate extends PlayerBase {
@@ -63,6 +72,13 @@ export interface PlayerWithRelations extends PlayerRead {
   pc_specs_list?: any;
   setup_streaming_list?: any;
   skins: any[];
+  product_usage_logs: ProductUsageLog[];
+}
+
+export interface ProductUsageLog {
+  product_id: number;
+  usage_start_datetime: string;
+  usage_end_datetime: string;
 }
 
 export interface PlayerSkinsBatch {

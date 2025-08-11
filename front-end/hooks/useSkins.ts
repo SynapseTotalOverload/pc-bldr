@@ -89,6 +89,13 @@ export function useSkins({
     fetchSkins(currentSearch);
   }, [category_id, weapon, page, pageSize, include_category, fetchSkins, currentSearch]);
 
+  // Auto-search when search parameter changes
+  useEffect(() => {
+    if (search !== currentSearch) {
+      searchSkins(search);
+    }
+  }, [search, currentSearch, searchSkins]);
+
   return {
     skins,
     pagination,

@@ -254,6 +254,7 @@ export interface Page {
         blockName?: string | null;
         blockType: 'feature253';
       }
+    | DiagramBrandBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1227,6 +1228,44 @@ export interface Feature251Block {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DiagramBrandBlock".
+ */
+export interface DiagramBrandBlock {
+  title?: string | null;
+  description?: string | null;
+  defaultCategory?:
+    | (
+        | 'cpu'
+        | 'cpu_cooler'
+        | 'gpu'
+        | 'motherboard'
+        | 'ram'
+        | 'storage'
+        | 'power_supply'
+        | 'case'
+        | 'mouse'
+        | 'monitor'
+        | 'keyboard'
+        | 'headset'
+        | 'mousepad'
+        | 'chair'
+        | 'microphone'
+        | 'camera'
+        | 'headphones'
+      )
+    | null;
+  showDateRange?: boolean | null;
+  showBrandSelector?: boolean | null;
+  styling?: {
+    backgroundColor?: ('default' | 'primary' | 'secondary' | 'accent' | 'muted') | null;
+    chartHeight?: ('250' | '300' | '400' | '500') | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'diagramBrand';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1573,6 +1612,7 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        diagramBrand?: T | DiagramBrandBlockSelect<T>;
       };
   meta?:
     | T
@@ -1910,6 +1950,25 @@ export interface Feature251BlockSelect<T extends boolean = true> {
         description?: T;
       };
   id?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DiagramBrandBlock_select".
+ */
+export interface DiagramBrandBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  defaultCategory?: T;
+  showDateRange?: T;
+  showBrandSelector?: T;
+  styling?:
+    | T
+    | {
+        backgroundColor?: T;
+        chartHeight?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2460,7 +2519,7 @@ export interface BuildComponents {
  */
 export interface Product {
   id: string;
-  blocks?: (ProductInfo | ProductReviews | ProductAttributes)[] | null;
+  blocks?: (ProductInfo | ProductReviews | ProductAttributes | ProductGraph)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2692,6 +2751,20 @@ export interface ProductAttributes {
   blockType: 'productAttributes';
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductGraph".
+ */
+export interface ProductGraph {
+  heading?: string | null;
+  /**
+   * Show product graph
+   */
+  showGraph?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'productGraph';
+}
+/**
  * Global settings for player pages
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2846,6 +2919,7 @@ export interface ProductSelect<T extends boolean = true> {
         productInfo?: T | ProductInfoSelect<T>;
         productReviews?: T | ProductReviewsSelect<T>;
         productAttributes?: T | ProductAttributesSelect<T>;
+        productGraph?: T | ProductGraphSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -2925,6 +2999,16 @@ export interface ProductAttributesSelect<T extends boolean = true> {
   showPower?: T;
   showCabinetType?: T;
   showSidePanel?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductGraph_select".
+ */
+export interface ProductGraphSelect<T extends boolean = true> {
+  heading?: T;
+  showGraph?: T;
   id?: T;
   blockName?: T;
 }

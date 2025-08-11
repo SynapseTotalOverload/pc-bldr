@@ -4,7 +4,7 @@ import { cn } from '@/utilities/ui'
 import React, { useEffect, useState } from 'react'
 import { productsService } from '@/services/products'
 import { ApiCardListBlockProps, ApiResponse } from './types'
-import { CategoryFilter } from './components/CategoryFilter'
+import { CategoryFilter } from '@/blocks/ApiCardList/components/CategoryFilter'
 import { SearchInput } from '@/components/ui/SearchInput'
 import { ProductCard } from './components/ProductCard'
 import { PriceFilter } from './components/PriceFilter'
@@ -144,18 +144,17 @@ export const ApiCardListBlock: React.FC<Props> = ({
 
   const handleCategoryChange = (category: string | null) => {
     setActiveCategory(category)
-    // setPage(1)
+    setPage(1)
+
   }
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
-    // setPage(1)
   }
 
   const onPriceChange = (min: number, max: number) => {
     setPriceMin(min)
     setPriceMax(max)
-    // setPage(1)
   }
 
   const handlePageChange = (newPage: number) => {

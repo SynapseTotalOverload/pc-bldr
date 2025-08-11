@@ -22,23 +22,23 @@ from app.models.attributes import (
 
 # Category mapping from JSON category to database category
 CATEGORY_MAPPING = {
-    "monitor": "Monitor",
-    "cpu": "CPU", 
-    "gpu": "GPU",
-    "motherboard": "Motherboard",
-    "ram": "RAM",
-    "storage": "Storage",
-    "power_supply": "Power Supply",
-    "case": "Case",
-    "cpu_cooler": "CPU Cooler",
-    "mouse": "Mouse",
-    "keyboard": "Keyboard",
-    "headset": "Headset",
-    "mousepad": "Mousepad",
-    "chair": "Chair",
-    "microphone": "Microphone",
-    "camera": "Camera",
-    "headphones": "Headphones"
+    "gaming_monitor": "Monitor",
+    "gaming_cpu": "CPU", 
+    "gaming_gpu": "GPU",
+    "gaming_motherboard": "Motherboard",
+    "gaming_ram": "RAM",
+    "gaming_storage": "Storage",
+    "gaming_power_supply": "Power Supply",
+    "gaming_case": "Case",
+    "gaming_cpu_cooler": "CPU Cooler",
+    "gaming_mouse": "Mouse",
+    "gaming_keyboard": "Keyboard",
+    "gaming_headset": "Headset",
+    "gaming_mousepad": "Mousepad",
+    "gaming_chair": "Chair",
+    "gaming_microphone": "Microphone",
+    "gaming_camera": "Camera",
+    "gaming_headphones": "Headphones"
 }
 
 def safe_int(value: Any) -> Optional[int]:
@@ -339,23 +339,23 @@ def create_headphones_attributes(product_id: int, overview: Dict[str, Any]) -> H
 
 # Mapping of category to attribute creation function
 ATTRIBUTE_CREATORS = {
-    "monitor": create_monitor_attributes,
-    "cpu": create_cpu_attributes,
-    "gpu": create_gpu_attributes,
-    "motherboard": create_motherboard_attributes,
-    "ram": create_ram_attributes,
-    "storage": create_storage_attributes,
-    "power_supply": create_power_supply_attributes,
-    "case": create_case_attributes,
-    "cpu_cooler": create_cpu_cooler_attributes,
-    "mouse": create_mouse_attributes,
-    "keyboard": create_keyboard_attributes,
-    "headset": create_headset_attributes,
-    "mousepad": create_mousepad_attributes,
-    "chair": create_chair_attributes,
-    "microphone": create_microphone_attributes,
-    "camera": create_camera_attributes,
-    "headphones": create_headphones_attributes
+    "gaming_monitor": create_monitor_attributes,
+    "gaming_cpu": create_cpu_attributes,
+    "gaming_gpu": create_gpu_attributes,
+    "gaming_motherboard": create_motherboard_attributes,
+    "gaming_ram": create_ram_attributes,
+    "gaming_storage": create_storage_attributes,
+    "gaming_power_supply": create_power_supply_attributes,
+    "gaming_case": create_case_attributes,
+    "gaming_cpu_cooler": create_cpu_cooler_attributes,
+    "gaming_mouse": create_mouse_attributes,
+    "gaming_keyboard": create_keyboard_attributes,
+    "gaming_headset": create_headset_attributes,
+    "gaming_mousepad": create_mousepad_attributes,
+    "gaming_chair": create_chair_attributes,
+    "gaming_microphone": create_microphone_attributes,
+    "gaming_camera": create_camera_attributes,
+    "gaming_headphones": create_headphones_attributes
 }
 
 def get_or_create_category(db: Session, category_name: str) -> Category:
@@ -465,7 +465,7 @@ def load_products_from_json(json_file_path: str):
 
 if __name__ == "__main__":
     # Path to your JSON file
-    json_file_path = "./detailed_product_data.json"
+    json_file_path = "/Users/ulia/keepa_fastapi/main/pc-bldr/pc-bldr-be-main/data_migrations/detailed_product_data2.json"
     
     if not os.path.exists(json_file_path):
         print(f"File not found: {json_file_path}")

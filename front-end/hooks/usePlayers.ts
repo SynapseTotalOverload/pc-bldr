@@ -34,7 +34,12 @@ export const usePlayers = () => {
     setLoading(true);
     setError(null);
     try {
-      const response: PlayersResponse = await getPlayers(params);
+      // Ensure default limit is applied if not provided
+      const requestParams = {
+        limit: 10, // Default limit
+        ...params
+      };
+      const response: PlayersResponse = await getPlayers(requestParams);
       setPlayers(response.items);
       setPagination({
         total: response.total,
@@ -118,6 +123,18 @@ export const usePlayers = () => {
     }
   };
 
+  const clearSearch = () => {
+    fetchPlayers({ limit: pagination.limit });
+  };
+
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('isAdmin')
+    if (!isAdmin) {
+    } else {
+      fetchPlayers({ limit: 10 }) 
+    }
+  }, []);
+
   return {
     players,
     loading,
@@ -128,6 +145,7 @@ export const usePlayers = () => {
     addPlayer,
     editPlayer,
     removePlayer,
-    loadMore
+    loadMore,
+    clearSearch
   };
 }; 

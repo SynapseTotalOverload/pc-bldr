@@ -31,6 +31,13 @@ import { useToast } from "@/hooks/use-toast"
 import { PlayerCreate, PlayerUpdate } from "@/types/players-base"
 import { Search } from "lucide-react"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
@@ -47,6 +54,17 @@ interface PlayersTableProps {
   onAddPlayer: (data: PlayerCreate) => Promise<void>
   onEditPlayer: (id: number, data: PlayerUpdate) => Promise<void>
   onDeletePlayer: (id: number) => Promise<void>
+  // Add pagination props
+  pagination: {
+    total: number
+    skip: number
+    limit: number
+    has_more: boolean
+  }
+  onPageChange: (skip: number) => void
+  onLimitChange: (limit: number) => void
+  onSearch: (query: string) => void
+  loading?: boolean
 }
 
 export function PlayersTable({
@@ -54,7 +72,12 @@ export function PlayersTable({
   columns,
   onAddPlayer,
   onEditPlayer,
-  onDeletePlayer
+  onDeletePlayer,
+  pagination,
+  onPageChange,
+  onLimitChange,
+  onSearch,
+  loading = false
 }: PlayersTableProps) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -118,7 +141,8 @@ export function PlayersTable({
       return col
     }),
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    // Remove local pagination since we're using server-side
+    // getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
@@ -166,7 +190,7 @@ export function PlayersTable({
   }
 
   const handleSearch = () => {
-    setGlobalFilter(searchValue)
+    onSearch(searchValue)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -195,61 +219,64 @@ export function PlayersTable({
         </Button>
       </div>
       <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+        {loading ? (
+          <div className="flex items-center justify-center h-32">
+            <div className="text-lg">Loading players...</div>
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    )
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        )}
       </div>
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           Showing {" "}
-          {Math.min(
-            (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-            table.getFilteredRowModel().rows.length
-          )} of{" "}
-          {table.getFilteredRowModel().rows.length} results
+          {pagination.skip + 1} to{" "}
+          {pagination.total} results
         </div>
         <div className="flex items-center space-x-6 lg:space-x-8">
   
-  {table.getPageCount() > 1 && (
+  {pagination.total > pagination.limit && (
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -257,14 +284,19 @@ export function PlayersTable({
                   href="#"
                   onClick={(e) => {
                     e.preventDefault()
-                    table.previousPage()
+                    if (pagination.skip > 0) {
+                      onPageChange(Math.max(0, pagination.skip - pagination.limit))
+                    }
                   }}
-                  className={!table.getCanPreviousPage() ? "pointer-events-none opacity-50" : ""}
+                  className={pagination.skip === 0 ? "pointer-events-none opacity-50" : ""}
                 />
               </PaginationItem>
-              {Array.from({ length: table.getPageCount() }, (_, i) => i).map((pageIndex) => {
-                const currentPage = table.getState().pagination.pageIndex
-                const totalPages = table.getPageCount()
+              {Array.from(
+                { length: Math.ceil(pagination.total / pagination.limit) }, 
+                (_, i) => i
+              ).map((pageIndex) => {
+                const currentPage = Math.floor(pagination.skip / pagination.limit)
+                const totalPages = Math.ceil(pagination.total / pagination.limit)
                 
                 if (
                   pageIndex === 0 ||
@@ -277,7 +309,7 @@ export function PlayersTable({
                         href="#"
                         onClick={(e) => {
                           e.preventDefault()
-                          table.setPageIndex(pageIndex)
+                          onPageChange(pageIndex * pagination.limit)
                         }}
                         isActive={pageIndex === currentPage}
                       >
@@ -302,9 +334,11 @@ export function PlayersTable({
                   href="#"
                   onClick={(e) => {
                     e.preventDefault()
-                    table.nextPage()
+                    if (pagination.has_more) {
+                      onPageChange(pagination.skip + pagination.limit)
+                    }
                   }}
-                  className={!table.getCanNextPage() ? "pointer-events-none opacity-50" : ""}
+                  className={!pagination.has_more ? "pointer-events-none opacity-50" : ""}
                 />
               </PaginationItem>
             </PaginationContent>

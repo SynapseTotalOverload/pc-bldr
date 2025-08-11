@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional, TYPE_CHECKING
 from pydantic import BaseModel, Field, field_validator
 from .product import ProductRead
@@ -33,23 +33,27 @@ class PCSpecsListCreate(BaseModel):
         from_attributes = True
 
 
+class PropertyStatUpdate(BaseModel):
+    data_change: Optional[bool] = None
+    id_change: Optional[bool] = None
+    id: Optional[int] = None
+    old_id: Optional[int] = None
+    usage_start_datetime: Optional[date] = None
+
+
 class PCSpecsListUpdate(BaseModel):
-    cpu_id: Optional[int] = None
-    cpu_cooler_id: Optional[int] = None
-    gpu_id: Optional[int] = None
-    motherboard_id: Optional[int] = None
-    ram_id: Optional[int] = None
-    storage_id: Optional[int] = None
-    power_supply_id: Optional[int] = None
-    case_id: Optional[int] = None
+    id: Optional[int] = None
+    case: Optional[PropertyStatUpdate] = None
+    cpu: Optional[PropertyStatUpdate] = None
+    cpu_cooler: Optional[PropertyStatUpdate] = None
+    gpu: Optional[PropertyStatUpdate] = None
+    motherboard: Optional[PropertyStatUpdate] = None
+    ram: Optional[PropertyStatUpdate] = None
+    storage: Optional[PropertyStatUpdate] = None
+    power_supply: Optional[PropertyStatUpdate] = None
+
     
-    @field_validator('cpu_id', 'cpu_cooler_id', 'gpu_id', 'motherboard_id', 'ram_id', 'storage_id', 'power_supply_id', 'case_id')
-    @classmethod
-    def validate_product_ids(cls, v):
-        if v == 0:
-            return None
-        return v
-    
+
     class Config:
         from_attributes = True
 

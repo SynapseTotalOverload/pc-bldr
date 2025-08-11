@@ -17,6 +17,7 @@ import { useSkins } from "@/hooks/useSkins";
 import { SKIN_CATEGORIES } from "@/types/skins-base";
 import { AddNewSkins } from "@/models/dialogs/add-new-skins";
 import { SkinRead, deleteSkin } from "@/lib/skins-api";
+import WarningModal from "@/models/dialogs/warning-modal";
 
 export default function Skins() {
     const [selectedCategory, setSelectedCategory] = useState<number>(SKIN_CATEGORIES.RIFLES);
@@ -24,9 +25,10 @@ export default function Skins() {
     const {isState, changeState, toggleState}= useBoolean();
     const [search, setSearch] = useState('');
     const [skinToEdit, setSkinToEdit] = useState<SkinRead | null>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [skinToDelete, setSkinToDelete] = useState<number | null>(null);
     const router = useRouter()
 
-    // Map category IDs to string names for CategoryButtons
     const categoryIdToString = (id: number): string => {
         const map: Record<number, string> = {
             [SKIN_CATEGORIES.KNIVES]: 'knives',
@@ -60,15 +62,31 @@ export default function Skins() {
 
     const { toast } = useToast();
 
+    // Handle search change - automatically update search
+    const handleSearchChange = (value: string) => {
+        setSearch(value);
+        setPage(1); // Reset to first page when searching
+        searchSkins(value); // Call searchSkins function from useSkins hook
+    };
+
     const handleDeleteSkin = async (skinId: number) => {
+        setSkinToDelete(skinId);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDeleteSkin = async () => {
+        if (!skinToDelete) return;
+        
         try {
-          await deleteSkin(skinId);
+          await deleteSkin(skinToDelete);
           toast({
             title: 'Success',
             description: 'Skin deleted successfully!',
           });
           refetch();
           setSearch('');
+          setIsDeleteModalOpen(false);
+          setSkinToDelete(null);
         } catch (error) {
           console.error('Error deleting skin:', error);
           toast({
@@ -76,6 +94,8 @@ export default function Skins() {
             description: error instanceof Error ? error.message : 'Failed to delete skin',
             variant: 'destructive',
           });
+          setIsDeleteModalOpen(false);
+          setSkinToDelete(null);
         }
     };
 
@@ -166,11 +186,7 @@ export default function Skins() {
                   searchPlaceholder="Search skins..."
                   searchValue={search}
                   loading={loading}
-                  onSearchChange={(value) => {
-                    setSearch(value);
-                    setPage(1);
-                    searchSkins(value);
-                  }}
+                  onSearchChange={handleSearchChange}
                   pagination={{
                     currentPage: page,
                     totalPages: pagination.totalPages,
@@ -200,6 +216,19 @@ export default function Skins() {
           setSearch('');
         }}
         skinToEdit={skinToEdit}
+      />
+
+      <WarningModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setSkinToDelete(null);
+        }}
+        onConfirm={confirmDeleteSkin}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this skin? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
       />
     </main>
     </div>

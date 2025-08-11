@@ -37,6 +37,14 @@ export const PlayerInfo = ({ player }: { player: PlayerWithRelations }) => {
             {player.info}
           </p>
         </div>
+        {player.note && (
+          <div className="notes mt-4">
+            <h3 className="font-medium text-gray-600 mb-2">Notes:</h3>
+            <p className="text-gray-900">
+              {player.note}
+            </p>
+          </div>
+        )}
       </div>
       {/* <div className="flex-2">
         <ul className="flex flex-col gap-2">

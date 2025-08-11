@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ProductRead } from "@/types/prodcuts-base";
+import { ProductUsageLog } from "@/types/players-base";
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -13,7 +14,7 @@ import { getProducts } from "@/lib/products-api";
 interface SelectListProductNewProps {
   label: string
   value: string
-  onValueChange: (value: string) => void
+  onValueChange: (value: string, date?: string) => void
   category: string
   placeholder?: string
   searchPlaceholder?: string
@@ -21,6 +22,9 @@ interface SelectListProductNewProps {
   className?: string
   periphery_flag?: boolean
   selectedProduct: ProductRead | null
+  selectedDate?: string
+  createdDate?: string
+  usageProductLogs?: ProductUsageLog[]
 }
 
 export function SelectListProductNew({
@@ -33,7 +37,10 @@ export function SelectListProductNew({
   required = false,
   className = "",
   periphery_flag = false,
-  selectedProduct
+  selectedProduct,
+  selectedDate,
+  createdDate,
+  usageProductLogs = [] as ProductUsageLog[]
 }: SelectListProductNewProps) {
     const [searchValue, setSearchValue] = useState("");
     const [loading, setLoading] = useState(false);
@@ -46,17 +53,46 @@ export function SelectListProductNew({
         totalPages: 1
     });
     const [activeProduct, setActiveProduct] = useState<ProductRead | null>(selectedProduct);
+    const [usage_start_datetime, setUsageStartDatetime] = useState<string>(selectedDate || "");
+    const [isDateManuallyChanged, setIsDateManuallyChanged] = useState(false);
 
-    // Function to get product display info
+    const formatDateForInput = (dateString: string) => {
+        if (!dateString) return "";
+        try {
+            const date = new Date(dateString);
+            return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
+        } catch (error) {
+            console.error('Error formatting date for input:', error);
+            return "";
+        }
+    };
+
+    useEffect(() => {
+        if (!selectedDate && createdDate) {
+            const formattedDate = formatDateForInput(createdDate);
+            setUsageStartDatetime(formattedDate);
+            onValueChange(value, formattedDate);
+        }
+    }, [createdDate, selectedDate, value, onValueChange]);
+
+    useEffect(() => {
+        if (value !== 'none' && usageProductLogs && usageProductLogs.length > 0 && !isDateManuallyChanged) {
+            const matchingLog = usageProductLogs.find(log => log.product_id.toString() === value);
+            if (matchingLog) {
+                const formattedDate = formatDateForInput(matchingLog.usage_start_datetime);
+                setUsageStartDatetime(formattedDate);
+                onValueChange(value, formattedDate);
+            }
+        }
+    }, [value, usageProductLogs, onValueChange, isDateManuallyChanged]);
+
     const getProductDisplayInfo = (product: ProductRead | any) => {
-        // Handle SimpleProduct from backend (has name instead of title)
         if (product && 'name' in product && !('title' in product)) {
             return {
                 title: product.display_name || product.name,
             };
         }
         
-        // Handle regular ProductRead
         const baseInfo = {
             title: product.display_name || product.title,
         };
@@ -64,13 +100,11 @@ export function SelectListProductNew({
         return baseInfo;
     };
 
-    // Function to fetch products
     const fetchProducts = async (page: number = 1, search: string = "") => {
         if (!category) return;
 
         setLoading(true);
         try {
-            // Map category to backend category ID
             const categoryMap: { [key: string]: number } = {
                 'cpu': 1,
                 'cpu_cooler': 2,
@@ -160,6 +194,8 @@ export function SelectListProductNew({
     const handleValueChange = (newValue: string) => {
         if (newValue === 'none') {
             setActiveProduct(null);
+            setUsageStartDatetime("");
+            setIsDateManuallyChanged(false);
         } else {
             const foundProduct = allProducts.find(p => p.id.toString() === newValue);
             if (foundProduct) {
@@ -167,9 +203,19 @@ export function SelectListProductNew({
             } else if (selectedProduct && selectedProduct.id.toString() === newValue) {
                 setActiveProduct(selectedProduct);
             }
+
+            if (usageProductLogs && usageProductLogs.length > 0 && !isDateManuallyChanged) {
+                const matchingLog = usageProductLogs.find(log => log.product_id.toString() === newValue);
+                if (matchingLog) {
+                    const formattedDate = formatDateForInput(matchingLog.usage_start_datetime);
+                    setUsageStartDatetime(formattedDate);
+                    onValueChange(newValue, formattedDate);
+                    return;
+                }
+            }
         }
         
-        onValueChange(newValue);
+        onValueChange(newValue, usage_start_datetime);
     };
 
     useEffect(() => {
@@ -316,6 +362,26 @@ export function SelectListProductNew({
                         )}
                     </SelectContent>
                 </Select>
+                {activeProduct !== null && (
+                <div className="space-y-1">
+                    <Label htmlFor="usage_start_datetime" className="text-sm">
+                        Usage Start Date
+                    </Label>
+                    <Input
+                        id="usage_start_datetime"
+                        type="date"
+                        value={usage_start_datetime}
+                        onChange={(e) => {
+                            const newDate = e.target.value;
+                            setUsageStartDatetime(newDate);
+                            setIsDateManuallyChanged(true);
+                            onValueChange(value, newDate);
+                        }}
+                        className="w-full"
+                        required={true}
+                    />
+                </div>
+                )}
             </div>
         </div>
     )

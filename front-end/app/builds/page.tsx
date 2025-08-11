@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { createBuildColumns } from '@/models/builds-table';
-import { useBuilds } from '@/hooks/useBuilds';
-import { BuildDialog, DeleteBuildDialog } from '@/models/dialogs';
+import { useBuilds, useBuild } from '@/hooks/useBuilds';
+import { BuildDialog } from '@/models/dialogs';
 import BuildViewer from '@/models/dialogs/build-viewer';
 import { BuildRead } from '@/types/prodcuts-base';
 import { Plus } from 'lucide-react';
@@ -14,6 +14,8 @@ import { useRouter } from 'next/navigation';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { ThemeToggle } from '@/components/theme-provider';
+import WarningModal from '@/models/dialogs/warning-modal';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Builds() {
   const router = useRouter();
@@ -26,6 +28,8 @@ export default function Builds() {
   const [selectedBuild, setSelectedBuild] = useState<BuildRead | null>(null);
   const [editingBuild, setEditingBuild] = useState<BuildRead | null>(null);
   const [viewingBuild, setViewingBuild] = useState<BuildRead | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [buildToDelete, setBuildToDelete] = useState<BuildRead | null>(null);
   const [priceMin, setPriceMin] = useState<number>(0);
   const [priceMax, setPriceMax] = useState<number>(1000000);
   const [showInSiteOnly, setShowInSiteOnly] = useState<boolean>(false);
@@ -41,6 +45,10 @@ export default function Builds() {
     show_in_site_only: showInSiteOnly,
   });
 
+  const { deleteBuild } = useBuild();
+
+  const { toast } = useToast();
+
 
   const handleEdit = (build: BuildRead) => {
     setEditingBuild(build);
@@ -48,8 +56,32 @@ export default function Builds() {
   };
 
   const handleDelete = (build: BuildRead) => {
-    setSelectedBuild(build);
-    setDeleteDialogOpen(true);
+    setBuildToDelete(build);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteBuild = async () => {
+    if (!buildToDelete) return;
+
+    try {
+      await deleteBuild(buildToDelete.id);
+      toast({
+        title: 'Success',
+        description: 'Build deleted successfully',
+      });
+      await refetch();
+      setIsDeleteModalOpen(false);
+      setBuildToDelete(null);
+    } catch (error) {
+      console.error('Error deleting build:', error);
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to delete build',
+        variant: 'destructive',
+      });
+      setIsDeleteModalOpen(false);
+      setBuildToDelete(null);
+    }
   };
 
   const handleView = (build: BuildRead) => {
@@ -237,11 +269,17 @@ export default function Builds() {
       />
 
       {/* Delete Confirmation Dialog */}
-      <DeleteBuildDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        build={selectedBuild}
-        onSuccess={handleSuccess}
+      <WarningModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setBuildToDelete(null);
+        }}
+        onConfirm={confirmDeleteBuild}
+        title="Confirm Deletion"
+        message={`Are you sure you want to delete the build "${buildToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
       />
 
       {/* Build Viewer Dialog */}

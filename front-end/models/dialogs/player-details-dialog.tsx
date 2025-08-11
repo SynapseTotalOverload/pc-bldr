@@ -184,6 +184,7 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
 
   const renderSkins = () => {
     if (!player.skins || player.skins.length === 0) return null
+    console.log('player.skins', player.skins);
 
     return (
       <Card>
@@ -198,15 +199,24 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {player.skins.map((skin) => (
               <div key={skin.id} className="flex items-center gap-2 p-2 border rounded">
-                {skin.image_file && (
+                {skin.skin.image_file && (
                   <img 
-                    src={skin.image_file} 
-                    alt={skin.skin_name}
+                    src={skin.skin.image_file} 
+                    alt={skin.skin.skin_name}
                     className="w-8 h-8 rounded object-cover"
                   />
                 )}
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm truncate">{skin.skin_name}</div>
+                  <div className="font-medium text-sm truncate">
+                    {skin.is_stat_track && 'StatTrak™ '}
+                    {skin.souvenir && 'Souvenir '}
+                    {skin.skin.skin_name}
+                  </div>
+                </div>
+                <div className="text-sm text-muted-foreground space-y-1">
+                  {skin.pattern && skin.pattern > 0 && (
+                    <div>Pattern {skin.pattern}</div>
+                  )}
                 </div>
               </div>
             ))}
@@ -273,6 +283,15 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
                 <span className="font-medium">Birthday:</span>
                 <span>{player.birthday}</span>
               </div>
+
+              <div className="flex flex-col gap-2">
+                <span><b>YouTube:</b> <a href={player.user_urls?.youtube} target="_blank" rel="noopener noreferrer">{player.user_urls?.youtube}</a></span>
+                <span><b>Twitter:</b> <a href={player.user_urls?.twitter} target="_blank" rel="noopener noreferrer">{player.user_urls?.twitter}</a></span>
+                <span><b>Twitch:</b> <a href={player.user_urls?.twitch} target="_blank" rel="noopener noreferrer">{player.user_urls?.twitch}</a></span>
+                <span><b>TikTok:</b> <a href={player.user_urls?.tiktok} target="_blank" rel="noopener noreferrer">{player.user_urls?.tiktok}</a></span>
+                <span><b>Instagram:</b> <a href={player.user_urls?.instagram} target="_blank" rel="noopener noreferrer">{player.user_urls?.instagram}</a></span>
+                <span><b>Discord:</b> <a href={player.user_urls?.discord} target="_blank" rel="noopener noreferrer">{player.user_urls?.discord}</a></span>
+              </div>
             </CardContent>
           </Card>
 
@@ -284,6 +303,18 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">{player.info}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Notes */}
+          {player.note && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Notes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">{player.note}</p>
               </CardContent>
             </Card>
           )}

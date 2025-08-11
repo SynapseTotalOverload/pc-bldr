@@ -447,6 +447,26 @@ export const Product: GlobalConfig = {
             }
           ]
         },
+        {
+          slug: 'productGraph',
+          imageAltText: 'Product Graph Block',
+          interfaceName: 'ProductGraph',
+          fields: [
+            {
+              name: 'heading',
+              type: 'text',
+              defaultValue: 'Product Graph'
+            },
+            {
+              name: 'showGraph',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description: 'Show product graph'
+              }
+            }
+          ]
+        },
       ]
     }
   ],

@@ -26,6 +26,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ThemeToggle } from '@/components/theme-provider';
 import { ErrorModal } from '@/components/ui/error-modal';
+import WarningModal from '@/models/dialogs/warning-modal';
 
 interface FormData {
   category: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories;
@@ -41,8 +42,8 @@ interface FormData {
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapNames>('cpu');
   const [page, setPage] = useState(1);
-  const [searchInput, setSearchInput] = useState(''); // Local search input state
-  const [activeSearch, setActiveSearch] = useState(''); // Active search that triggers API calls  
+  const [searchInput, setSearchInput] = useState(''); 
+  const [activeSearch, setActiveSearch] = useState(''); 
   const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
   const { toast } = useToast();
   const {isState, changeState, toggleState}= useBoolean();
@@ -51,10 +52,12 @@ export default function Home() {
   const { products, pagination, error, refetch } = useProducts<ProductRead>({
     category: selectedCategory,
     page,
-    search: activeSearch, // Use activeSearch here
+    search: activeSearch,
   });
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<number | null>(null);
 
   useEffect(() => {
     const isAdmin = localStorage.getItem('isAdmin')
@@ -63,12 +66,16 @@ export default function Home() {
     }
   }, [router]);
 
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value);
+    setActiveSearch(value);
+    setPage(1);
+  };
+
   const handleAddProduct = async (data: FormData) => {
     try {
-      // Transform data to match backend ProductCreate schema
       const getCategoryId = (category: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories): number => {
         const categoryMap: Record<keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories, number> = {
-          // PC Components
           cpu: 1,
           cpu_cooler: 2,
           gpu: 3,
@@ -77,7 +84,6 @@ export default function Home() {
           storage: 6,
           power_supply: 7,
           case: 8,
-          // Accessories
           mouse: 9,
           monitor: 10,
           keyboard: 11,
@@ -91,11 +97,9 @@ export default function Home() {
         return categoryMap[category];
       };
 
-      // Extract base fields (defined in ProductBase schema)
       const baseFields = ['asin', 'title', 'price', 'rating'];
       const categoryId = getCategoryId(data.category);
       
-      // Validate category_id
       if (!categoryId || categoryId < 1 || categoryId > 17) {
         throw new Error(`Invalid category: ${data.category}`);
       }
@@ -104,7 +108,6 @@ export default function Home() {
         category_id: categoryId,
       };
 
-      // Add base fields
       baseFields.forEach(field => {
         if (data[field]) {
           if (field === 'price' || field === 'rating') {
@@ -115,7 +118,6 @@ export default function Home() {
         }
       });
 
-      // Extract attributes (all fields except base fields and category)
       const attrs: any = {};
       Object.keys(data).forEach(key => {
         if (!baseFields.includes(key) && key !== 'category') {
@@ -124,20 +126,17 @@ export default function Home() {
         }
       });
 
-      // Only add attrs if there are any attributes
       if (Object.keys(attrs).length > 0) {
         transformedData.attrs = attrs;
       }
 
       console.log('Transformed data:', transformedData);
 
-      // Send data to API
       if(selectedProduct){
         await instance.put(`/products/${selectedProduct.id}`, transformedData);
       }else{
         await instance.post('/products', transformedData);
       }
-      // Refetch products to show the new one
       await refetch();
     } catch (error) {
       console.error('Error adding product:', error);
@@ -148,20 +147,25 @@ export default function Home() {
       });
     }
   };
-    const handleSearchAll = () => {
-      console.log('handleSearchAll')
-      setActiveSearch(searchInput);
-      setPage(1);
-    }
+    const handleDelete = async (id: number) => {
+    setProductToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
 
-  const handleDelete = async (id: number) => {
+  const confirmDelete = async () => {
+    if (!productToDelete) return;
+    
     try {
-      const res =await instance.delete(`/products/${id}`);
+      await instance.delete(`/products/${productToDelete}`);
       await refetch();
+      setIsDeleteModalOpen(false);
+      setProductToDelete(null);
     } catch (error) {
       const errorMessage = "This product is referenced in player list. It cannot be deleted while it is referenced";
-        setErrorMessage(errorMessage);
-        setIsErrorModalOpen(true);
+      setErrorMessage(errorMessage);
+      setIsErrorModalOpen(true);
+      setIsDeleteModalOpen(false);
+      setProductToDelete(null);
     }
   };
 
@@ -286,9 +290,8 @@ export default function Home() {
                   data={products}
                   searchKey="title"
                   searchPlaceholder="Search products..."
-                  searchValue={searchInput} // Use searchInput for display
-                  onSearchChange={(value) => setSearchInput(value)} // Update searchInput only
-                  onButtonClick={handleSearchAll}
+                  searchValue={searchInput} 
+                  onSearchChange={handleSearchChange} 
                   pagination={pagination} 
                   renderActions={() => (
                    <Button onClick={()=>toggleState('addNewProduct')}> <Plus className="h-4 w-4" /> Add new product</Button>
@@ -317,6 +320,18 @@ export default function Home() {
         onClose={() => setIsErrorModalOpen(false)}
         title="Cannot Delete Product"
         message={errorMessage}
+      />
+      <WarningModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setProductToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this product? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
       />
     </main>
   );

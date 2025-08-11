@@ -20,6 +20,7 @@ import { Feature251Component } from '@/blocks/Feature251/Component'
 import { Testimonial19Component } from '@/blocks/Testimonial19/Component'
 import { Feature253Component } from '@/blocks/Feature253/Component'
 import { ApiPlayerListComponent } from './ApiPlayerList'
+import { DiagramBrandBlock } from './DiagramBrand/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -39,6 +40,7 @@ const blockComponents = {
   feature251: Feature251Component,
   testimonial19: Testimonial19Component,
   feature253: Feature253Component,
+  diagramBrand: DiagramBrandBlock,
 }
 
 export const RenderBlocks: React.FC<{

@@ -22,6 +22,7 @@ import { DataTable } from '@/components/data-table';
 import { HoverEffect } from "@/components/ui/motion-card";
 import { AddNewProduct } from "@/models/dialogs/add-new-product";
 import { ErrorModal } from "@/components/ui/error-modal";
+import WarningModal from "@/models/dialogs/warning-modal";
 
 
 
@@ -40,14 +41,16 @@ export default function Accessories() {
     const router = useRouter()
     const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapNamesAccessories>('mouse');
     const [page, setPage] = useState(1);
-    const [searchInput, setSearchInput] = useState(''); // Local search input state
-    const [activeSearch, setActiveSearch] = useState(''); // Active search that triggers API calls
+    const [searchInput, setSearchInput] = useState(''); 
+    const [activeSearch, setActiveSearch] = useState(''); 
     const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
     const { toast } = useToast();
     const {isState, changeState, toggleState}= useBoolean();
     const [selectedProduct, setSelectedProduct] = useState<ProductRead | null>(null);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [productToDelete, setProductToDelete] = useState<number | null>(null);
     const { products, pagination, error, refetch } = useProducts<ProductRead>({
       category: selectedCategory,
       page,
@@ -55,12 +58,16 @@ export default function Accessories() {
       periphery_flag: true,
     });
 
+    const handleSearchChange = (value: string) => {
+      setSearchInput(value);
+      setActiveSearch(value);
+      setPage(1); 
+    };
+
     const handleAddProduct = async (data: FormData) => {
       try {
-        // Transform data to match backend ProductCreate schema
         const getCategoryId = (category: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories): number => {
           const categoryMap: Record<keyof ProductTypeMapNamesAccessories, number> = {
-            // Accessories
             mouse: 9,
             monitor: 10,
             keyboard: 11,
@@ -74,11 +81,9 @@ export default function Accessories() {
           return categoryMap[category as keyof ProductTypeMapNamesAccessories];
         };
   
-        // Extract base fields (defined in ProductBase schema)
         const baseFields = ['asin', 'title', 'price', 'rating'];
         const categoryId = getCategoryId(data.category);
         
-        // Validate category_id
         if (!categoryId || categoryId < 9 || categoryId > 17) {
           throw new Error(`Invalid category: ${data.category}`);
         }
@@ -87,7 +92,6 @@ export default function Accessories() {
           category_id: categoryId,
         };
   
-        // Add base fields
         baseFields.forEach(field => {
           if (data[field]) {
             if (field === 'price' || field === 'rating') {
@@ -98,7 +102,6 @@ export default function Accessories() {
           }
         });
   
-        // Extract attributes (all fields except base fields and category)
         const attrs: any = {};
         Object.keys(data).forEach(key => {
           if (!baseFields.includes(key) && key !== 'category') {
@@ -107,23 +110,19 @@ export default function Accessories() {
           }
         });
 
-        // For accessories, ensure model is always present (set to empty string if not provided)
         if (!attrs.model) {
           attrs.model = '';
         }
 
-        // Only add attrs if there are any attributes
         if (Object.keys(attrs).length > 0) {
           transformedData.attrs = attrs;
         }
     
-        // Send data to API
         if(selectedProduct){
           await instance.put(`/products/${selectedProduct.id}`, transformedData);
         }else{
           await instance.post('/products', transformedData);
         }
-        // Refetch products to show the new one
         await refetch();
       } catch (error) {
         console.error('Error adding product:', error);
@@ -135,17 +134,19 @@ export default function Accessories() {
       }
     };
 
-    const handleSearchAll = () => {
-      console.log('handleSearchAll')
-      setActiveSearch(searchInput);
-      setPage(1);
-    }
-
     const handleDelete = async (id: number) => {
+      setProductToDelete(id);
+      setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+      if (!productToDelete) return;
+      
       try {
-        const res = await instance.delete(`/products/${id}`);
-        console.log("res", res)
+        await instance.delete(`/products/${productToDelete}`);
         await refetch();
+        setIsDeleteModalOpen(false);
+        setProductToDelete(null);
         toast({
           title: "Success",
           description: "Product deleted successfully",
@@ -154,6 +155,8 @@ export default function Accessories() {
         const errorMessage = "This product is referenced in player list. It cannot be deleted while it is referenced";
         setErrorMessage(errorMessage);
         setIsErrorModalOpen(true);
+        setIsDeleteModalOpen(false);
+        setProductToDelete(null);
       }
     };
 
@@ -272,8 +275,8 @@ export default function Accessories() {
             onSelectCategory={(category) => {
               setSelectedCategory(category as keyof ProductTypeMapNamesAccessories);
               setPage(1);
-              setSearchInput(''); // Reset search input
-              setActiveSearch(''); // Reset active search
+              setSearchInput(''); 
+              setActiveSearch(''); 
           }}
           />
 
@@ -286,9 +289,8 @@ export default function Accessories() {
                     data={products}
                     searchKey="title"
                     searchPlaceholder="Search products..."
-                    searchValue={searchInput} // Use searchInput for display
-                    onSearchChange={(value) => setSearchInput(value)} // Update searchInput only
-                    onButtonClick={handleSearchAll}
+                    searchValue={searchInput} 
+                    onSearchChange={handleSearchChange} 
                     pagination={pagination} 
                     renderActions={() => (
                     <Button onClick={()=>toggleState('addNewProduct')}> <Plus className="h-4 w-4" /> Add new product</Button>
@@ -317,6 +319,19 @@ export default function Accessories() {
             onClose={() => setIsErrorModalOpen(false)}
             title="Cannot Delete Product"
             message={errorMessage}
+          />
+
+          <WarningModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => {
+              setIsDeleteModalOpen(false);
+              setProductToDelete(null);
+            }}
+            onConfirm={confirmDelete}
+            title="Confirm Deletion"
+            message="Are you sure you want to delete this product? This action cannot be undone."
+            confirmText="Delete"
+            cancelText="Cancel"
           />
 
           {error && <div className="mt-4 text-red-500">Error: {error}</div>}

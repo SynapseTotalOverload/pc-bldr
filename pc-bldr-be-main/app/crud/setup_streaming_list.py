@@ -116,6 +116,28 @@ class CRUDSetupStreamingList:
         
         # Return updated setup streaming list with products
         return self.get(db, db_obj.id)
+    
+    def update_by_model(self, db: Session, *, db_obj: SetupStreamingList, obj_in: SetupStreamingListUpdate) -> SetupStreamingList:
+        """Update setup streaming list by model"""
+
+        if obj_in.chair:
+            if obj_in.chair.id_change:
+                db_obj.chair_id = obj_in.chair.id
+
+        if obj_in.microphone:
+            if obj_in.microphone.id_change:
+                db_obj.microphone_id = obj_in.microphone.id
+
+        if obj_in.camera:
+            if obj_in.camera.id_change:
+                db_obj.webcam_id = obj_in.camera.id
+
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+
 
     def remove(self, db: Session, *, id_: int) -> SetupStreamingList:
         """Delete setup streaming list"""

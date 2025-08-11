@@ -6,6 +6,7 @@ from app.crud.player import player_crud
 from app.crud.gear_list import gear_list_crud
 from app.crud.pc_specs_list import pc_specs_list_crud
 from app.crud.setup_streaming_list import setup_streaming_list_crud
+from app.crud.product_usage_log import product_usage_log_crud
 from app.db.session import get_db
 from app.schemas.player import PlayerCreate, PlayerUpdate, PlayerUpdateWithGear, PlayerRead, PlayerWithRelations, PlayerSkinsBatch, PlayerSkinsResponse
 from app.schemas.gear_list import GearListCreate
@@ -43,7 +44,7 @@ def create_player(
     
     # Create player with the list IDs
     player = player_crud.create(db=db, obj_in=PlayerCreate(**player_data))
-    return PlayerWithRelations.from_player(player)
+    return PlayerWithRelations.from_player(player, product_usage_logs=[])
 
 
 
@@ -64,7 +65,11 @@ def get_player(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Player not found"
         )
-    return PlayerWithRelations.from_player(player)
+    
+    # Get product usage logs for the player
+    product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player_id)
+    
+    return PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs)
 
 
 @router.get("/", response_model=dict)
@@ -91,8 +96,14 @@ def get_players(
 
     
     
+    # Get product usage logs for all players
+    players_with_logs = []
+    for player in players:
+        product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player.id)
+        players_with_logs.append(PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs))
+    
     return {
-        "items": [PlayerWithRelations.from_player(player) for player in players],
+        "items": players_with_logs,
         "total": total,
         "skip": skip,
         "limit": limit,
@@ -110,7 +121,14 @@ def get_players_by_team(
     Get players by team.
     """
     players = player_crud.get_by_team(db=db, team=team)
-    return [PlayerWithRelations.from_player(player) for player in players]
+    
+    # Get product usage logs for all players
+    players_with_logs = []
+    for player in players:
+        product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player.id)
+        players_with_logs.append(PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs))
+    
+    return players_with_logs
 
 
 @router.get("/country/{country}", response_model=List[PlayerWithRelations])
@@ -123,7 +141,14 @@ def get_players_by_country(
     Get players by country.
     """
     players = player_crud.get_by_country(db=db, country=country)
-    return [PlayerWithRelations.from_player(player) for player in players]
+    
+    # Get product usage logs for all players
+    players_with_logs = []
+    for player in players:
+        product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player.id)
+        players_with_logs.append(PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs))
+    
+    return players_with_logs
 
 
 @router.put("/{player_id}", response_model=PlayerWithRelations)
@@ -143,7 +168,11 @@ def update_player(
             detail="Player not found"
         )
     player = player_crud.update(db=db, db_obj=player, obj_in=player_in)
-    return PlayerWithRelations.from_player(player)
+    
+    # Get product usage logs for the updated player
+    product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player.id)
+    
+    return PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs)
 
 
 @router.put("/{player_id}/gear", response_model=PlayerWithRelations)
@@ -163,7 +192,11 @@ def update_player_gear(
             detail="Player not found"
         )
     player = player_crud.update_player_gear(db=db, db_obj=player, obj_in=player_in)
-    return PlayerWithRelations.from_player(player)
+    
+    # Get product usage logs for the updated player
+    product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player.id)
+    
+    return PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs)
 
 
 @router.delete("/{player_id}", response_model=PlayerRead)
@@ -246,11 +279,14 @@ def add_skins_to_player_batch(
     added_count = final_skin_count - initial_skin_count
     skipped_count = len(skins_data.skin_ids) - added_count
     
+    # Get product usage logs for the player
+    product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player.id)
+    
     return PlayerSkinsResponse(
         message=f"Successfully processed {len(skins_data.skin_ids)} skins",
         added_count=added_count,
         skipped_count=skipped_count,
-        player=PlayerWithRelations.from_player(player)
+        player=PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs)
     )
 
 
@@ -281,11 +317,14 @@ def remove_skins_from_player_batch(
     removed_count = initial_skin_count - final_skin_count
     skipped_count = len(skins_data.skin_ids) - removed_count
     
+    # Get product usage logs for the player
+    product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player.id)
+    
     return PlayerSkinsResponse(
         message=f"Successfully processed {len(skins_data.skin_ids)} skins",
         removed_count=removed_count,
         skipped_count=skipped_count,
-        player=PlayerWithRelations.from_player(player)
+        player=PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs)
     )
 
 
@@ -300,7 +339,11 @@ def set_player_skins(
     Set player skins (replace all existing skins with new ones).
     """
     player = player_crud.set_player_skins(db=db, player_id=player_id, skin_ids=skins_data.skin_ids)
-    return PlayerWithRelations.from_player(player)
+    
+    # Get product usage logs for the player
+    product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player.id)
+    
+    return PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs)
 
 
 @router.post("/{player_id}/skins/{skin_id}", response_model=PlayerWithRelations)
@@ -314,7 +357,11 @@ def add_skin_to_player(
     Add skin to player.
     """
     player = player_crud.add_skin(db=db, player_id=player_id, skin_id=skin_id)
-    return PlayerWithRelations.from_player(player)
+    
+    # Get product usage logs for the player
+    product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player.id)
+    
+    return PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs)
 
 
 @router.delete("/{player_id}/skins/{skin_id}", response_model=PlayerWithRelations)
@@ -328,4 +375,8 @@ def remove_skin_from_player(
     Remove skin from player.
     """
     player = player_crud.remove_skin(db=db, player_id=player_id, skin_id=skin_id)
-    return PlayerWithRelations.from_player(player) 
+    
+    # Get product usage logs for the player
+    product_usage_logs = product_usage_log_crud.get_user_usage_logs_simple(db=db, user_id=player.id)
+    
+    return PlayerWithRelations.from_player(player, product_usage_logs=product_usage_logs) 

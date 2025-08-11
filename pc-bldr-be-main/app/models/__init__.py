@@ -28,6 +28,7 @@ from .attributes import (
     HeadphonesAttributes,
     BaseAttrsModel,
 )
+from .product_usage_log import ProductUsageLog
 
 __all__ = [
     "Category", 
@@ -57,4 +58,5 @@ __all__ = [
     "MicrophoneAttributes",
     "CameraAttributes",
     "HeadphonesAttributes",
+    "ProductUsageLog",
 ]

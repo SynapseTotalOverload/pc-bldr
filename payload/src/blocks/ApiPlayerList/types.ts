@@ -7,6 +7,7 @@ export interface PlayerWithRelations {
   name: string;
   birthday: string;
   info: string;
+  note: string;
   created_at: string;
   updated_at: string;
   gear_list?: {

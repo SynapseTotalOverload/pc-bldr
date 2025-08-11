@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload, Session
 from fastapi import HTTPException, status
@@ -10,17 +10,99 @@ from app.models.pc_specs_list import PCSpecsList
 from app.models.setup_streaming_list import SetupStreamingList
 from app.models.skin import Skin
 from app.models.product import Product
-from app.schemas.player import PlayerCreate, PlayerUpdate, PlayerUpdateWithGear
+from app.models.player_skins import PlayerSkin
+from app.models.product_usage_log import ProductUsageLog
+from app.schemas.product_usage_log import ProductUsageLogCreate, ProductUsageLogUpdate
+from app.schemas.player import PlayerCreate, PlayerUpdate, PlayerUpdateWithGear, SkinUpdate
+from app.schemas.gear_list import GearListCreate
+from app.schemas.pc_specs_list import PCSpecsListCreate
+from app.schemas.setup_streaming_list import SetupStreamingListCreate
 from app.crud.gear_list import gear_list_crud
 from app.crud.pc_specs_list import pc_specs_list_crud
 from app.crud.setup_streaming_list import setup_streaming_list_crud
-
+from app.crud.product_usage_log import product_usage_log_crud
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 class CRUDPlayer:
+    def _handle_product_id_change(self, db: Session, product_obj, user_id: int, date_now: date):
+        """Handle product ID change - create new log and update old log end datetime"""
+        if (product_obj.id_change and 
+            product_obj.usage_start_datetime is not None and 
+            product_obj.id is not None):
+            
+            # Create new usage log for new product
+            product_usage_log_crud.create_log(db=db, obj_in=ProductUsageLogCreate(
+                product_id=product_obj.id,
+                usage_start_datetime=product_obj.usage_start_datetime,
+                user_id=user_id,
+            ))
+
+            # Update end datetime for old product
+            product_usage_log_crud.update_data_end_usage_log(db=db, obj_in=ProductUsageLogUpdate(
+                user_id=user_id,
+                product_id=product_obj.old_id,
+                usage_end_datetime=date_now,
+            ))
+
+    def _handle_product_data_change(self, db: Session, product_obj, user_id: int):
+        """Handle product data change - update start datetime"""
+        if product_obj.data_change:
+            product_usage_log_crud.update_data_start_usage_log(db=db, obj_in=ProductUsageLogUpdate(
+                user_id=user_id,
+                product_id=product_obj.id,
+                usage_start_datetime=product_obj.usage_start_datetime,
+            ))
+
+    def _process_gear_list_changes(self, db: Session, gear_list_obj, user_id: int, date_now: date):
+        """Process all gear list product changes"""
+        products = [
+            gear_list_obj.monitor,
+            gear_list_obj.mouse,
+            gear_list_obj.keyboard,
+            gear_list_obj.headset,
+            gear_list_obj.mousepad,
+            gear_list_obj.earphones
+        ]
+        
+        for product in products:
+            if product:
+                self._handle_product_id_change(db, product, user_id, date_now)
+                self._handle_product_data_change(db, product, user_id)
+
+    def _process_pc_specs_changes(self, db: Session, pc_specs_obj, user_id: int, date_now: date):
+        """Process all PC specs product changes"""
+        products = [
+            pc_specs_obj.case,
+            pc_specs_obj.cpu,
+            pc_specs_obj.cpu_cooler,
+            pc_specs_obj.gpu,
+            pc_specs_obj.motherboard,
+            pc_specs_obj.ram,
+            pc_specs_obj.storage,
+            pc_specs_obj.power_supply
+        ]
+        
+        for product in products:
+            if product:
+                self._handle_product_id_change(db, product, user_id, date_now)
+                self._handle_product_data_change(db, product, user_id)
+
+    def _process_setup_streaming_changes(self, db: Session, setup_streaming_obj, user_id: int, date_now: date):
+        """Process all setup streaming product changes"""
+        products = [
+            setup_streaming_obj.chair,
+            setup_streaming_obj.microphone,
+            setup_streaming_obj.camera
+        ]
+        
+        for product in products:
+            if product:
+                self._handle_product_id_change(db, product, user_id, date_now)
+                self._handle_product_data_change(db, product, user_id)
+
     def create(self, db: Session, *, obj_in: PlayerCreate) -> Player:
         """Create a new player"""
         create_data = obj_in.model_dump(exclude_unset=True)
@@ -71,7 +153,8 @@ class CRUDPlayer:
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.chair).joinedload(Product.category),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.microphone).joinedload(Product.category),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.webcam).joinedload(Product.category),
-                joinedload(Player.skins)
+                joinedload(Player.skins),
+                joinedload(Player.player_skins).joinedload(PlayerSkin.skin).joinedload(Skin.category)
             )
         )
         return db.scalar(stmt)
@@ -453,16 +536,86 @@ class CRUDPlayer:
         db.refresh(player)
         
         return self.get(db, player_id)
+    
+
+    def update_player_skins_list(self, db: Session, *, player_id: int, skins_update: List[SkinUpdate]) -> Player:
+        """Update player skins"""
+        player = db.get(Player, player_id)
+        if not player:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Player with id {player_id} not found"
+            )
+        
+        input_skins_ids = [skin_update["skin_id"] for skin_update in skins_update]
+
+        # Check for duplicates in input
+        if len(input_skins_ids) != len(set(input_skins_ids)):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Duplicate skin IDs in request"
+            )
+        
+        # Get all skins at once
+        skins = db.query(Skin).filter(Skin.id.in_(input_skins_ids)).all()
+        if len(skins) != len(input_skins_ids):
+            found_ids = {skin.id for skin in skins}
+            missing_ids = set(input_skins_ids) - found_ids
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Skins with ids {missing_ids} not found"
+            )
+
+        all_player_skins = db.query(PlayerSkin).filter(PlayerSkin.player_id == player_id).all()
+        all_player_skins_ids = [skin.skin_id for skin in all_player_skins]
+
+        for skin_id in all_player_skins_ids:
+            if skin_id not in input_skins_ids:
+                player_skin = db.query(PlayerSkin).filter(PlayerSkin.player_id == player_id, PlayerSkin.skin_id == skin_id).first()
+                db.delete(player_skin)
+                db.commit()
+
+       
+
+        for skin_update in skins_update:
+            player_skin_in_db = db.query(PlayerSkin).filter(PlayerSkin.player_id == player_id, PlayerSkin.skin_id == skin_update["skin_id"]).first()
+            if player_skin_in_db:
+                player_skin_in_db.is_stat_track = skin_update["is_stat_track"] if skin_update["is_stat_track"] else None
+                player_skin_in_db.wear_level = skin_update["wear_level"] if skin_update["wear_level"] else None
+                player_skin_in_db.pattern = skin_update["pattern"] if skin_update["pattern"] else None
+                player_skin_in_db.souvenir = skin_update["souvenir"] if skin_update["souvenir"] else None
+                db.commit()
+                db.refresh(player_skin_in_db)
+                continue
+            
+            player_skin = PlayerSkin(
+                player_id=player_id,
+                skin_id=skin_update["skin_id"] if skin_update["skin_id"] else None,
+                is_stat_track=skin_update["is_stat_track"] if skin_update["is_stat_track"] else None,
+                wear_level=skin_update["wear_level"] if skin_update["wear_level"] else None,
+                pattern=skin_update["pattern"] if skin_update["pattern"] else None,
+                souvenir=skin_update["souvenir"] if skin_update["souvenir"] else None
+            )
+
+            db.add(player_skin)
+            db.commit()
+            db.refresh(player_skin) 
+        
+        return self.get(db, player_id)
+
+        
+        
 
     def update_player_gear(self, db: Session, *, db_obj: Player, obj_in: PlayerUpdateWithGear) -> Player:
         """Update player and related gear lists"""
+        print("obj_in", obj_in)
         update_data = obj_in.model_dump(exclude_unset=True)
         
         # Extract gear list, pc specs list, setup streaming list, and skins updates
         gear_list_update = update_data.pop("gear_list", None)
         pc_specs_list_update = update_data.pop("pc_specs_list", None)
         setup_streaming_list_update = update_data.pop("setup_streaming_list", None)
-        skin_ids = update_data.pop("skin_ids", None)
+        skins_update = update_data.pop("skins", None)
         
         # Validate foreign keys if provided
         if "gear_list_id" in update_data and update_data["gear_list_id"]:
@@ -493,30 +646,62 @@ class CRUDPlayer:
         for field, value in update_data.items():
             setattr(db_obj, field, value)
         
+
         # Update gear list if provided
-        if gear_list_update and db_obj.gear_list:
+        if obj_in.gear_list:
+            # Check if gear_list exists, if not create it
+            if db_obj.gear_list is None:
+                # Create new gear list
+                gear_list = gear_list_crud.create(db=db, obj_in=GearListCreate())
+                db_obj.gear_list_id = gear_list.id
+                db_obj.gear_list = gear_list
+                db.commit()
+                db.refresh(db_obj)
+            
             # Convert dict back to GearListUpdate model
-            from app.schemas.gear_list import GearListUpdate
-            gear_list_update_model = GearListUpdate(**gear_list_update)
-            gear_list_crud.update(db=db, db_obj=db_obj.gear_list, obj_in=gear_list_update_model)
-        
-        # Update pc specs list if provided
-        if pc_specs_list_update and db_obj.pc_specs_list:
-            # Convert dict back to PCSpecsListUpdate model
-            from app.schemas.pc_specs_list import PCSpecsListUpdate
-            pc_specs_list_update_model = PCSpecsListUpdate(**pc_specs_list_update)
-            pc_specs_list_crud.update(db=db, db_obj=db_obj.pc_specs_list, obj_in=pc_specs_list_update_model)
-        
-        # Update setup streaming list if provided
-        if setup_streaming_list_update and db_obj.setup_streaming_list:
-            # Convert dict back to SetupStreamingListUpdate model
-            from app.schemas.setup_streaming_list import SetupStreamingListUpdate
-            setup_streaming_list_update_model = SetupStreamingListUpdate(**setup_streaming_list_update)
-            setup_streaming_list_crud.update(db=db, db_obj=db_obj.setup_streaming_list, obj_in=setup_streaming_list_update_model)
-        
+            gear_list_crud.update_by_model(db=db, db_obj=db_obj.gear_list, obj_in=obj_in.gear_list)
+            great_list_obj = obj_in.gear_list
+            print("great_list_obj", great_list_obj.model_dump())
+            date_now = date.today()
+
+            self._process_gear_list_changes(db, great_list_obj, db_obj.id, date_now)
+
+
+        if obj_in.pc_specs_list:
+            # Check if pc_specs_list exists, if not create it
+            if db_obj.pc_specs_list is None:
+                # Create new pc specs list
+                pc_specs_list = pc_specs_list_crud.create(db=db, obj_in=PCSpecsListCreate())
+                db_obj.pc_specs_list_id = pc_specs_list.id
+                db_obj.pc_specs_list = pc_specs_list
+                db.commit()
+                db.refresh(db_obj)
+            
+            pc_specs_list_crud.update_by_model(db=db, db_obj=db_obj.pc_specs_list, obj_in=obj_in.pc_specs_list)
+            pc_specs_list_obj = obj_in.pc_specs_list
+
+            self._process_pc_specs_changes(db, pc_specs_list_obj, db_obj.id, date_now)
+
+
+        if obj_in.setup_streaming_list:
+            # Check if setup_streaming_list exists, if not create it
+            if db_obj.setup_streaming_list is None:
+                # Create new setup streaming list
+                setup_streaming_list = setup_streaming_list_crud.create(db=db, obj_in=SetupStreamingListCreate())
+                db_obj.setup_streaming_list_id = setup_streaming_list.id
+                db_obj.setup_streaming_list = setup_streaming_list
+                db.commit()
+                db.refresh(db_obj)
+            
+            setup_streaming_list_crud.update_by_model(db=db, db_obj=db_obj.setup_streaming_list, obj_in=obj_in.setup_streaming_list)
+
+            setup_streaming_list_obj = obj_in.setup_streaming_list
+            self._process_setup_streaming_changes(db, setup_streaming_list_obj, db_obj.id, date_now)
+
+
         # Update skins if provided
-        if skin_ids is not None:
-            self.set_player_skins(db=db, player_id=db_obj.id, skin_ids=skin_ids)
+        if skins_update is not None:
+            self.update_player_skins_list(db=db, player_id=db_obj.id, skins_update=skins_update)
         
         db.add(db_obj)
         db.commit()

@@ -24,6 +24,15 @@ export interface SkinRead {
   category?: SkinCategoryRead;
 }
 
+export interface SkinReadWithAttributes {
+  skin_id: number;
+  is_stat_track?: boolean;
+  wear_level?: string;
+  pattern?: number;
+  souvenir?: boolean;
+  skin?: SkinRead;
+}
+
 export interface SkinCategoryRead {
   id: number;
   name: string;

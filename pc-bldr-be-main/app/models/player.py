@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, DateTime, BigInteger, ForeignKey, Text, Date, func, text
+from sqlalchemy import Column, Integer, String, DateTime, BigInteger, ForeignKey, Text, Date, func, text, JSON
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
@@ -13,6 +13,7 @@ class Player(Base):
     name = Column(String, nullable=True)  # Full name
     birthday = Column(Date, nullable=True)
     info = Column(Text, nullable=True)
+    note = Column(Text, nullable=True)
     
     # Foreign keys to related lists
     gear_list_id = Column(BigInteger, ForeignKey("gearlist.id"), nullable=True)
@@ -26,6 +27,11 @@ class Player(Base):
     
     # Many-to-many relationship with skins
     skins = relationship("Skin", secondary="player_skins", back_populates="players")
+    
+    # Direct relationship with player_skins to access additional attributes
+    player_skins = relationship("PlayerSkin", back_populates="player")
+
+    user_urls = Column(JSON, nullable=True)
 
     created_at = Column(DateTime, server_default=text("timezone('UTC', now())"), nullable=False)
     updated_at = Column(DateTime, server_default=text("timezone('UTC', now())"), server_onupdate=text("timezone('UTC', now())"), nullable=False) 

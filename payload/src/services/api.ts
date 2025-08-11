@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ApiResponse, ApiParams } from './types'
+import { ApiResponse, ApiParams, ProductUsageGraphByIdParams, BrandUsageGraphResponse, ProductUsageBrandGraphParams, BrandsResponse } from './types'
 
 const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:8000'
 
@@ -8,7 +8,7 @@ export const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-})
+})  
 
 
 // Error handling
@@ -168,6 +168,32 @@ export class ApiService {
    */
   async getData(endpoint: string, params?: ApiParams) {
     return this.fetchData(endpoint, params)
+  }
+
+  async postProductUsageBrandGraph(params: ProductUsageGraphByIdParams) {
+    return this.postData(`product-usage-graphs/brand-graph`, params)
+  }
+
+  async postProductUsageGraphByProductId(params: ProductUsageGraphByIdParams) {
+    return this.postData(`product-usage-graphs/product-specific`, params)
+  }
+
+  async getProductUsageBrandGraph(params: ProductUsageBrandGraphParams) {
+    return this.postData(`product-usage-graphs/brand-graph`, params)
+  }
+
+  async getBrands(params?: {
+    category_ids?: number[];
+  }) {
+    const queryParams = new URLSearchParams();
+    if (params?.category_ids && params.category_ids.length > 0) {
+        params.category_ids.forEach(id => {
+            queryParams.append('category_ids', id.toString());
+        });
+    }
+    const url = `product-usage-graphs/brands${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const response = await this.fetchData(url);
+    return response;
   }
 }
 

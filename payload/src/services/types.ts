@@ -1,10 +1,13 @@
 export interface Product {
   id: number
+  name?: string
+  category?: string
+  display_name?: string
   high_image_url?: string
   low_image_url?: string
   price: number
   rating: number
-  title: string
+  title?: string
   description?: string
   asin: string
   attrs: ProductAttributes
@@ -22,10 +25,6 @@ export interface Product {
   socket_type: string
   threads: number
   turbo_speed: number
-  category: {
-    id: number
-    name: string
-  }
   created_at: string
   inStock?: boolean
   specifications?: Record<string, string>
@@ -266,6 +265,91 @@ export interface ProductAttributes {
   video_capture_format?: string
 }
 
+export interface Skin {
+  id: number
+  is_stat_track?: boolean
+  wear_level?: string
+  pattern?: number
+  souvenir?: boolean
+  skin_id?: number
+  skin?: {
+    id: number
+    name: string
+    full_name: string
+    weapon: string
+    skin_name: string
+    image_file: string
+    category: {
+      id: number
+      name: string
+    }
+  }
+}
 
+export interface ProductUsageGraphResponse {
+  data: {
+      date: string;
+      products: Record<string, number>;
+      deleted_products: Record<string, number>;
+  }[];
+  brands: Record<string, string>;
+  total_products: number;
+  total_users: number;
+  date_range: {
+      start_date: string;
+      end_date: string;
+  };
+}
 
+export interface BrandUsageGraphResponse {
+  data: {
+      date: string;
+      products: Record<string, number>;
+      deleted_products: Record<string, number>;
+  }[];
+  brands: Record<string, {
+      count: number;
+      products: number[];
+  }>;
+  total_products: number;
+  total_users: number;
+  date_range: {
+      start_date: string;
+      end_date: string;
+  };
+}
 
+export interface ProductUsageGraphByIdParams {
+  start_date: string;
+  end_date: string;
+  product_id: number;
+}
+
+export interface ProductUsageBrandGraphParams {
+  start_date: string;
+  end_date: string;
+  category_ids?: number[];
+  brands?: string[];
+}
+
+export interface BrandInfo {
+  name: string;
+  product_count: number;
+  categories: string[];
+}
+
+export interface BrandsResponse {
+  brands: BrandInfo[];
+  total_brands: number;
+}
+
+export interface ProductTypeMapNames {
+  cpu: 'CPU';
+  cpu_cooler: 'CPU Cooler';
+  gpu: 'GPU';
+  ram: 'RAM';
+  motherboard: 'Motherboard';
+  storage: 'Storage';
+  power_supply: 'Power Supply';
+  case: 'Case';
+}

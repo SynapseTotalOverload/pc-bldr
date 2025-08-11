@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   ColumnDef,
   flexRender,
@@ -13,74 +13,7 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Search, X } from 'lucide-react'
-
-// New SearchInput component with button and Enter handling
-interface SearchInputProps {
-  placeholder?: string
-  value: string
-  onSearch: (value: string) => void
-  className?: string
-  loading?: boolean
-}
-
-function SearchInput({ placeholder = "Search...", value, onSearch, className, loading = false }: SearchInputProps) {
-  const [inputValue, setInputValue] = useState(value)
-
-  // Update input value when external value changes
-  React.useEffect(() => {
-    setInputValue(value)
-  }, [value])
-
-  const handleSearch = () => {
-    onSearch(inputValue)
-  }
-
-  const handleClear = () => {
-    setInputValue('')
-    onSearch('')
-  }
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      handleSearch()
-    }
-  }
-
-  return (
-    <div className={`flex items-center space-x-2 ${className}`}>
-      <Input
-        placeholder={placeholder}
-        value={inputValue}
-        onChange={(event) => setInputValue(event.target.value)}
-        onKeyDown={handleKeyDown}
-        disabled={loading}
-        className="h-8 w-[150px] lg:w-[250px]"
-      />
-      <Button
-        type="button"
-        size="sm"
-        onClick={handleSearch}
-        disabled={loading}
-        className="h-8 px-3"
-      >
-        <Search className="h-4 w-4" />
-      </Button>
-      {inputValue && (
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          onClick={handleClear}
-          disabled={loading}
-          className="h-8 px-3"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      )}
-    </div>
-  )
-}
+import { Search } from 'lucide-react'
 
 interface SkinsTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -113,6 +46,32 @@ export function SkinsTable<TData, TValue>({
   renderActions,
 }: SkinsTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
+  const [localSearchValue, setLocalSearchValue] = useState(searchValue)
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
+
+  // Debounce search functionality
+  const debouncedSearch = useCallback((value: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = setTimeout(() => {
+      if (onSearchChange) {
+        onSearchChange(value)
+      }
+    }, 300)
+  }, [onSearchChange])
+
+  useEffect(() => {
+    setLocalSearchValue(searchValue)
+  }, [searchValue])
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   const table = useReactTable({
     data,
@@ -133,12 +92,22 @@ export function SkinsTable<TData, TValue>({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           {searchKey && onSearchChange && (
-            <SearchInput
-              placeholder={searchPlaceholder}
-              value={searchValue}
-              onSearch={onSearchChange}
-              loading={loading}
-            />
+            <div className="relative">
+              <Input
+                placeholder={searchPlaceholder}
+                value={localSearchValue}
+                onChange={(event) => {
+                  const value = event.target.value
+                  setLocalSearchValue(value)
+                  debouncedSearch(value)
+                }}
+                disabled={loading}
+                className="h-8 w-[150px] lg:w-[250px] pr-10"
+              />
+              <div className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0">
+                <Search className="h-4 w-4 text-muted-foreground transition-colors" />
+              </div>
+            </div>
           )}
         </div>
         {renderActions && renderActions()}

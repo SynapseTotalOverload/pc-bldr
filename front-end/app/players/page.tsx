@@ -2,15 +2,18 @@
 import { ThemeToggle } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { PlayersTable } from "@/components/players-table";
 import { playersColumns } from "@/models/players-table/columns";
 import { usePlayers } from "@/hooks/usePlayers";
 import { PlayerCreate, PlayerUpdate } from "@/types/players-base";
+import WarningModal from "@/models/dialogs/warning-modal";
 
 export default function Players() {
     const router = useRouter()
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [playerToDelete, setPlayerToDelete] = useState<number | null>(null);
     const { 
         players, 
         loading, 
@@ -18,7 +21,8 @@ export default function Players() {
         fetchPlayers, 
         addPlayer, 
         editPlayer, 
-        removePlayer 
+        removePlayer, 
+        pagination 
     } = usePlayers()
 
     useEffect(() => {
@@ -26,7 +30,7 @@ export default function Players() {
         if (!isAdmin) {
           router.push('/auth');
         } else {
-          fetchPlayers()
+          fetchPlayers({ limit: 10 })
         }
       }, [router]);
 
@@ -41,8 +45,23 @@ export default function Players() {
   }
 
   const handleDeletePlayer = async (id: number) => {
-    await removePlayer(id)
-  }
+    setPlayerToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeletePlayer = async () => {
+    if (!playerToDelete) return;
+    
+    try {
+      await removePlayer(playerToDelete);
+      setIsDeleteModalOpen(false);
+      setPlayerToDelete(null);
+    } catch (error) {
+      console.error('Error deleting player:', error);
+      setIsDeleteModalOpen(false);
+      setPlayerToDelete(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -93,11 +112,34 @@ export default function Players() {
                 onAddPlayer={handleAddPlayer}
                 onEditPlayer={handleEditPlayer}
                 onDeletePlayer={handleDeletePlayer}
+                pagination={{
+                  total: pagination.total,
+                  skip: pagination.skip,
+                  limit: pagination.limit,
+                  has_more: pagination.has_more
+                }}
+                onPageChange={(skip) => fetchPlayers({ skip, limit: pagination.limit })}
+                onLimitChange={(limit) => fetchPlayers({ skip: 0, limit })}
+                onSearch={(query) => fetchPlayers({ query, skip: 0, limit: pagination.limit })}
+                loading={loading}
               />
             </div>
           </div>
         </div>
       </main>
+
+      <WarningModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setPlayerToDelete(null);
+        }}
+        onConfirm={confirmDeletePlayer}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this player? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </div>
   )
 }

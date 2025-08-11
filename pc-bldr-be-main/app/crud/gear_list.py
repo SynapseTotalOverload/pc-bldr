@@ -140,6 +140,43 @@ class CRUDGearList:
         
         # Return updated gear list with products
         return self.get(db, db_obj.id)
+    
+    def update_by_model(self, db: Session, *, db_obj: GearList, obj_in: GearListUpdate) -> GearList:
+        """Update gear list by model"""
+        print(obj_in.model_dump())
+        if obj_in.monitor:
+            if obj_in.monitor.id_change:
+                db_obj.monitor_id = obj_in.monitor.id
+
+        if obj_in.mouse:
+            if obj_in.mouse.id_change:
+                db_obj.mouse_id = obj_in.mouse.id
+
+        if obj_in.keyboard:
+            if obj_in.keyboard.id_change:
+                db_obj.keyboard_id = obj_in.keyboard.id
+
+        if obj_in.headset:
+            if obj_in.headset.id_change:
+                db_obj.headset_id = obj_in.headset.id
+
+        if obj_in.mousepad:
+            if obj_in.mousepad.id_change:   
+                db_obj.mousepad_id = obj_in.mousepad.id
+
+        if obj_in.earphones:
+            if obj_in.earphones.id_change:
+                db_obj.earphones_id = obj_in.earphones.id
+
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+        
+        
+        
+    
+    
 
     def remove(self, db: Session, *, id_: int) -> GearList:
         """Delete gear list"""

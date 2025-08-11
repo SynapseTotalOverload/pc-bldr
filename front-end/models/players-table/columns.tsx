@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { PlayerWithRelations } from "@/types/players-base"
 import { Button } from "@/components/ui/button"
-import { Edit, Trash2, Eye } from "lucide-react"
+import { Edit, Trash2, Eye, Copy } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 import { LazyLoadImage } from "react-lazy-load-image-component"
@@ -27,11 +27,22 @@ export const playersColumns: ColumnDef<PlayerWithRelations>[] = [
               />
             </div>
           )}
-          <div>
+          <div className="flex items-center gap-2 space-between">
             <div className="font-medium">{player.player_name}</div>
             {player.name && (
               <div className="text-sm text-muted-foreground">{player.name}</div>
             )}
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(player.player_name)
+                } catch (err) {
+                  console.error('Failed to copy:', err)
+                }
+              }}>
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       )
@@ -69,6 +80,20 @@ export const playersColumns: ColumnDef<PlayerWithRelations>[] = [
       return birthday ? (
         <div className="text-sm">
           {format(new Date(birthday), "MMM dd, yyyy")}
+        </div>
+      ) : (
+        <span className="text-muted-foreground">-</span>
+      )
+    },
+  },
+  {
+    accessorKey: "note",
+    header: "Notes",
+    cell: ({ row }) => {
+      const note = row.getValue("note") as string
+      return note ? (
+        <div className="text-sm max-w-[200px] truncate" title={note}>
+          {note}
         </div>
       ) : (
         <span className="text-muted-foreground">-</span>

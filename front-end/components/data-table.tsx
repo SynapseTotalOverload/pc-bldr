@@ -10,7 +10,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { ChevronDown, Search } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -35,7 +35,7 @@ interface DataTableProps<TData, TValue> {
   onSearchPrice?: (from: number, to: number) => void;
   onBuildTypeChange?: (buildType: string | null) => void;
   onSearchChange?: (value: string) => void;
-  onButtonClick?: () => void;
+  onButtonClick?: () => void; // Optional now since we're using automatic search
   renderActions?: () => React.ReactNode;
   showFilter?: boolean;
   showColumns?: boolean;
@@ -68,28 +68,33 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [localSearchValue, setLocalSearchValue] = useState(searchValue);
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  // // Sync localSearchValue with searchValue prop
-  // useEffect(() => {
-  //   setLocalSearchValue(searchValue);
-  //   if(onSearchChange && searchValue) {
-  //     onSearchChange(searchValue);
-  //   }
-  // }, [searchValue]);
+  // Debounce search functionality
+  const debouncedSearch = useCallback((value: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      if (onSearchChange) {
+        onSearchChange(value);
+      }
+    }, 300); // 300ms delay
+  }, [onSearchChange]);
 
-  // Handle search on Enter key press
-  // const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (event.key === 'Enter' && onSearchChange) {
-  //     onSearchChange(localSearchValue);
-  //   }
-  // };
+  // Sync localSearchValue with searchValue prop
+  useEffect(() => {
+    setLocalSearchValue(searchValue);
+  }, [searchValue]);
 
-  // // Handle search button click
-  // const handleSearchClick = () => {
-  //   if (onSearchChange) {
-  //     onSearchChange(localSearchValue);
-  //   }
-  // };
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const table = useReactTable({
     data,
@@ -107,12 +112,6 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     pageCount: pagination.totalPages,
   });
-  const clickButton = () => {
-    console.log('clickButton')
-    if(onButtonClick) {
-      onButtonClick();
-    }
-  }
 
   return (
     <Card className="w-full">
@@ -126,27 +125,18 @@ export function DataTable<TData, TValue>({
                   placeholder={searchPlaceholder}
                   value={localSearchValue}
                   onChange={(event) => {
-                    setLocalSearchValue(event.target.value);
-                    if(onSearchChange) {
-                      onSearchChange(event.target.value);
-                    }
+                    const value = event.target.value;
+                    setLocalSearchValue(value);
+                    debouncedSearch(value);
                   }}
-                  // onKeyPress={handleSearchKeyPress}
                   className="pr-10"
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0"
-                  // onClick={handleSearchClick}
-                >
-                  <Search className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
-                </Button>
+                <div className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0" onClick={onButtonClick}>
+                  <div className="flex items-center justify-center h-full w-full">
+                    <Search className="h-4 w-4 text-muted-foreground transition-colors" />
+                  </div>
+                </div>
               </div>
-              {!showFilter && (
-                <Button variant="outline" className="cursor-pointer text-white bg-primary hover:bg-primary/90 hover:text-white" onClick={clickButton}>Search</Button>
-              )}
               {showFilter && (
                 <div className="pl-6">
                   <SearchPrice onSearch={onSearchPrice || (() => {})} />
@@ -159,7 +149,9 @@ export function DataTable<TData, TValue>({
               <div className="relative">
                 <SelectBuildType onBuildTypeChange={onBuildTypeChange || (() => {console.log("build type changed")})} />
               </div>
-              <Button variant="outline" className="ml-auto cursor-pointer text-white bg-primary hover:bg-primary/90 hover:text-white" onClick={onButtonClick}>Search</Button>
+              {onButtonClick && (
+                <Button variant="outline" className="ml-auto cursor-pointer text-white bg-primary hover:bg-primary/90 hover:text-white" onClick={onButtonClick}>Search</Button>
+              )}
             </>
           )}
 

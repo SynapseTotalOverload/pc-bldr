@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useProduct } from '@/hooks/useProduct';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +24,9 @@ import {
 import Link from 'next/link';
 import { PRODUCT_TYPE_NAMES } from '@/types/prodcuts-base';
 import Image from 'next/image';
+import Diagram from '@/components/diagram/diagram';
+import { useProductGraphsById } from '@/hooks/graphs/useProductGraphsById';
+import { ProductUsageGraphResponse } from '@/types/product-graph';
 
 const categoryIcons = {
   cpu: Cpu,
@@ -749,7 +752,14 @@ const renderAttributes = (attrs: any, name: string) => {
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { product, loading, error } = useProduct(id);
+  const [startDate, setStartDate] = useState<string>('2025-07-01');
+  const [endDate, setEndDate] = useState<string>(new Date().toISOString().split('T')[0]);   
   const router = useRouter()
+  const { data, loading: loadingGraph, error: errorGraph, refetch } = useProductGraphsById<ProductUsageGraphResponse>({
+    start_date: startDate,
+    end_date: endDate,
+    product_id: Number(id)
+  });
   
   useEffect(() => {
     const isAdmin = localStorage.getItem('isAdmin')
@@ -757,6 +767,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       router.push('/auth');
     }
   }, [router]);
+
+  useEffect(() => {
+    refetch();
+  }, [startDate, endDate]);
 
   if (loading) {
     return (
@@ -874,6 +888,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   )}
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Product Usage Graph</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Diagram 
+                data={data}
+                onStartDateChange={(date) => setStartDate(date)}
+                onEndDateChange={(date) => setEndDate(date)}
+              />
             </CardContent>
           </Card>
         </div>
