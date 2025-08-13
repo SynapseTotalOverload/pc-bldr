@@ -166,6 +166,13 @@ export default function Accessories() {
         accessorKey: 'title',
       },
       {
+        header: 'Image',
+        accessorKey: 'image',
+        cell: ({ row }) => {
+          return <img className="w-full h-full" src={row.original.high_image_url} alt={row.original.title} />;
+        },
+      },
+      {
         header: 'Asin',
         accessorKey: 'asin',
         cell: ({ row }) => {

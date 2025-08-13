@@ -175,6 +175,13 @@ export default function Home() {
       accessorKey: 'title',
     },
     {
+      header: 'Image',
+      accessorKey: 'image',
+      cell: ({ row }) => {
+        return <img className='w-full h-full' src={row.original.high_image_url} alt={row.original.high_image_url} />;
+      },
+    },
+    {
       header: 'Asin',
       accessorKey: 'asin',
       cell: ({ row }) => {

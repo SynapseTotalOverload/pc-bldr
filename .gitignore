@@ -1,3 +1,8 @@
 pc-bldr-be-main/backup_without_data.sql
 pc-bldr-be-main/backup.sql
 pc-bldr-be-main/docker.env
+__pycache__/
+pcpp_profile/
+pcpp_profile_selenium/
+pcpp_debug/
+pcpp_data/

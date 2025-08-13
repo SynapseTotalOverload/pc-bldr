@@ -27,3 +27,9 @@ if __name__ == "__main__":
         run_image_actualization()
     
     print("Parser completed!") 
+
+
+# Yzn*I_*qAheTFh\T
+# 34.9.220.146
+# postgres
+# new

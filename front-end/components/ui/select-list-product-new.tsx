@@ -372,7 +372,10 @@ export function SelectListProductNew({
                         type="date"
                         value={usage_start_datetime}
                         onChange={(e) => {
-                            const newDate = e.target.value;
+                            let newDate = e.target.value;
+                            if(newDate > new Date().toISOString().split('T')[0]) {
+                                newDate = new Date().toISOString().split('T')[0];
+                            }
                             setUsageStartDatetime(newDate);
                             setIsDateManuallyChanged(true);
                             onValueChange(value, newDate);

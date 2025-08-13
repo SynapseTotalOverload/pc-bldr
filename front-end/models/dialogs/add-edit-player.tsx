@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -9,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { PlayerCreate, PlayerUpdate, PlayerWithRelations } from "@/types/players-base"
@@ -92,13 +96,30 @@ export function AddEditPlayerDialog({
   const [setupStreamingListId, setSetupStreamingListId] = useState<number | null>(null)
 
   const [loading, setLoading] = useState(false)
+  
+  const urlFormSchema = z.object({
+    player_img: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+    url_youtube: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+    url_twitter: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+    url_twitch: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+    url_tiktok: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+    url_instagram: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+    url_discord: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+  })
+  type UrlFormData = z.infer<typeof urlFormSchema>
 
-  const [url_youtube, setUrlYoutube] = useState<string>("")
-  const [url_twitter, setUrlTwitter] = useState<string>("")
-  const [url_twitch, setUrlTwitch] = useState<string>("")
-  const [url_tiktok, setUrlTiktok] = useState<string>("")
-  const [url_instagram, setUrlInstagram] = useState<string>("")
-  const [url_discord, setUrlDiscord] = useState<string>("")
+  const urlForm = useForm<UrlFormData>({
+    resolver: zodResolver(urlFormSchema),
+    defaultValues: {
+      player_img: '',
+      url_youtube: '',
+      url_twitter: '',
+      url_twitch: '',
+      url_tiktok: '',
+      url_instagram: '',
+      url_discord: '',
+    },
+  })
 
   const { toast } = useToast()
 
@@ -123,12 +144,15 @@ export function AddEditPlayerDialog({
         }
       })
       console.log("player", player)
-      setUrlYoutube(player.user_urls?.youtube || "")
-      setUrlTwitter(player.user_urls?.twitter || "")
-      setUrlTwitch(player.user_urls?.twitch || "")
-      setUrlTiktok(player.user_urls?.tiktok || "")
-      setUrlInstagram(player.user_urls?.instagram || "")
-      setUrlDiscord(player.user_urls?.discord || "")
+      urlForm.reset({
+        player_img: player.player_img || '',
+        url_youtube: player.user_urls?.youtube || '',
+        url_twitter: player.user_urls?.twitter || '',
+        url_twitch: player.user_urls?.twitch || '',
+        url_tiktok: player.user_urls?.tiktok || '',
+        url_instagram: player.user_urls?.instagram || '',
+        url_discord: player.user_urls?.discord || '',
+      })
       
       if (player.pc_specs_list) {
         setPcSpecsListId(player.pc_specs_list.id)
@@ -324,12 +348,15 @@ export function AddEditPlayerDialog({
       setSelectedPowerSupplyDate("")
       setSelectedCaseId("none")
       setSelectedCaseDate("")
-      setUrlYoutube("")
-      setUrlTwitter("")
-      setUrlTwitch("")
-      setUrlTiktok("")
-      setUrlInstagram("")
-      setUrlDiscord("")
+      urlForm.reset({
+        player_img: '',
+        url_youtube: '',
+        url_twitter: '',
+        url_twitch: '',
+        url_tiktok: '',
+        url_instagram: '',
+        url_discord: '',
+      })
 
       setGearListId(null)
       setSelectedHeadsetId("none")
@@ -366,13 +393,20 @@ export function AddEditPlayerDialog({
         throw new Error('Player Name is required')
       }
 
+      // Validate URL fields with RHF/Zod (as in Skins dialog)
+      const valid = await urlForm.trigger()
+      if (!valid) {
+        throw new Error('Please correct invalid URLs')
+      }
+
+      const urlValues = urlForm.getValues()
       const user_urls = {
-        youtube: url_youtube,
-        twitter: url_twitter,
-        twitch: url_twitch,
-        tiktok: url_tiktok,
-        instagram: url_instagram,
-        discord: url_discord
+        youtube: urlValues.url_youtube || '',
+        twitter: urlValues.url_twitter || '',
+        twitch: urlValues.url_twitch || '',
+        tiktok: urlValues.url_tiktok || '',
+        instagram: urlValues.url_instagram || '',
+        discord: urlValues.url_discord || ''
       }
       const pcSpecsListData = {
         id: pcSpecsListId || undefined,
@@ -508,6 +542,7 @@ export function AddEditPlayerDialog({
 
       const playerData = {
         ...formData,
+        player_img: (urlValues.player_img || '').toString(),
         user_urls: user_urls,
         pc_specs_list_id: pcSpecsListId || undefined,
         gear_list_id: gearListId || undefined,
@@ -518,8 +553,6 @@ export function AddEditPlayerDialog({
         skins: selectedSkins,
       }
 
-      console.log("playerData", playerData)
-
       await onSave(playerData, mode)
       toast({
         title: "Success",
@@ -527,11 +560,7 @@ export function AddEditPlayerDialog({
       })
       onOpenChange(false)
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save player",
-        variant: "destructive",
-      })
+      console.log("Error", error)
     } finally {
       setLoading(false)
     }
@@ -542,6 +571,10 @@ export function AddEditPlayerDialog({
       ...prev,
       [field]: field === 'birthday' && value === '' ? undefined : value
     }))
+
+    if (field === 'player_img') {
+      urlForm.setValue('player_img', value ?? '')
+    }
   }
 
   const handleOpenChange = (open: boolean) => {
@@ -562,6 +595,7 @@ export function AddEditPlayerDialog({
             }
           </DialogDescription>
         </DialogHeader>
+        <Form {...urlForm}>
         <form onSubmit={handleSubmit} className="flex flex-col h-full">
           <div className="grid gap-4 py-4 flex-1 overflow-y-auto">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -591,12 +625,25 @@ export function AddEditPlayerDialog({
               <Label htmlFor="player_img" className="text-left">
                 Image URL
               </Label>
-              <Input
-                id="player_img"
-                value={formData.player_img}
-                onChange={(e) => handleInputChange("player_img", e.target.value)}
-                className="col-span-3"
-                placeholder="https://example.com/image.jpg"
+              <FormField
+                control={urlForm.control}
+                name="player_img"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input
+                        id="player_img"
+                        placeholder="https://example.com/image.jpg"
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          field.onChange(e)
+                          handleInputChange('player_img', e.target.value)
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -663,67 +710,97 @@ export function AddEditPlayerDialog({
               <Label htmlFor="url_youtube" className="text-left">
                 YouTube URL
               </Label>
-              <Input
-                id="url_youtube"
-                value={url_youtube}
-                onChange={(e) => setUrlYoutube(e.target.value)}
-                className="col-span-3"
-                placeholder="https://www.youtube.com/..."
+              <FormField
+                control={urlForm.control}
+                name="url_youtube"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input id="url_youtube" placeholder="https://www.youtube.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               <Label htmlFor="url_twitter" className="text-left">
                 Twitter URL
               </Label>
-              <Input
-                id="url_twitter"
-                value={url_twitter}
-                onChange={(e) => setUrlTwitter(e.target.value)}
-                className="col-span-3"
-                placeholder="https://x.com/..."
+              <FormField
+                control={urlForm.control}
+                name="url_twitter"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input id="url_twitter" placeholder="https://x.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               <Label htmlFor="url_twitch" className="text-left">
                 Twitch URL
               </Label>
-              <Input
-                id="url_twitch"
-                value={url_twitch}
-                onChange={(e) => setUrlTwitch(e.target.value)}
-                className="col-span-3"
-                placeholder="https://www.twitch.tv/..."
+              <FormField
+                control={urlForm.control}
+                name="url_twitch"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input id="url_twitch" placeholder="https://www.twitch.tv/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               <Label htmlFor="url_tiktok" className="text-left">
                 TikTok URL
               </Label>
-              <Input
-                id="url_tiktok"
-                value={url_tiktok}
-                onChange={(e) => setUrlTiktok(e.target.value)}
-                className="col-span-3"
-                placeholder="https://www.tiktok.com/..."
+              <FormField
+                control={urlForm.control}
+                name="url_tiktok"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input id="url_tiktok" placeholder="https://www.tiktok.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               <Label htmlFor="url_instagram" className="text-left">
                 Instagram URL
               </Label>
-              <Input
-                id="url_instagram"
-                value={url_instagram}
-                onChange={(e) => setUrlInstagram(e.target.value)}
-                className="col-span-3"
-                placeholder="https://www.instagram.com/..."
+              <FormField
+                control={urlForm.control}
+                name="url_instagram"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input id="url_instagram" placeholder="https://www.instagram.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               <Label htmlFor="url_discord" className="text-left">
                 Discord URL
               </Label>
-              <Input
-                id="url_discord"
-                value={url_discord}
-                onChange={(e) => setUrlDiscord(e.target.value)}
-                className="col-span-3"
-                placeholder="https://discord.gg/..."
+              <FormField
+                control={urlForm.control}
+                name="url_discord"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input id="url_discord" placeholder="https://discord.gg/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
             {mode === 'edit' && (
@@ -1017,6 +1094,7 @@ export function AddEditPlayerDialog({
             </Button>
           </DialogFooter>
         </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )

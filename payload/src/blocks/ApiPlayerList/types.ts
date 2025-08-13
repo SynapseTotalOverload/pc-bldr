@@ -43,7 +43,16 @@ export interface PlayerWithRelations {
     camera?: { id: number; name: string; display_name: string } | null;
   } | null;
   skins?: any[];
+  user_url?: {
+    discord: string;
+    instagram: string;
+    tiktok: string;
+    twitch: string;
+    twitter: string;
+    youtube: string;
+  };
 }
+
 
 export interface PlayersResponse {
   items: PlayerWithRelations[];

@@ -23,7 +23,13 @@ class CRUDProductUsageLog:
     def update_log(self, db: Session, *, obj_in: ProductUsageLogUpdate) -> ProductUsageLog:
         db_obj = db.query(ProductUsageLog).filter(ProductUsageLog.user_id == obj_in.user_id, ProductUsageLog.product_id == obj_in.product_id).first()
         if not db_obj:
-            raise HTTPException(status_code=404, detail="Product usage log not found")
+            usage_log = ProductUsageLogCreate(
+                user_id=obj_in.user_id,
+                product_id=obj_in.product_id,
+                usage_end_datetime=obj_in.usage_end_datetime,
+            )
+            self.create_log(db=db, obj_in=usage_log)
+            return usage_log
         db_obj.usage_end_datetime = obj_in.usage_end_datetime
         db.commit()
         db.refresh(db_obj)
@@ -32,7 +38,13 @@ class CRUDProductUsageLog:
     def update_data_start_usage_log(self, db: Session, *, obj_in: ProductUsageLogUpdate) -> ProductUsageLog:
         db_obj = db.query(ProductUsageLog).filter(ProductUsageLog.user_id == obj_in.user_id, ProductUsageLog.product_id == obj_in.product_id).order_by(ProductUsageLog.id.desc()).first()
         if not db_obj:
-            raise HTTPException(status_code=404, detail="Product usage log not found")
+            usage_log = ProductUsageLogCreate(
+                user_id=obj_in.user_id,
+                product_id=obj_in.product_id,
+                usage_start_datetime=obj_in.usage_start_datetime,
+            )
+            self.create_log(db=db, obj_in=usage_log)
+            return usage_log
         db_obj.usage_start_datetime = obj_in.usage_start_datetime
         db.commit()
         db.refresh(db_obj)
@@ -41,7 +53,13 @@ class CRUDProductUsageLog:
     def update_data_end_usage_log(self, db: Session, *, obj_in: ProductUsageLogUpdate) -> ProductUsageLog:
         db_obj = db.query(ProductUsageLog).filter(ProductUsageLog.user_id == obj_in.user_id, ProductUsageLog.product_id == obj_in.product_id).order_by(ProductUsageLog.id.desc()).first()
         if not db_obj:
-            raise HTTPException(status_code=404, detail="Product usage log not found")
+            usage_log = ProductUsageLogCreate(
+                user_id=obj_in.user_id,
+                product_id=obj_in.product_id,
+                usage_end_datetime=obj_in.usage_end_datetime,
+            )
+            self.create_log(db=db, obj_in=usage_log)
+            return usage_log
         db_obj.usage_end_datetime = obj_in.usage_end_datetime
         db.commit()
         db.refresh(db_obj)
