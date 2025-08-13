@@ -178,7 +178,7 @@ export default function Home() {
       header: 'Image',
       accessorKey: 'image',
       cell: ({ row }) => {
-        return <img className='w-full h-full' src={row.original.high_image_url} alt={row.original.high_image_url} />;
+        return <img className='w-10 h-10' src={row.original.high_image_url} alt={row.original.high_image_url} />;
       },
     },
     {
