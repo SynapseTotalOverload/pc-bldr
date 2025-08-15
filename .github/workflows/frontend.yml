@@ -42,9 +42,9 @@ jobs:
         NEXT_PUBLIC_ADMIN_LOGIN: ${{ secrets.FRONTEND_ADMIN_USERNAME }}
         NEXT_PUBLIC_ADMIN_PASSWORD: ${{ secrets.FRONTEND_ADMIN_PASSWORD }}
       run: |
-        echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" > .env.production
-        echo "NEXT_PUBLIC_ADMIN_LOGIN=$NEXT_PUBLIC_ADMIN_LOGIN" >> .env.production
-        echo "NEXT_PUBLIC_ADMIN_PASSWORD=$NEXT_PUBLIC_ADMIN_PASSWORD" >> .env.production
+        echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" > .env
+        echo "NEXT_PUBLIC_ADMIN_LOGIN=$NEXT_PUBLIC_ADMIN_LOGIN" >> .env
+        echo "NEXT_PUBLIC_ADMIN_PASSWORD=$NEXT_PUBLIC_ADMIN_PASSWORD" >> .env
         docker build -t ${{env.ECR_REGISTRY}}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
         docker push ${{env.ECR_REGISTRY}}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
