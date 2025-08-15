@@ -92,7 +92,7 @@ jobs:
             docker pull $FULL_IMAGE_NAME
             docker stop ${{ env.IMAGE_NAME }} || true
             docker rm ${{ env.IMAGE_NAME }} || true
-            docker run -d \
+            docker run -d --network=backend \
               --name ${{ env.IMAGE_NAME }} \
               --restart=always \
               -p 8000:8000 \
