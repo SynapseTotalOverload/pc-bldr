@@ -73,7 +73,7 @@ jobs:
     
         ESCAPED_PAYLOAD_SECRET=$(echo "$PAYLOAD_SECRET" | sed 's/"/\\"/g')
         ESCAPED_PREVIEW_SECRET=$(echo "$PREVIEW_SECRET" | sed 's/"/\\"/g')
-        FULL_IMAGE_NAME="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+        FULL_IMAGE_NAME="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
         IMAGE_NAME="${{ env.IMAGE_NAME }}"
     
         ssh -i ec2_key.pem -o StrictHostKeyChecking=no ec2-user@$EC2_HOST <<EOF
