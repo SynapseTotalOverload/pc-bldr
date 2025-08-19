@@ -43,7 +43,7 @@ jobs:
       with:
         context: ./pc-bldr-be-main/
         push: true
-        tags: ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
@@ -62,7 +62,7 @@ jobs:
         ESCAPED_POSTGRES_DSN=$(echo "$POSTGRES_DSN" | sed 's/"/\\"/g')
         ESCAPED_KEEPA_API_KEY=$(echo "$KEEPA_API_KEY" | sed 's/"/\\"/g')
 
-        FULL_IMAGE_NAME="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+        FULL_IMAGE_NAME="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
 
         ssh -i ec2_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST <<EOF
           docker login -u AWS -p $(aws ecr get-login-password --region $AWS_REGION) $ECR_REGISTRY
