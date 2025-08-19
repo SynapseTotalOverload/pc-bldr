@@ -61,6 +61,7 @@ jobs:
         
         ESCAPED_POSTGRES_DSN=$(echo "$POSTGRES_DSN" | sed 's/"/\\"/g')
         ESCAPED_KEEPA_API_KEY=$(echo "$KEEPA_API_KEY" | sed 's/"/\\"/g')
+
         FULL_IMAGE_NAME="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
 
         ssh -i ec2_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST <<EOF
@@ -83,4 +84,3 @@ jobs:
         EOF
 
         echo "Deployment complete. App running at http://$EC2_HOST:8000"
-

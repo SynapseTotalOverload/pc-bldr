@@ -5,6 +5,9 @@ from app.db.base import Base
 
 
 class PlayerStickers(Base):
+
+    __tablename__ = "player_stickers"
+
     id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
     player_id = Column(BigInteger, ForeignKey("player.id"), nullable=False)
     stickers_id = Column(BigInteger, ForeignKey("stickers.id"), nullable=False)
