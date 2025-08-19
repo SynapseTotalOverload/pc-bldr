@@ -1,17 +1,17 @@
-name: Frontend CI/CD
+name: Payload CI/CD
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - 'front-end/**'
+      - 'payload/**'
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   IMAGE_NAME: payload
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-
+  PAYLOAD_ENVS: $${{ secrets.PAYLOAD_ENVS }}
 jobs:
   build-push-deploy:
     runs-on: ubuntu-latest
@@ -45,8 +45,7 @@ jobs:
     - name: Set up enviroment variabled for build
     
       run: |
-        echo "${{ env.PAYLOAD_ENVS }}" | base64 --decode > ./payload/.env
-
+        echo "${{ secrets.PAYLOAD_ENVS }}" | base64 -d > ./payload/.env 2>/dev/null;
     
     - name: Verify .env file
       run: |
@@ -59,35 +58,40 @@ jobs:
         docker build -t ${{env.ECR_REGISTRY}}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
         docker push ${{env.ECR_REGISTRY}}/${{ env.IMAGE_NAME }}:${{ github.sha }}
         
+
     # Deploy on instance
     - name: Deploy to AWS EC2
       env:
+        PREVIEW_SECRET: ${{ secrets.PREVIEW_SECRET }}
+        PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
         EC2_HOST: ${{ secrets.EC2_PAYLOAD_HOST }}
         EC2_USER: ${{ secrets.EC2_USER }}
         SSH_KEY_BASE64: ${{ secrets.EC2_SSH_KEY_BASE64 }}
       run: |
         echo "$SSH_KEY_BASE64" | base64 --decode > ec2_key.pem
         chmod 600 ec2_key.pem
+    
+        ESCAPED_PAYLOAD_SECRET=$(echo "$PAYLOAD_SECRET" | sed 's/"/\\"/g')
+        ESCAPED_PREVIEW_SECRET=$(echo "$PREVIEW_SECRET" | sed 's/"/\\"/g')
         FULL_IMAGE_NAME="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+        IMAGE_NAME="${{ env.IMAGE_NAME }}"
+    
         ssh -i ec2_key.pem -o StrictHostKeyChecking=no ec2-user@$EC2_HOST <<EOF
-          docker login -u AWS -p $(aws ecr get-login-password --region $AWS_REGION) $ECR_REGISTRY
-          docker pull $FULL_IMAGE_NAME
-          docker stop $IMAGE_NAME || true
-          docker rm $IMAGE_NAME || true
+          docker login -u AWS -p \$(aws ecr get-login-password --region ${AWS_REGION}) ${ECR_REGISTRY}
+          docker pull ${FULL_IMAGE_NAME}
+          docker stop ${IMAGE_NAME} || true
+          docker rm ${IMAGE_NAME} || true
           docker image prune -af
-          sudo docker run -d --network=payload  \
-              --name ${{ env.IMAGE_NAME }} \
-              --restart=always \
-              -v ./media:/app/public/media/ \
-              -p 3000:3000 \
-              $FULL_IMAGE_NAME 
+          sudo docker run -d --network=payload \
+            --name ${IMAGE_NAME} \
+            --restart=always \
+            -e DATABASE_URI="mongodb://mongo/" \
+            -e PAYLOAD_SECRET="${ESCAPED_PAYLOAD_SECRET}" \
+            -e PREVIEW_SECRET="${ESCAPED_PREVIEW_SECRET}" \
+            -e NEXT_PUBLIC_SERVER_URL="/api/" \
+            -v ./media:/app/public/media/ \
+            -p 3000:3000 \
+            ${FULL_IMAGE_NAME}
         EOF
 
 
-
-       
-
-
-        
-    
-        echo "ip: $PUBLIC_IP:8000" 
