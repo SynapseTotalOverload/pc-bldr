@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+export const dynamic = 'force-dynamic'
 
 import { cn } from '@/utilities/ui'
 import { GeistMono } from 'geist/font/mono'

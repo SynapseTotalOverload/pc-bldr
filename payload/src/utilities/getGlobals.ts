@@ -7,6 +7,11 @@ import { unstable_cache } from 'next/cache'
 type Global = keyof Config['globals']
 
 async function getGlobal(slug: Global, depth = 0) {
+  // Avoid DB access during `next build`
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return null as unknown as Record<string, unknown>
+  }
+
   const payload = await getPayload({ config: configPromise })
 
   const global = await payload.findGlobal({

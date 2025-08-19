@@ -5,7 +5,13 @@ import React from 'react'
 import type { Header } from '@/payload-types'
 
 export async function Header() {
-  const headerData: Header = await getCachedGlobal('header', 1)()
+  const globalFn = await getCachedGlobal('header', 1)
+  let headerData: Header | null = null
+  try {
+    headerData = (await globalFn()) as Header
+  } catch {
+    headerData = null
+  }
 
-  return <HeaderClient data={headerData} />
+  return <HeaderClient data={headerData as Header} />
 }
