@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict
 from collections import defaultdict
 from app.models.games import Game
 from app.schemas.game import GameRead
+from app.schemas.player import PlayerStickersBatch
 
 router = APIRouter(prefix="/teams", tags=["teams"])
 
@@ -162,3 +163,61 @@ def get_team_players_by_game(*, db: Session = Depends(get_db), team_id: int) -> 
     # sort by game name for consistent output
     result.sort(key=lambda x: x.game.name.lower())
     return result
+
+
+@router.post("/{team_id}/stickers/batch", response_model=TeamRead)
+def add_stickers_to_team_batch(
+    *,
+    db: Session = Depends(get_db),
+    team_id: int,
+    stickers_data: PlayerStickersBatch,
+) -> TeamRead:
+    """Add multiple stickers to team."""
+    try:
+        team = team_crud.add_stickers_batch(db=db, team_id=team_id, sticker_ids=stickers_data.sticker_ids)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return TeamRead.model_validate(team)
+
+
+@router.delete("/{team_id}/stickers/batch", response_model=TeamRead)
+def remove_stickers_from_team_batch(
+    *,
+    db: Session = Depends(get_db),
+    team_id: int,
+    stickers_data: PlayerStickersBatch,
+) -> TeamRead:
+    """Remove multiple stickers from team."""
+    try:
+        team = team_crud.remove_stickers_batch(db=db, team_id=team_id, sticker_ids=stickers_data.sticker_ids)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return TeamRead.model_validate(team)
+
+
+@router.post("/{team_id}/stickers/{sticker_id}", response_model=TeamRead)
+def add_sticker_to_team(
+    *,
+    db: Session = Depends(get_db),
+    team_id: int,
+    sticker_id: int,
+) -> TeamRead:
+    try:
+        team = team_crud.add_sticker(db=db, team_id=team_id, sticker_id=sticker_id)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return TeamRead.model_validate(team)
+
+
+@router.delete("/{team_id}/stickers/{sticker_id}", response_model=TeamRead)
+def remove_sticker_from_team(
+    *,
+    db: Session = Depends(get_db),
+    team_id: int,
+    sticker_id: int,
+) -> TeamRead:
+    try:
+        team = team_crud.remove_sticker(db=db, team_id=team_id, sticker_id=sticker_id)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    return TeamRead.model_validate(team)

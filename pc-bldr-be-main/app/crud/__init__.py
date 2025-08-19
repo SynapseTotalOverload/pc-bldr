@@ -8,3 +8,4 @@ from .setup_streaming_list import setup_streaming_list_crud
 from .product_usage_log import product_usage_log_crud
 from .team import team_crud
 from .game import game_crud
+from .stickers import sticker_crud

@@ -25,6 +25,7 @@ from app.crud.setup_streaming_list import setup_streaming_list_crud
 from app.crud.product_usage_log import product_usage_log_crud
 import logging
 from app.models.team import Team
+from app.models.stickers import Stickers
 
 logger = logging.getLogger(__name__)
 
@@ -811,12 +812,122 @@ class CRUDPlayer:
         if skins_update is not None:
             self.update_player_skins_list(db=db, player_id=db_obj.id, skins_update=skins_update)
         
+        # Update stickers if provided
+        if obj_in.stickers is not None:
+            self.set_player_stickers(db=db, player_id=db_obj.id, sticker_ids=obj_in.stickers)
+        
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
         
         # Return updated player with relations
         return self.get(db, db_obj.id)
+
+    def add_sticker(self, db: Session, *, player_id: int, sticker_id: int) -> Player:
+        """Add sticker to player (only player-type stickers)."""
+        player = db.get(Player, player_id)
+        if not player:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Player with id {player_id} not found")
+
+        sticker = db.get(Stickers, sticker_id)
+        if not sticker:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Sticker with id {sticker_id} not found")
+
+        # Ensure sticker is of correct type
+        if sticker.s_type and sticker.s_type.lower() != "player":
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only stickers with type 'player' can be linked to a player")
+
+        if sticker not in player.stickers:
+            player.stickers.append(sticker)
+            db.commit()
+            db.refresh(player)
+
+        return self.get(db, player_id)
+
+    def remove_sticker(self, db: Session, *, player_id: int, sticker_id: int) -> Player:
+        """Remove sticker from player."""
+        player = db.get(Player, player_id)
+        if not player:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Player with id {player_id} not found")
+
+        sticker = db.get(Stickers, sticker_id)
+        if not sticker:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Sticker with id {sticker_id} not found")
+
+        if sticker in player.stickers:
+            player.stickers.remove(sticker)
+            db.commit()
+            db.refresh(player)
+
+        return self.get(db, player_id)
+
+    def add_stickers_batch(self, db: Session, *, player_id: int, sticker_ids: list[int]) -> Player:
+        """Add multiple stickers to player, skipping duplicates."""
+        player = db.get(Player, player_id)
+        if not player:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Player with id {player_id} not found")
+
+        # Fetch all stickers
+        stickers = db.query(Stickers).filter(Stickers.id.in_(sticker_ids)).all()
+        if len(stickers) != len(sticker_ids):
+            found_ids = {st.id for st in stickers}
+            missing = set(sticker_ids) - found_ids
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Stickers with ids {missing} not found")
+
+        # Validate types
+        for st in stickers:
+            if st.s_type and st.s_type.lower() != "player":
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Sticker {st.id} is not of type 'player'")
+
+        current_ids = {st.id for st in player.stickers}
+        new_stickers = [st for st in stickers if st.id not in current_ids]
+        if new_stickers:
+            player.stickers.extend(new_stickers)
+            db.commit()
+            db.refresh(player)
+        return self.get(db, player_id)
+
+    def remove_stickers_batch(self, db: Session, *, player_id: int, sticker_ids: list[int]) -> Player:
+        """Remove multiple stickers from player."""
+        player = db.get(Player, player_id)
+        if not player:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Player with id {player_id} not found")
+
+        stickers = db.query(Stickers).filter(Stickers.id.in_(sticker_ids)).all()
+        if len(stickers) != len(sticker_ids):
+            found_ids = {st.id for st in stickers}
+            missing = set(sticker_ids) - found_ids
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Stickers with ids {missing} not found")
+
+        for st in stickers:
+            if st in player.stickers:
+                player.stickers.remove(st)
+        db.commit()
+        db.refresh(player)
+        return self.get(db, player_id)
+
+    def set_player_stickers(self, db: Session, *, player_id: int, sticker_ids: List[int]) -> Player:
+        """Replace player's stickers with given list."""
+        player = db.get(Player, player_id)
+        if not player:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Player with id {player_id} not found")
+        # duplicates check
+        if len(sticker_ids) != len(set(sticker_ids)):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Duplicate sticker IDs in request")
+        # fetch stickers
+        stickers = db.query(Stickers).filter(Stickers.id.in_(sticker_ids)).all() if sticker_ids else []
+        if len(stickers) != len(sticker_ids):
+            found = {s.id for s in stickers}
+            missing = set(sticker_ids) - found
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Stickers {missing} not found")
+        # type validation
+        for st in stickers:
+            if st.s_type and st.s_type.lower() != "player":
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Sticker {st.id} is not of type 'player'")
+        player.stickers = stickers
+        db.commit()
+        db.refresh(player)
+        return self.get(db, player_id)
 
 
 player_crud = CRUDPlayer() 

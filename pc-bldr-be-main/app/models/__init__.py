@@ -34,6 +34,9 @@ from .s3_file import S3File
 from .countries import Country
 from .team import Team
 from .games import Game
+from .stickers import Stickers
+from .team_stickers import TeamStickers
+from .player_stickers import PlayerStickers
 __all__ = [
     "Category", 
     "Product",
@@ -68,4 +71,7 @@ __all__ = [
     "Country",
     "Team",
     "Game",
+    "Stickers",
+    "TeamStickers",
+    "PlayerStickers",
 ]

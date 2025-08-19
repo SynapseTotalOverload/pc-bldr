@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import Optional, List, Dict, TYPE_CHECKING
 from datetime import datetime
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
+
+from .sticker import StickerRead
 
 
 class TeamBase(BaseModel):
@@ -16,7 +18,17 @@ class TeamBase(BaseModel):
 
 
 class TeamCreate(TeamBase):
-    pass
+    sticker_ids: Optional[List[int]] = None
+
+    @field_validator('sticker_ids')
+    @classmethod
+    def validate_sticker_ids(cls, v):
+        if v is not None:
+            if not v:
+                raise ValueError('sticker_ids cannot be empty')
+            if len(set(v)) != len(v):
+                raise ValueError('sticker_ids cannot contain duplicates')
+        return v
 
 
 class TeamUpdate(BaseModel):
@@ -25,12 +37,24 @@ class TeamUpdate(BaseModel):
     logo: Optional[str] = None
     jerseys_img: Optional[str] = None
     socila_media_links: Optional[Dict[str, str]] = None
+    stickers: Optional[List[int]] = None
+
+    @field_validator('stickers')
+    @classmethod
+    def validate_stickers(cls, v):
+        if v is not None:
+            if not v:
+                raise ValueError('stickers cannot be empty')
+            if len(set(v)) != len(v):
+                raise ValueError('stickers list cannot contain duplicates')
+        return v
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class TeamRead(TeamBase):
     id: int
+    stickers: List[StickerRead] = []
     created_at: Optional[datetime] = None  # not in model but common pattern
     updated_at: Optional[datetime] = None  # placeholder in case added later
 

@@ -14,6 +14,8 @@ class Team(Base):
     socila_media_links = Column(JSON, nullable=True)
     
     players = relationship("Player", back_populates="team")
+    # Many-to-many relationship with stickers
+    stickers = relationship("Stickers", secondary="team_stickers", back_populates="teams")
     
     
   

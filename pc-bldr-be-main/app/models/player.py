@@ -34,6 +34,9 @@ class Player(Base):
     # Many-to-many relationship with skins
     skins = relationship("Skin", secondary="player_skins", back_populates="players")
     
+    # Many-to-many relationship with stickers
+    stickers = relationship("Stickers", secondary="player_stickers", back_populates="players")
+    
     # Direct relationship with player_skins to access additional attributes
     player_skins = relationship("PlayerSkin", back_populates="player")
 

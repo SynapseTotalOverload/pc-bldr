@@ -10,6 +10,7 @@ from .product_usage_log import ProductUsageLogWithProduct, ProductUsageLogSimple
 from .custom_product_reletion import CustomProductReletion, CustomProductReletionCreate, CustomProductReletionUpdate, CustomProductReletionDelete, CustomProductReletionRequest, CustomProductReletionSimple
 from .country import CountryRead
 from .team import TeamShort
+from .sticker import StickerRead
     
 
 
@@ -42,6 +43,17 @@ class PlayerCreate(PlayerBase):
     gear_list_id: Optional[int] = None
     pc_specs_list_id: Optional[int] = None
     setup_streaming_list_id: Optional[int] = None
+    sticker_ids: Optional[List[int]] = None  # initial stickers
+
+    @field_validator('sticker_ids')
+    @classmethod
+    def validate_sticker_ids(cls, v):
+        if v is not None:
+            if not v:
+                raise ValueError('sticker_ids cannot be empty')
+            if len(set(v)) != len(v):
+                raise ValueError('sticker_ids cannot contain duplicates')
+        return v
     
     @field_validator('game_id')
     @classmethod
@@ -161,6 +173,18 @@ class PlayerUpdateWithGear(BaseModel):
     skins: Optional[List[SkinUpdate]] = None
 
     custom_product_reletion: Optional[CustomProductReletionRequest] = None
+    
+    stickers: Optional[List[int]] = None  # replace sticker list
+
+    @field_validator('stickers')
+    @classmethod
+    def validate_stickers(cls, v):
+        if v is not None:
+            if not v:
+                raise ValueError('stickers list cannot be empty')
+            if len(set(v)) != len(v):
+                raise ValueError('stickers list cannot contain duplicates')
+        return v
     
     @field_validator('player_name')
     @classmethod
@@ -295,6 +319,7 @@ class PlayerWithRelations(BaseModel):
     skins: List[PlayerSkinRead] = []
     product_usage_logs: List[ProductUsageLogSimple] = []
     custom_product_reletion: Optional[List[CustomProductReletionSimple]] = None
+    stickers: List[StickerRead] = []
     
     @classmethod
     def from_player(cls, player, product_usage_logs=None):
@@ -321,6 +346,7 @@ class PlayerWithRelations(BaseModel):
             'pc_specs_list': PCSpecsListWithSimpleProducts.from_pcspecslist(player.pc_specs_list),
             'setup_streaming_list': SetupStreamingListWithSimpleProducts.from_setupstreaminglist(player.setup_streaming_list),
             'skins': [PlayerSkinRead.from_player_skin(player_skin) for player_skin in player.player_skins] if player.player_skins else [],
+            'stickers': [StickerRead.model_validate(s) for s in player.stickers] if getattr(player, 'stickers', None) else [],
             'product_usage_logs': [ProductUsageLogSimple.from_usage_log(log) for log in product_usage_logs] if product_usage_logs else [],
             'custom_product_reletion': [
                 CustomProductReletionSimple.model_validate(cp) for cp in player.custom_products
@@ -367,3 +393,18 @@ TeamWithPlayers.model_rebuild()
 # --- Rebuild GameWithPlayers forward refs now that PlayerWithRelations is defined ---
 from .game import GameWithPlayers  # noqa: E402
 GameWithPlayers.model_rebuild() 
+
+class PlayerStickersBatch(BaseModel):
+    sticker_ids: List[int] = Field(..., min_items=1, max_items=100)
+
+    @field_validator('sticker_ids')
+    @classmethod
+    def validate_sticker_ids(cls, v):
+        if not v:
+            raise ValueError('sticker_ids cannot be empty')
+        if len(set(v)) != len(v):
+            raise ValueError('sticker_ids cannot contain duplicates')
+        return v
+
+    class Config:
+        from_attributes = True 
