@@ -4,14 +4,14 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'front-end/**'
+      - 'payload/**'
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   IMAGE_NAME: payload
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-
+  PAYLOAD_ENVS: $${{ secrets.PAYLOAD_ENVS }}
 jobs:
   build-push-deploy:
     runs-on: ubuntu-latest
