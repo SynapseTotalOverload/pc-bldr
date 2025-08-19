@@ -77,16 +77,9 @@ jobs:
           sudo docker run -d --network=payload  \
               --name ${{ env.IMAGE_NAME }} \
               --restart=always \
+              -e DATABASE_URI=mongodb://mongo/
               -v ./media:/app/public/media/ \
               -p 3000:3000 \
               $FULL_IMAGE_NAME 
         EOF
 
-
-
-       
-
-
-        
-    
-        echo "ip: $PUBLIC_IP:8000" 
