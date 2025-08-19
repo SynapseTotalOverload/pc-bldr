@@ -7,6 +7,9 @@ import { unstable_cache } from 'next/cache'
 type Collection = keyof Config['collections']
 
 async function getDocument(collection: Collection, slug: string, depth = 0) {
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return null as unknown as Record<string, unknown>
+  }
   const payload = await getPayload({ config: configPromise })
 
   const page = await payload.find({
