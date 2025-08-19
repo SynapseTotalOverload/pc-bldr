@@ -6,15 +6,11 @@ on:
     paths:
       - 'front-end/**'
 
-
 env:
-  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_KEY }}
-  NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-  GCP_INSTANCE_NAME: ${{ secrets.GCP_FRONTEND_INSTANCE_NAME }}
-  GCP_INSTANCE_ZONE: ${{ secrets.GCP_FRONTEND_INSTANCE_ZONE }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   IMAGE_NAME: frontend
-  GCR_REGISTRY: gcr.io
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
 jobs:
   build-push-deploy:
@@ -25,53 +21,56 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Auth to GCP
-    - name: Auth to GCP
-      uses: google-github-actions/auth@v2
+    # Configure AWS credentials
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
       with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
-    # Setting GCP SDK
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-
-    # Auth to GCR
-    - name: Docker auth
-      run: gcloud auth configure-docker --quiet
+    # Authenticate Docker to AWS ECR
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
 
     # Build and push image
     - name: Build and push Docker image
       working-directory: ./front-end
-      run: |
-        echo "NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }}" > .env
-        echo "NEXT_PUBLIC_ADMIN_LOGIN=admin@admin.com" >> .env
-        echo "NEXT_PUBLIC_ADMIN_PASSWORD=1234567890" >> .env
-        docker build -t ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
-        docker push ${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-
-    # Deploy on instance
-    - name: Deploy to GCP instance
       env:
-        POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-        POSTGRES_DSN: ${{ secrets.POSTGRES_DSN }}
-        KEEPA_API_KEY: ${{ secrets.KEEPA_API_KEY }}
+        NEXT_PUBLIC_API_URL : ${{ secrets.FRONTEND_API_URL }}
+        NEXT_PUBLIC_ADMIN_LOGIN: ${{ secrets.FRONTEND_ADMIN_USERNAME }}
+        NEXT_PUBLIC_ADMIN_PASSWORD: ${{ secrets.FRONTEND_ADMIN_PASSWORD }}
       run: |
+        echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" > .env
+        echo "NEXT_PUBLIC_ADMIN_LOGIN=$NEXT_PUBLIC_ADMIN_LOGIN" >> .env
+        echo "NEXT_PUBLIC_ADMIN_PASSWORD=$NEXT_PUBLIC_ADMIN_PASSWORD" >> .env
+        docker build -t ${{env.ECR_REGISTRY}}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+        docker push ${{env.ECR_REGISTRY}}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-        FULL_IMAGE_NAME="${{ env.GCR_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+    # Deploy to EC2 instance
+    - name: Deploy to AWS EC2
+      env:
+        EC2_HOST: ${{ secrets.EC2_FRONTEND_HOST }}
+        EC2_USER: ${{ secrets.EC2_USER }}
+        SSH_KEY_BASE64: ${{ secrets.EC2_SSH_KEY_BASE64 }}
+      run: |
+        echo "$SSH_KEY_BASE64" | base64 --decode > ec2_key.pem
+        chmod 600 ec2_key.pem
         
-        gcloud compute ssh ${{ env.GCP_INSTANCE_NAME }} \
-          --zone ${{ env.GCP_INSTANCE_ZONE }} \
-          --tunnel-through-iap \
-          --command="
-            docker pull $FULL_IMAGE_NAME
-            docker stop ${{ env.IMAGE_NAME }} || true
-            docker rm ${{ env.IMAGE_NAME }} || true
-            docker run -d \
-              --name ${{ env.IMAGE_NAME }} \
-              --restart=always \
-              -p 3000:3000 \
-              $FULL_IMAGE_NAME
-             docker image prune -af
-          "
+        FULL_IMAGE_NAME="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+
+        ssh -i ec2_key.pem -o StrictHostKeyChecking=no ec2-user@$EC2_HOST <<EOF
+          docker login -u AWS -p $(aws ecr get-login-password --region $AWS_REGION) $ECR_REGISTRY
+          docker pull $FULL_IMAGE_NAME
+          docker stop $IMAGE_NAME || true
+          docker rm $IMAGE_NAME || true
+          docker image prune -af
+          docker run -d \
+            --name $IMAGE_NAME \
+            --restart=always \
+            -p 3000:3000 \
+            $FULL_IMAGE_NAME
+        EOF
+
+        echo "Deployment complete. App running at http://$EC2_HOST:8000"
