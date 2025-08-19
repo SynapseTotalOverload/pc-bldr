@@ -1,4 +1,4 @@
-name: Frontend CI/CD
+name: Payload CI/CD
 
 on:
   workflow_dispatch:
