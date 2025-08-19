@@ -49,7 +49,7 @@ export function MainMenu({ className }: { className?: string }) {
             <div className="flex items-center gap-4">
             <ThemeToggle />
             {MENU_ITEMS.filter((item) => !isCurrent(item.href)).map((item) => (
-                <Link href={item.href}>
+                <Link key={item.label} href={item.href}>
                     <Button>{item.label}</Button>
                 </Link>
             ))}
