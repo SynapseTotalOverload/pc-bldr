@@ -58,7 +58,7 @@ jobs:
         echo "$SSH_KEY_BASE64" | base64 --decode > ec2_key.pem
         chmod 600 ec2_key.pem
         
-        FULL_IMAGE_NAME="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+        FULL_IMAGE_NAME="${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
 
         ssh -i ec2_key.pem -o StrictHostKeyChecking=no ec2-user@$EC2_HOST <<EOF
           docker login -u AWS -p $(aws ecr get-login-password --region $AWS_REGION) $ECR_REGISTRY
