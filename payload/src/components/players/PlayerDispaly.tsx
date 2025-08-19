@@ -20,7 +20,7 @@ export const PlayerDisplay = ({ blocks = [], player }: PlayerDisplayProps) => {
       case 'gearComponents':
         return <BlockLists key={index} title="Gear" info={player.gear_list} />
       case 'pcSpecs':
-        return <BlockLists key={index} title="PC Specs" info={player.pc_specs_list} />
+        return <BlockLists key={index} title="PC Specs" info={player.pc_specs_list} custProducts={player.custom_product_reletion} />
       case 'setupStreaming':
         return <BlockLists key={index} title="Setup Streaming" info={player.setup_streaming_list} />
       default:

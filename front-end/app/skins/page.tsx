@@ -1,14 +1,11 @@
 'use client'
 import { SkinsTable } from "@/components/skins-table";
-import { ThemeToggle } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { CategoryButtons } from "@/components/ui/category-buttons";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useBoolean } from "@/hooks/use-boolean";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import Link from "next/link";
 import { skinsColumns } from "@/models/skins-table/columns";
 import { ColumnDef } from '@tanstack/react-table';
 import { Edit, Trash2 } from 'lucide-react';
@@ -18,6 +15,7 @@ import { SKIN_CATEGORIES } from "@/types/skins-base";
 import { AddNewSkins } from "@/models/dialogs/add-new-skins";
 import { SkinRead, deleteSkin } from "@/lib/skins-api";
 import WarningModal from "@/models/dialogs/warning-modal";
+import { MainMenu } from "@/components/ui/menu";
 
 export default function Skins() {
     const [selectedCategory, setSelectedCategory] = useState<number>(SKIN_CATEGORIES.RIFLES);
@@ -145,27 +143,7 @@ export default function Skins() {
     <div>
       <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
       <div className="z-10 w-full items-center justify-between font-mono text-sm">
-        <div className="flex items-center justify-between">
-          <h1 className="mb-8 text-4xl font-bold">Skins</h1>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <Link href="/accessories">
-                <Button>Accessories</Button>
-            </Link>
-            <Link href="/builds">
-                <Button>Builds</Button>
-            </Link>
-            <Link href="/">
-                <Button>Products</Button>
-            </Link>
-            <Link href="/configurator">
-                <Button>Configurator</Button>
-            </Link>
-            <Link href="/players">
-              <Button>Players</Button>
-            </Link>
-          </div>
-        </div>
+        <MainMenu />
 
         <CategoryButtons
           selectedCategory={categoryIdToString(selectedCategory)}

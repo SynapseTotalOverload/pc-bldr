@@ -1,4 +1,5 @@
 import type { Metadata } from 'next/types'
+export const dynamic = 'force-dynamic'
 
 import { CollectionArchive } from '@/components/CollectionArchive'
 import configPromise from '@payload-config'

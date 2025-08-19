@@ -3,13 +3,23 @@ export interface PlayerWithRelations {
   player_name: string;
   player_img: string;
   team: string;
-  country: string;
+  country: Country;
   name: string;
   birthday: string;
   info: string;
   note: string;
+  pc_image: string;
+  pc_image_name: string;
   created_at: string;
   updated_at: string;
+  game?: {
+    id: number;
+    description: string;
+    icon: string;
+    image: string;
+    name: string;
+    updated_at: string;
+  };
   gear_list?: {
     id: number;
     created_at: string;
@@ -50,9 +60,19 @@ export interface PlayerWithRelations {
     twitch: string;
     twitter: string;
     youtube: string;
+    steam: string;
   };
+  custom_product_reletion?: CustomProductReletionSimple[];
 }
 
+
+export interface CustomProductReletionSimple {
+  custom_name: string;
+  id: number;
+  original_name: string;
+  pozition: string;
+  product_id: number;
+}
 
 export interface PlayersResponse {
   items: PlayerWithRelations[];
@@ -87,5 +107,11 @@ export interface ApiPlayerListBlockProps {
     cardStyle?: 'default' | 'elevated' | 'bordered' | 'minimal';
     imageStyle?: 'rounded' | 'square' | 'circle';
   };
+}
+
+export interface Country {
+  id: number;
+  name: string;
+  iso_code: string;
 }
   

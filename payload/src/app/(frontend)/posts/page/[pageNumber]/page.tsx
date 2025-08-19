@@ -1,4 +1,5 @@
 import type { Metadata } from 'next/types'
+export const dynamic = 'force-dynamic'
 
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
@@ -69,20 +70,10 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   }
 }
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const { totalDocs } = await payload.count({
-    collection: 'posts',
-    overrideAccess: false,
-  })
-
-  const totalPages = Math.ceil(totalDocs / 10)
-
-  const pages: { pageNumber: string }[] = []
-
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
-  }
-
-  return pages
-}
+// Static params disabled to avoid DB access during build
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const { totalDocs } = await payload.count({ collection: 'posts', overrideAccess: false })
+//   const totalPages = Math.ceil(totalDocs / 10)
+//   return Array.from({ length: totalPages }, (_, i) => ({ pageNumber: String(i + 1) }))
+// }

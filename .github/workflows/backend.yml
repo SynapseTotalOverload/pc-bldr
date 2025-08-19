@@ -79,3 +79,4 @@ jobs:
         EOF
 
         echo "Deployment complete. App running at http://$EC2_HOST:8000"
+

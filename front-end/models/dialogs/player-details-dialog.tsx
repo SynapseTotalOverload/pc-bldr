@@ -1,13 +1,15 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { PlayerWithRelations } from '@/types/players-base'
-import { format } from 'date-fns'
+import { useFile } from '@/hooks/useFile'
+import { Skeleton } from '@/components/ui/skeleton'
+import { LazyLoadImage } from 'react-lazy-load-image-component'
 import { 
   Calendar, 
   MapPin, 
@@ -61,17 +63,44 @@ interface Item {
   name: string
 }
 
+const LazyImage: React.FC<{ url?: string | null; alt?: string; className?: string; skeletonClass?: string }> = ({ url, alt, className = '', skeletonClass }) => {
+  const { imageUrl, fetch, loading } = useFile();
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    if (!url) return;
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          setShouldLoad(true);
+          obs.disconnect();
+        }
+      });
+    }, { rootMargin: '150px' });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [url]);
+
+  useEffect(() => {
+    if (shouldLoad && url) {
+      fetch({ url });
+    }
+  }, [shouldLoad, url, fetch]);
+
+  const src = imageUrl;
+  const skClass = skeletonClass || className;
+
+  return (
+    <div ref={ref} className={className}>
+      {(loading || !src) && <Skeleton className={skClass} />}
+      {!loading && src && <LazyLoadImage src={src} alt={alt} className={className} effect="opacity" />}
+    </div>
+  );
+};
+
 export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetailsDialogProps) {
   if (!player) return null
-
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'Not specified'
-    try {
-      return format(new Date(dateString), 'MMMM dd, yyyy')
-    } catch {
-      return 'Invalid date'
-    }
-  }
 
   const renderGearItem = (item: Item, category: string) => {
     if (!item) return null
@@ -233,11 +262,7 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             {player.player_img && (
-              <img 
-                src={player.player_img} 
-                alt={player.player_name}
-                className="w-12 h-12 rounded-full object-cover"
-              />
+              <LazyImage url={player.player_img} alt={player.player_name} className="w-12 h-12 rounded-full object-cover" />
             )}
             <div>
               <div className="text-xl font-bold">{player.player_name}</div>
@@ -262,7 +287,9 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
                 <Users className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Team:</span>
                 {player.team ? (
-                  <Badge variant="secondary">{player.team}</Badge>
+                  <Badge variant="secondary">
+                    {typeof player.team === "string" ? player.team : (player.team as any)?.name}
+                  </Badge>
                 ) : (
                   <span className="text-muted-foreground">Not specified</span>
                 )}
@@ -272,7 +299,7 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Country:</span>
                 {player.country ? (
-                  <Badge variant="outline">{player.country}</Badge>
+                  <Badge variant="outline">{player.country.name}</Badge>
                 ) : (
                   <span className="text-muted-foreground">Not specified</span>
                 )}
@@ -285,13 +312,23 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
               </div>
 
               <div className="flex flex-col gap-2">
-                <span><b>YouTube:</b> <a href={player.user_urls?.youtube} target="_blank" rel="noopener noreferrer">{player.user_urls?.youtube}</a></span>
-                <span><b>Twitter:</b> <a href={player.user_urls?.twitter} target="_blank" rel="noopener noreferrer">{player.user_urls?.twitter}</a></span>
-                <span><b>Twitch:</b> <a href={player.user_urls?.twitch} target="_blank" rel="noopener noreferrer">{player.user_urls?.twitch}</a></span>
-                <span><b>TikTok:</b> <a href={player.user_urls?.tiktok} target="_blank" rel="noopener noreferrer">{player.user_urls?.tiktok}</a></span>
-                <span><b>Instagram:</b> <a href={player.user_urls?.instagram} target="_blank" rel="noopener noreferrer">{player.user_urls?.instagram}</a></span>
                 <span><b>Discord:</b> <a href={player.user_urls?.discord} target="_blank" rel="noopener noreferrer">{player.user_urls?.discord}</a></span>
+                <span><b>Instagram:</b> <a href={player.user_urls?.instagram} target="_blank" rel="noopener noreferrer">{player.user_urls?.instagram}</a></span>
+                <span><b>Steam:</b> <a href={player.user_urls?.steam} target="_blank" rel="noopener noreferrer">{player.user_urls?.steam}</a></span>
+                <span><b>TikTok:</b> <a href={player.user_urls?.tiktok} target="_blank" rel="noopener noreferrer">{player.user_urls?.tiktok}</a></span>
+                <span><b>Twitch:</b> <a href={player.user_urls?.twitch} target="_blank" rel="noopener noreferrer">{player.user_urls?.twitch}</a></span>
+                <span><b>Twitter:</b> <a href={player.user_urls?.twitter} target="_blank" rel="noopener noreferrer">{player.user_urls?.twitter}</a></span>
+                <span><b>YouTube:</b> <a href={player.user_urls?.youtube} target="_blank" rel="noopener noreferrer">{player.user_urls?.youtube}</a></span>
               </div>
+            </CardContent>
+          </Card>
+           {/* PC image preview */}
+           <Card>
+            <CardHeader>
+              <CardTitle>{player.pc_image_name || 'PC image'}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <LazyImage url={player.pc_image} alt={player.pc_image_name || 'PC image'} className="w-64 h-40 object-cover rounded-md" skeletonClass="w-64 h-40 rounded-md" />
             </CardContent>
           </Card>
 
@@ -303,6 +340,18 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">{player.info}</p>
+              </CardContent>
+            </Card>
+          )}
+          {/* Game */}
+          {player.game?.name && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Game</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">{player.game.name}</p>
+                <LazyImage url={player.game.image} alt={player.game.name} className="w-64 h-40 object-cover rounded-md" skeletonClass="w-64 h-40 rounded-md" />
               </CardContent>
             </Card>
           )}

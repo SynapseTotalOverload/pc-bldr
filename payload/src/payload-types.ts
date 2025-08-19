@@ -106,6 +106,8 @@ export interface Config {
     build: Build;
     product: Product;
     player: Player;
+    team: Team;
+    game: Game;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
@@ -113,6 +115,8 @@ export interface Config {
     build: BuildSelect<false> | BuildSelect<true>;
     product: ProductSelect<false> | ProductSelect<true>;
     player: PlayerSelect<false> | PlayerSelect<true>;
+    team: TeamSelect<false> | TeamSelect<true>;
+    game: GameSelect<false> | GameSelect<true>;
   };
   locale: null;
   user: User & {
@@ -207,6 +211,8 @@ export interface Page {
     | FeatureListBlock
     | ApiCardListBlock
     | ApiPlayerListBlock
+    | ApiTeamListBlock
+    | ApiGamesListBlock
     | WhyWorkWithUsBlock
     | HeroMeteorBlock
     | Integration2Block
@@ -887,6 +893,46 @@ export interface ApiPlayerListBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ApiTeamListBlock".
+ */
+export interface ApiTeamListBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Number of columns for grid layout
+   */
+  columns?: ('1' | '2' | '3' | '4') | null;
+  /**
+   * 0 = show all items
+   */
+  itemsPerPage?: number | null;
+  showPagination?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'apiTeamList';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ApiGamesListBlock".
+ */
+export interface ApiGamesListBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Number of columns for grid layout
+   */
+  columns?: ('1' | '2' | '3' | '4') | null;
+  /**
+   * 0 = show all items
+   */
+  itemsPerPage?: number | null;
+  showPagination?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'apiGamesList';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "WhyWorkWithUsBlock".
  */
 export interface WhyWorkWithUsBlock {
@@ -1559,6 +1605,8 @@ export interface PagesSelect<T extends boolean = true> {
         featureList?: T | FeatureListBlockSelect<T>;
         apiCardList?: T | ApiCardListBlockSelect<T>;
         apiPlayerList?: T | ApiPlayerListBlockSelect<T>;
+        apiTeamList?: T | ApiTeamListBlockSelect<T>;
+        apiGamesList?: T | ApiGamesListBlockSelect<T>;
         whyWorkWithUs?: T | WhyWorkWithUsBlockSelect<T>;
         heroMeteor?: T | HeroMeteorBlockSelect<T>;
         integration2?: T | Integration2BlockSelect<T>;
@@ -1781,6 +1829,32 @@ export interface ApiCardListBlockSelect<T extends boolean = true> {
  * via the `definition` "ApiPlayerListBlock_select".
  */
 export interface ApiPlayerListBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  columns?: T;
+  itemsPerPage?: T;
+  showPagination?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ApiTeamListBlock_select".
+ */
+export interface ApiTeamListBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  columns?: T;
+  itemsPerPage?: T;
+  showPagination?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ApiGamesListBlock_select".
+ */
+export interface ApiGamesListBlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   columns?: T;
@@ -2822,6 +2896,75 @@ export interface SetupStreaming {
   blockType: 'setupStreaming';
 }
 /**
+ * Global settings for team pages
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: string;
+  blocks?: (TeamInfo | PlayersComponents | TeamAchievements)[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamInfo".
+ */
+export interface TeamInfo {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'teamInfo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PlayersComponents".
+ */
+export interface PlayersComponents {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'playersComponents';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamAchievements".
+ */
+export interface TeamAchievements {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'achievements';
+}
+/**
+ * Global settings for game pages
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "game".
+ */
+export interface Game {
+  id: string;
+  blocks?: (GameInfo | GameStats)[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GameInfo".
+ */
+export interface GameInfo {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gameInfo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GameStats".
+ */
+export interface GameStats {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gameStats';
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
@@ -3067,6 +3210,77 @@ export interface PCSpecsSelect<T extends boolean = true> {
  * via the `definition` "SetupStreaming_select".
  */
 export interface SetupStreamingSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team_select".
+ */
+export interface TeamSelect<T extends boolean = true> {
+  blocks?:
+    | T
+    | {
+        teamInfo?: T | TeamInfoSelect<T>;
+        playersComponents?: T | PlayersComponentsSelect<T>;
+        achievements?: T | TeamAchievementsSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamInfo_select".
+ */
+export interface TeamInfoSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PlayersComponents_select".
+ */
+export interface PlayersComponentsSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamAchievements_select".
+ */
+export interface TeamAchievementsSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "game_select".
+ */
+export interface GameSelect<T extends boolean = true> {
+  blocks?:
+    | T
+    | {
+        gameInfo?: T | GameInfoSelect<T>;
+        gameStats?: T | GameStatsSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GameInfo_select".
+ */
+export interface GameInfoSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GameStats_select".
+ */
+export interface GameStatsSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }

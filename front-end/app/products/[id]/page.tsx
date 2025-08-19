@@ -23,7 +23,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { PRODUCT_TYPE_NAMES } from '@/types/prodcuts-base';
-import Image from 'next/image';
+import { useFile } from '@/hooks/useFile';
+import { useRef } from 'react';
 import Diagram from '@/components/diagram/diagram';
 import { useProductGraphsById } from '@/hooks/graphs/useProductGraphsById';
 import { ProductUsageGraphResponse } from '@/types/product-graph';
@@ -752,6 +753,10 @@ const renderAttributes = (attrs: any, name: string) => {
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { product, loading, error } = useProduct(id);
+
+  // fetch product image from S3
+  const { imageUrl, fetch: fetchImg, loading: loadingImg } = useFile();
+  const [imgSrc, setImgSrc] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<string>('2025-07-01');
   const [endDate, setEndDate] = useState<string>(new Date().toISOString().split('T')[0]);   
   const router = useRouter()
@@ -771,6 +776,22 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   useEffect(() => {
     refetch();
   }, [startDate, endDate]);
+
+  useEffect(() => {
+    if (!product?.high_image_url) return;
+
+    const url = product.high_image_url;
+    if (url.includes('https://pcbuilder')) {
+      fetchImg({ url });
+    } else {
+      setImgSrc(url);
+    }
+  }, [product?.high_image_url]);
+
+  // Update imgSrc when S3 blob loaded
+  useEffect(() => {
+    if (imageUrl) setImgSrc(imageUrl);
+  }, [imageUrl]);
 
   if (loading) {
     return (
@@ -910,7 +931,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           {/* Price Card */}
           <Card>
             <CardHeader className="items-center justify-center">
-              <Image src={product.high_image_url || ''} alt={product.title} width={400} height={400} />
+              {loadingImg && !imgSrc && <Skeleton className="w-64 h-64 rounded-md" />}
+              {imgSrc && (
+                <img src={imgSrc} alt={product.title} className="w-64 h-64 object-cover rounded-md" />
+              )}
             </CardHeader>
           </Card>
 

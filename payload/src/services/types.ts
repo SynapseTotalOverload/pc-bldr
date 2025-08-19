@@ -353,3 +353,79 @@ export interface ProductTypeMapNames {
   power_supply: 'Power Supply';
   case: 'Case';
 }
+
+
+
+export interface Team {
+    items: {
+      id: number
+      name: string
+      description: string
+      logo: string
+      jerseys_img: string
+      socila_media_links: {
+        discord: string
+        twitter: string
+        youtube: string
+        instagram: string
+        tiktok: string
+        facebook: string
+        twitch: string
+      }
+      created_at: string
+      updated_at: string
+    }[]
+}
+
+export interface TeamResponse {
+  items: Team[]
+  pagination: {
+    currentPage: number
+    totalPages: number
+    totalItems: number
+    itemsPerPage: number
+  }
+}
+
+export interface GetTeamParams {
+  skip?: number
+  limit?: number
+  query?: string
+}
+
+export interface GetGameParams {
+  skip?: number
+  limit?: number
+  query?: string
+}
+
+export interface Game {
+  id?: number
+  name: string
+  description: string
+  image: string
+  icon: string
+}
+
+export interface Games {
+  data: {
+    items: Game[]
+    pagination: {
+      currentPage: number
+      totalPages: number
+      totalItems: number
+      itemsPerPage: number
+    }
+  }
+}
+
+
+export interface GameResponse {
+  items: Game[]
+  pagination: {
+    currentPage: number
+    totalPages: number
+    totalItems: number
+    itemsPerPage: number
+  }
+}

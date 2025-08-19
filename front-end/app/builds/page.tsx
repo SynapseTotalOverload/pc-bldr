@@ -8,14 +8,11 @@ import { BuildDialog } from '@/models/dialogs';
 import BuildViewer from '@/models/dialogs/build-viewer';
 import { BuildRead } from '@/types/prodcuts-base';
 import { Plus } from 'lucide-react';
-import Link from 'next/link';
 import { DataTable } from '@/components/data-table';
 import { useRouter } from 'next/navigation';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { ThemeToggle } from '@/components/theme-provider';
 import WarningModal from '@/models/dialogs/warning-modal';
 import { useToast } from '@/hooks/use-toast';
+import { MainMenu } from '@/components/ui/menu';
 
 export default function Builds() {
   const router = useRouter();
@@ -23,9 +20,7 @@ export default function Builds() {
   const [search, setSearch] = useState('');
   const [buildType, setBuildType] = useState<string>('');
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
-  const [selectedBuild, setSelectedBuild] = useState<BuildRead | null>(null);
   const [editingBuild, setEditingBuild] = useState<BuildRead | null>(null);
   const [viewingBuild, setViewingBuild] = useState<BuildRead | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -116,36 +111,6 @@ export default function Builds() {
     setPriceMax(to);
   };
 
-  const handleBuildTypeChange = (newBuildType: string | null) => {
-    const queryParams = {
-      buildType: newBuildType || undefined,
-      page: 1,
-      search: search || undefined,
-      price_min: priceMin,
-      price_max: priceMax,
-      show_in_site_only: showInSiteOnly,
-    };
-
-    setBuildType(newBuildType || '');
-    setPage(1);
-    refetchWithOptions(queryParams);
-  };
-
-  const handleShowInSiteOnlyChange = (checked: boolean) => {
-    const queryParams = {
-      show_in_site_only: checked,
-      page: 1,
-      search: search || undefined,
-      buildType: buildType || undefined,
-      price_min: priceMin,
-      price_max: priceMax,
-    };
-
-    setShowInSiteOnly(checked);
-    setPage(1);
-    refetchWithOptions(queryParams);
-  };
-
   const handlePageChange = (newPage: number) => {    
 
     const queryParams = {
@@ -187,51 +152,17 @@ export default function Builds() {
 
   return (
     <div className="p-4 mx-auto py-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">PC Builds</h1>
-          <p className="text-muted-foreground">Manage your PC builds and configurations</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="show-in-site-only"
-              checked={showInSiteOnly}
-              onCheckedChange={handleShowInSiteOnlyChange}
-            />
-            <Label htmlFor="show-in-site-only" className="text-sm font-normal">
-              Show only site builds
-            </Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link href="/accessories">
-                <Button>Accessories</Button>
-            </Link>
-            <Link href="/skins">
-                <Button>Skins</Button>
-            </Link>
-            <Link href="/">
-                <Button>Products</Button>
-            </Link>
-            <Link href="/configurator">
-                <Button>Configurator</Button>
-            </Link>
-            <Link href="/players">
-              <Button>Players</Button>
-            </Link>
-            <Button 
-              variant="default"
-              className="cursor-pointer"
-              onClick={handleCreate}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Create Build
-            </Button>
-          </div>
-        </div>
+      <MainMenu />
+      <div className="flex justify-end">
+        <Button 
+          variant="default"
+          className="cursor-pointer "
+          onClick={handleCreate}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Create Build
+        </Button>
       </div>
-
       <div className="mt-8 w-full">
         <div className="inner-white-glow rounded-2xl p-8 shadow-2xl">
           <DataTable

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CategoryButtons } from '@/components/ui/category-buttons';
 import { DataTable } from '@/components/data-table';
 import { useProducts } from '@/hooks/useProductT';
@@ -14,19 +14,80 @@ import { ColumnDef } from '@tanstack/react-table';
 import { categoryColumnExtensions } from '@/models/products-table/columns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { LayoutGrid, MoreHorizontal,  Plus, Table } from 'lucide-react';
+import { MoreHorizontal,  Plus } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { HoverEffect } from '@/components/ui/motion-card';
 import { AddNewProduct } from '@/models/dialogs/add-new-product';
 import { useToast } from '@/hooks/use-toast';
 import instance from '@/lib/axios';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useBoolean } from '@/hooks/use-boolean';
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ThemeToggle } from '@/components/theme-provider';
 import { ErrorModal } from '@/components/ui/error-modal';
 import WarningModal from '@/models/dialogs/warning-modal';
+import { useFile } from '@/hooks/useFile';
+import { MainMenu } from '@/components/ui/menu';
+
+
+const ProductImage: React.FC<{ url?: string | null; alt?: string }> = ({ url, alt = '' }) => {
+  const { imageUrl, fetch, loading } = useFile();
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    if (!url) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldLoad(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: '150px' }
+    );
+
+    if (wrapperRef.current) observer.observe(wrapperRef.current);
+    return () => observer.disconnect();
+  }, [url]);
+
+  useEffect(() => {
+    if (shouldLoad && url) {
+      if (!url.includes('https://pcbuilder')) {
+        fetchExternal(url);
+        return;
+      }
+      fetch({ url });
+    }
+  }, [shouldLoad, url]);
+
+  const fetchExternal = (externalUrl: string) => {
+    setExternalSrc(externalUrl);
+  };
+
+  const [externalSrc, setExternalSrc] = useState<string | null>(null);
+
+  const finalSrc = url && !url.includes('https://pcbuilder') ? externalSrc : imageUrl;
+
+  return (
+    <div ref={wrapperRef} className="w-10 h-10">
+      {(loading || !finalSrc) && <Skeleton className="w-10 h-10 rounded-md" />}
+      {!loading && finalSrc && (
+        <LazyLoadImage
+          src={finalSrc}
+          alt={alt}
+          className="w-10 h-10 object-cover rounded-md"
+          effect="opacity"
+          threshold={100}
+          wrapperClassName="w-10 h-10"
+        />
+      )}
+    </div>
+  );
+};
 
 interface FormData {
   category: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories;
@@ -36,10 +97,25 @@ interface FormData {
   rating: string;
   brand: string;
   model: string;
-  [key: string]: string | number;
+  high_image_url?: string | File;
+  low_image_url?: string | File;
+  [key: string]: string | number | File | undefined;
 }
 
 export default function Home() {
+  const { upload, remove } = useFile();
+
+  const handleUploadFile = async (file: File) => {
+    if (!file) return null;
+    try {
+      const record = await upload(file);
+      return record.url;
+    } catch (err) {
+      console.error('Image upload failed', err);
+      return null;
+    }
+  };
+
   const [selectedCategory, setSelectedCategory] = useState<keyof ProductTypeMapNames>('cpu');
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState(''); 
@@ -58,6 +134,7 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<number | null>(null);
+  const [productToDeleteUrl, setProductToDeleteUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const isAdmin = localStorage.getItem('isAdmin')
@@ -98,6 +175,8 @@ export default function Home() {
       };
 
       const baseFields = ['asin', 'title', 'price', 'rating'];
+      baseFields.push('high_image_url', 'low_image_url');
+      
       const categoryId = getCategoryId(data.category);
       
       if (!categoryId || categoryId < 1 || categoryId > 17) {
@@ -131,6 +210,21 @@ export default function Home() {
       }
 
       console.log('Transformed data:', transformedData);
+      if (transformedData.high_image_url instanceof File) {
+        if (selectedProduct?.high_image_url) {
+          try {
+            await remove({ url: selectedProduct.high_image_url });
+          } catch (err) {
+            console.error('Failed to delete old image', err);
+          }
+        }
+
+        const url: string | null = await handleUploadFile(transformedData.high_image_url);
+        if (url) {
+          transformedData.high_image_url = url;
+          transformedData.low_image_url = url;
+        }
+      }
 
       if(selectedProduct){
         await instance.put(`/products/${selectedProduct.id}`, transformedData);
@@ -147,8 +241,9 @@ export default function Home() {
       });
     }
   };
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: number, imageUrl?: string | null) => {
     setProductToDelete(id);
+    setProductToDeleteUrl(imageUrl || null);
     setIsDeleteModalOpen(true);
   };
 
@@ -157,9 +252,18 @@ export default function Home() {
     
     try {
       await instance.delete(`/products/${productToDelete}`);
+      // delete image from storage if we have its URL
+      if (productToDeleteUrl) {
+        try {
+          await remove({ url: productToDeleteUrl });
+        } catch (err) {
+          console.error('Failed to delete image file', err);
+        }
+      }
       await refetch();
       setIsDeleteModalOpen(false);
       setProductToDelete(null);
+      setProductToDeleteUrl(null);
     } catch (error) {
       const errorMessage = "This product is referenced in player list. It cannot be deleted while it is referenced";
       setErrorMessage(errorMessage);
@@ -178,7 +282,7 @@ export default function Home() {
       header: 'Image',
       accessorKey: 'image',
       cell: ({ row }) => {
-        return <img className='w-10 h-10' src={row.original.high_image_url} alt={row.original.high_image_url} />;
+        return <ProductImage url={row.original.high_image_url} />;
       },
     },
     {
@@ -234,7 +338,7 @@ export default function Home() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem onClick={()=>{setSelectedProduct(row.original); toggleState('addNewProduct')}}>Edit</DropdownMenuItem>
-            <DropdownMenuItem onClick={()=>handleDelete(row.original.id)} className="text-red-500">Delete</DropdownMenuItem>
+            <DropdownMenuItem onClick={()=>handleDelete(row.original.id, row.original.high_image_url)} className="text-red-500">Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>;
       },  
@@ -244,39 +348,7 @@ export default function Home() {
   return (
     <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
       <div className="z-10 w-full items-center justify-between font-mono text-sm">
-        <div className="flex items-center justify-between">
-          <h1 className="mb-8 text-4xl font-bold">PC Part Picker Products</h1>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <ToggleGroup
-              type="single"
-              value={viewMode}
-              onValueChange={(value) => value && setViewMode(value as 'table' | 'card')}
-            >
-              <ToggleGroupItem value="table" aria-label="Table view">
-                <Table className="h-4 w-4" />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="card" aria-label="Card view">
-                <LayoutGrid className="h-4 w-4" />
-              </ToggleGroupItem>
-            </ToggleGroup>
-            <Link href="/accessories">
-                <Button>Accessories</Button>
-              </Link>
-            <Link href="/skins">
-                <Button>Skins</Button>
-              </Link>
-            <Link href="/builds">
-                <Button>Builds</Button>
-            </Link>
-            <Link href="/configurator">
-              <Button>Configurator</Button>
-            </Link>
-            <Link href="/players">
-              <Button>Players</Button>
-            </Link>
-          </div>
-        </div>
+        <MainMenu />
 
         <CategoryButtons
           selectedCategory={selectedCategory}

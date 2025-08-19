@@ -1,15 +1,38 @@
 import { PlayerWithRelations } from '@/blocks/ApiPlayerList/types'
+import { useEffect } from 'react'
+import { useFile } from '@/hooks/useFile'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export const PlayerInfo = ({ player }: { player: PlayerWithRelations }) => {
-  console.log("player", player)
+  const { imageUrl: avatarUrl, fetch: fetchAvatar, loading: loadingAvatar } = useFile()
+  const { imageUrl: pcUrl, fetch: fetchPC, loading: loadingPC } = useFile()
+  const { imageUrl: gameIconUrl, fetch: fetchGameIcon, loading: loadingGameIcon } = useFile()
+
+  useEffect(() => {
+    if (player.player_img) {
+      fetchAvatar({ url: player.player_img })
+    }
+    if (player.pc_image) {
+      fetchPC({ url: player.pc_image })
+    }
+    if (player.game?.image) {
+      fetchGameIcon({ url: player.game.image })
+    }
+  }, [player.player_img, player.pc_image])
+
+
   return (
+    <>
     <div className="bg-white rounded-lg shadow-md p-4 flex gap-4">
-      <div className="flex-shrink-0">
-        <img
-          src={player.player_img}
-          alt={player.player_name}
-          className="rounded-full w-40 h-40 object-cover"
-        />
+      <div className="flex-shrink-0 w-40 h-40">
+        {loadingAvatar && <Skeleton className="w-40 h-40 rounded-full" />}
+        {!loadingAvatar && avatarUrl && (
+          <img
+            src={avatarUrl}
+            alt={player.player_name}
+            className="rounded-full w-40 h-40 object-cover"
+          />
+        )}
       </div>
       <div className="flex-1">
         <h1 className="text-2xl font-bold">{player.player_name}</h1>
@@ -17,11 +40,13 @@ export const PlayerInfo = ({ player }: { player: PlayerWithRelations }) => {
           <tbody>
             <tr>
               <td className="w-24 font-medium text-gray-600">Team:</td>
-              <td className="text-gray-900">{player.team}</td>
+              <td className="text-gray-900">
+                {typeof player.team === 'string' ? player.team : (player.team as any)?.name}
+              </td>
             </tr>
             <tr>
               <td className="w-24 font-medium text-gray-600">Country:</td>
-              <td className="text-gray-900">{player.country}</td>
+              <td className="text-gray-900">{player.country?.name}</td>
             </tr>
             <tr>
               <td className="w-24 font-medium text-gray-600">Name:</td>
@@ -46,17 +71,22 @@ export const PlayerInfo = ({ player }: { player: PlayerWithRelations }) => {
             </p>
           </div>
         )}
+        {player.game?.name && (
+          <div className="game mt-4">
+            <h3 className="font-medium text-gray-600 mb-2">Game:</h3>
+            <div className="flex flex-col gap-2">
+              {loadingGameIcon && <Skeleton className="w-6 h-6 rounded-md" />}
+              {!loadingGameIcon && gameIconUrl && (
+                <img src={gameIconUrl} alt={player.game?.name} className="w-[200px] h-[200px] object-cover rounded-md" />
+              )}
+              <p className="text-gray-900">{player.game?.name}</p>
+            </div>
+          </div>
+        )}
       </div>
       {/* User urls*/}
       <div className="flex-2">
         <ul className="flex flex-col gap-2">
-          <li className="flex items-center gap-2">
-            <a href={player.user_url?.twitch} target="_blank" rel="noopener noreferrer">
-              <svg className="w-5 h-5 text-gray-600 cursor-pointer hover:text-purple-500" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
-              </svg>
-            </a>
-          </li>
           <li className="flex items-center gap-2">
             <a href={player.user_url?.discord} target="_blank" rel="noopener noreferrer">
               <svg className="w-5 h-5 text-gray-600 cursor-pointer hover:text-indigo-500" fill="currentColor" viewBox="0 0 24 24">
@@ -72,9 +102,23 @@ export const PlayerInfo = ({ player }: { player: PlayerWithRelations }) => {
             </a>
           </li>
           <li className="flex items-center gap-2">
+            <a href={player.user_url?.steam} target="_blank" rel="noopener noreferrer">
+              <svg className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.62 20.565 6.363 24.002 11.979 24c6.624 0 11.999-5.375 11.999-12S18.603.001 11.979.001zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/>
+              </svg>
+            </a>
+          </li>
+          <li className="flex items-center gap-2">
             <a href={player.user_url?.tiktok} target="_blank" rel="noopener noreferrer">
               <svg className="w-5 h-5 text-gray-600 cursor-pointer hover:text-black" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+              </svg>
+            </a>
+          </li>
+          <li className="flex items-center gap-2">
+            <a href={player.user_url?.twitch} target="_blank" rel="noopener noreferrer">
+              <svg className="w-5 h-5 text-gray-600 cursor-pointer hover:text-purple-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
               </svg>
             </a>
           </li>
@@ -95,5 +139,15 @@ export const PlayerInfo = ({ player }: { player: PlayerWithRelations }) => {
         </ul>
       </div>
     </div>
+    {player.pc_image && (
+      <div className="bg-white rounded-lg shadow-md p-4 flex gap-4 mt-4">
+        <div className="flex justify-center flex-col items-center gap-4 w-full">
+          {loadingPC && <Skeleton className="w-64 h-40 rounded-md" />}
+          {!loadingPC && pcUrl && (<img src={pcUrl} alt={player.pc_image_name} className="w-64 h-40 object-cover rounded-md" />)}
+          <h2 className="text-lg font-bold">{player.pc_image_name}</h2>
+        </div>
+      </div>
+    )}
+    </>
   )
 }

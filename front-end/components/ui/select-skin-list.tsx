@@ -250,17 +250,6 @@ export function SelectSkinList({
                         onKeyPress={handleKeyPress}
                         className="flex-1"
                     />
-                    <Button 
-                        onClick={handleSearch} 
-                        size="sm" 
-                        disabled={loading || !isInitialized}
-                    >
-                        {loading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                            <Search className="h-4 w-4" />
-                        )}
-                    </Button>
                 </div>
 
                 <Select 

@@ -3,6 +3,9 @@ import { getPayload } from 'payload'
 import { unstable_cache } from 'next/cache'
 
 export async function getRedirects(depth = 1) {
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return []
+  }
   const payload = await getPayload({ config: configPromise })
 
   const { docs: redirects } = await payload.find({

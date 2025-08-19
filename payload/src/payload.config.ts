@@ -19,6 +19,8 @@ import { getServerSideURL } from './utilities/getURL'
 import { Build } from './Build/config'
 import { Product } from './Product/config'
 import { Player } from './Player'
+import { Team } from './Team/config'
+import { Game } from './Game'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -68,7 +70,7 @@ export default buildConfig({
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3001'
   ].filter(Boolean),
-  globals: [Header, Footer, Build, Product, Player],
+  globals: [Header, Footer, Build, Product, Player, Team, Game],
   plugins: [
     ...plugins,
   ],

@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FrontendToBackendCategoryMapAccessories, ProductRead, ProductTypeMapNamesAccessories } from "@/types/product-accessories-type";
@@ -12,19 +12,71 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { LayoutGrid, MoreHorizontal, Plus, Table } from "lucide-react";
+import { MoreHorizontal, Plus } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import { useFile } from "@/hooks/useFile";
 import { categoryColumnExtensionsAccessories } from "@/models/products-table/columns";
-import { ToggleGroupItem } from "@/components/ui/toggle-group";
-import { ThemeToggle } from "@/components/theme-provider";
-import { ToggleGroup } from "@/components/ui/toggle-group";
 import { CategoryButtons } from "@/components/ui/category-buttons";
 import { DataTable } from '@/components/data-table';
 import { HoverEffect } from "@/components/ui/motion-card";
 import { AddNewProduct } from "@/models/dialogs/add-new-product";
 import { ErrorModal } from "@/components/ui/error-modal";
 import WarningModal from "@/models/dialogs/warning-modal";
+import { MainMenu } from "@/components/ui/menu";
+  
 
+const ProductImage: React.FC<{ url?: string | null; alt?: string }> = ({ url, alt = "" }) => {
+  const { imageUrl, fetch, loading } = useFile();
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [externalSrc, setExternalSrc] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!url) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldLoad(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: "150px" }
+    );
+    if (wrapperRef.current) observer.observe(wrapperRef.current);
+    return () => observer.disconnect();
+  }, [url]);
+
+  useEffect(() => {
+    if (shouldLoad && url) {
+      if (!url.includes("https://pcbuilder")) {
+        setExternalSrc(url);
+        return;
+      }
+      fetch({ url });
+    }
+  }, [shouldLoad, url, fetch]);
+
+  const finalSrc = url && !url.includes("https://pcbuilder") ? externalSrc : imageUrl;
+
+  return (
+    <div ref={wrapperRef} className="w-10 h-10">
+      {(loading || !finalSrc) && <Skeleton className="w-10 h-10 rounded-md" />}
+      {!loading && finalSrc && (
+        <LazyLoadImage
+          src={finalSrc}
+          alt={alt}
+          className="w-10 h-10 object-cover rounded-md"
+          effect="opacity"
+          threshold={100}
+          wrapperClassName="w-10 h-10"
+        />
+      )}
+    </div>
+  );
+};
 
 interface FormData {
   category: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories;
@@ -34,7 +86,9 @@ interface FormData {
   rating: string;
   brand: string;
   model: string;
-  [key: string]: string | number;
+  high_image_url?: string | File;
+  low_image_url?: string | File;
+  [key: string]: string | number | File | undefined;
 }
 
 export default function Accessories() {
@@ -47,6 +101,20 @@ export default function Accessories() {
     const { toast } = useToast();
     const {isState, changeState, toggleState}= useBoolean();
     const [selectedProduct, setSelectedProduct] = useState<ProductRead | null>(null);
+    const { upload, remove } = useFile();
+
+    const handleUploadFile = async (file: File): Promise<string | null> => {
+      if (!file) return null;
+      try {
+        const record = await upload(file);
+        return record.url;
+      } catch (err) {
+        console.error('Image upload failed', err);
+        return null;
+      }
+    };
+
+    const [productToDeleteUrl, setProductToDeleteUrl] = useState<string | null>(null);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -54,7 +122,7 @@ export default function Accessories() {
     const { products, pagination, error, refetch } = useProducts<ProductRead>({
       category: selectedCategory,
       page,
-      search: activeSearch, // Use activeSearch here
+      search: activeSearch,
       periphery_flag: true,
     });
 
@@ -81,7 +149,7 @@ export default function Accessories() {
           return categoryMap[category as keyof ProductTypeMapNamesAccessories];
         };
   
-        const baseFields = ['asin', 'title', 'price', 'rating'];
+        const baseFields = ['asin', 'title', 'price', 'rating', 'high_image_url', 'low_image_url'];
         const categoryId = getCategoryId(data.category);
         
         if (!categoryId || categoryId < 9 || categoryId > 17) {
@@ -117,6 +185,22 @@ export default function Accessories() {
         if (Object.keys(attrs).length > 0) {
           transformedData.attrs = attrs;
         }
+
+        if (transformedData.high_image_url instanceof File) {
+          if (selectedProduct?.high_image_url) {
+            try {
+              await remove({ url: selectedProduct.high_image_url });
+            } catch (err) {
+              console.error('Failed to delete old image', err);
+            }
+          }
+
+          const url: string | null = await handleUploadFile(transformedData.high_image_url);
+          if (url) {
+            transformedData.high_image_url = url;
+            transformedData.low_image_url = url; // mirror
+          }
+        }
     
         if(selectedProduct){
           await instance.put(`/products/${selectedProduct.id}`, transformedData);
@@ -134,8 +218,9 @@ export default function Accessories() {
       }
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: number, imageUrl?: string | null) => {
       setProductToDelete(id);
+      setProductToDeleteUrl(imageUrl || null);
       setIsDeleteModalOpen(true);
     };
 
@@ -144,9 +229,17 @@ export default function Accessories() {
       
       try {
         await instance.delete(`/products/${productToDelete}`);
+        if (productToDeleteUrl) {
+          try {
+            await remove({ url: productToDeleteUrl });
+          } catch (err) {
+            console.error("Failed to delete image file", err);
+          }
+        }
         await refetch();
         setIsDeleteModalOpen(false);
         setProductToDelete(null);
+        setProductToDeleteUrl(null);
         toast({
           title: "Success",
           description: "Product deleted successfully",
@@ -157,6 +250,7 @@ export default function Accessories() {
         setIsErrorModalOpen(true);
         setIsDeleteModalOpen(false);
         setProductToDelete(null);
+        setProductToDeleteUrl(null);
       }
     };
 
@@ -169,7 +263,7 @@ export default function Accessories() {
         header: 'Image',
         accessorKey: 'image',
         cell: ({ row }) => {
-          return <img className="w-10 h-10" src={row.original.high_image_url} alt={row.original.title} />;
+          return <ProductImage url={row.original.high_image_url} alt={row.original.title} />;
         },
       },
       {
@@ -225,7 +319,7 @@ export default function Accessories() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem onClick={()=>{setSelectedProduct(row.original); toggleState('addNewProduct')}}>Edit</DropdownMenuItem>
-            <DropdownMenuItem onClick={()=>handleDelete(row.original.id)} className="text-red-500">Delete</DropdownMenuItem>
+            <DropdownMenuItem onClick={()=>handleDelete(row.original.id, row.original.high_image_url)} className="text-red-500">Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>;
       },  
@@ -242,39 +336,7 @@ export default function Accessories() {
     return (
       <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
         <div className="z-10 w-full items-center justify-between font-mono text-sm">
-          <div className="flex items-center justify-between">
-            <h1 className="mb-8 text-4xl font-bold">Products Accessories</h1>
-            <div className="flex items-center gap-4">
-              <ThemeToggle />
-              <ToggleGroup
-                type="single"
-                value={viewMode}
-                onValueChange={(value) => value && setViewMode(value as 'table' | 'card')}
-              >
-                <ToggleGroupItem value="table" aria-label="Table view">
-                  <Table className="h-4 w-4" />
-                </ToggleGroupItem>
-                <ToggleGroupItem value="card" aria-label="Card view">
-                  <LayoutGrid className="h-4 w-4" />
-                </ToggleGroupItem>
-              </ToggleGroup>
-              <Link href="/skins">
-                  <Button>Skins</Button>
-                </Link>
-              <Link href="/builds">
-                  <Button>Builds</Button>
-              </Link>
-              <Link href="/">
-                  <Button>Products</Button>
-              </Link>
-              <Link href="/configurator">
-                  <Button>Configurator</Button>
-              </Link>
-              <Link href="/players">
-                  <Button>Players</Button>
-              </Link>
-            </div>
-          </div>
+          <MainMenu />
 
           <CategoryButtons
             isAccessories={1}
@@ -333,6 +395,7 @@ export default function Accessories() {
             onClose={() => {
               setIsDeleteModalOpen(false);
               setProductToDelete(null);
+              setProductToDeleteUrl(null);
             }}
             onConfirm={confirmDelete}
             title="Confirm Deletion"

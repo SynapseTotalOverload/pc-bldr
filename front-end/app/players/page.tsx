@@ -1,19 +1,21 @@
 'use client'
-import { ThemeToggle } from "@/components/theme-provider";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { PlayersTable } from "@/components/players-table";
 import { playersColumns } from "@/models/players-table/columns";
 import { usePlayers } from "@/hooks/usePlayers";
 import { PlayerCreate, PlayerUpdate } from "@/types/players-base";
+import { useFile } from "@/hooks/useFile";
 import WarningModal from "@/models/dialogs/warning-modal";
+import { MainMenu } from "@/components/ui/menu";
 
 export default function Players() {
     const router = useRouter()
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [playerToDelete, setPlayerToDelete] = useState<number | null>(null);
+    const [playerToDeleteUrl, setPlayerToDeleteUrl] = useState<string | null>(null);
+    const [pcImageToDeleteUrl, setPcImageToDeleteUrl] = useState<string | null>(null);
+    const { remove } = useFile();
     const { 
         players, 
         loading, 
@@ -45,7 +47,10 @@ export default function Players() {
   }
 
   const handleDeletePlayer = async (id: number) => {
+    const target = players.find(p => p.id === id);
     setPlayerToDelete(id);
+    setPlayerToDeleteUrl(target?.player_img || null);
+    setPcImageToDeleteUrl((target as any)?.pc_image || null);
     setIsDeleteModalOpen(true);
   };
 
@@ -53,13 +58,35 @@ export default function Players() {
     if (!playerToDelete) return;
     
     try {
-      await removePlayer(playerToDelete);
       setIsDeleteModalOpen(false);
+
+      await removePlayer(playerToDelete);
+
+      if (playerToDeleteUrl) {
+        try {
+          await remove({ url: playerToDeleteUrl });
+        } catch (err) {
+          console.error('Failed to delete player image', err);
+        }
+      }
+
+      if (pcImageToDeleteUrl) {
+        try {
+          await remove({ url: pcImageToDeleteUrl });
+        } catch (err) {
+          console.error('Failed to delete pc image', err);
+        }
+      }
+
       setPlayerToDelete(null);
+      setPlayerToDeleteUrl(null);
+      setPcImageToDeleteUrl(null);
     } catch (error) {
       console.error('Error deleting player:', error);
       setIsDeleteModalOpen(false);
       setPlayerToDelete(null);
+      setPlayerToDeleteUrl(null);
+      setPcImageToDeleteUrl(null);
     }
   };
 
@@ -83,27 +110,7 @@ export default function Players() {
     <div>
       <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
         <div className="z-10 w-full items-center justify-between font-mono text-sm">
-          <div className="flex items-center justify-between">
-            <h1 className="mb-8 text-4xl font-bold">Players</h1>
-            <div className="flex items-center gap-4">
-              <ThemeToggle />
-              <Link href="/accessories">
-                  <Button>Accessories</Button>
-              </Link>
-              <Link href="/builds">
-                  <Button>Builds</Button>
-              </Link>
-              <Link href="/">
-                  <Button>Products</Button>
-              </Link>
-              <Link href="/configurator">
-                  <Button>Configurator</Button>
-              </Link>
-              <Link href="/skins">
-                  <Button>Skins</Button>
-              </Link>
-            </div>
-          </div>
+          <MainMenu />
           <div className="mt-8 w-full">
             <div className="inner-white-glow rounded-2xl p-8 shadow-2xl">
               <PlayersTable
@@ -133,6 +140,8 @@ export default function Players() {
         onClose={() => {
           setIsDeleteModalOpen(false);
           setPlayerToDelete(null);
+          setPlayerToDeleteUrl(null);
+          setPcImageToDeleteUrl(null);
         }}
         onConfirm={confirmDeletePlayer}
         title="Confirm Deletion"

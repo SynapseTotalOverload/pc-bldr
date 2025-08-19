@@ -165,10 +165,8 @@ export default function Configurator() {
   return (
     <div className="bg-background flex h-screen flex-col items-center justify-center gap-4">
       <div className="absolute top-4 left-4 flex items-center gap-4">
-        <Button>
-          <Link href="/">
-            <ArrowLeftIcon className="h-4 w-4" />
-          </Link>
+        <Button className="cursor-pointer" onClick={() => router.back()}>
+          <ArrowLeftIcon className="h-4 w-4" />
         </Button>
         <ThemeToggle />
       </div>

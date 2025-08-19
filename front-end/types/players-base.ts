@@ -1,12 +1,18 @@
+import { Country } from "./country";
+import { GameBase } from "./game-base";
+
 export interface PlayerBase {
+  id?: number;
   player_name: string;
   player_img?: string;
   team?: string;
-  country?: string;
+  country_id?: number;
   name?: string;
   birthday?: string;
   info?: string;
   note?: string;
+  pc_image?: string;
+  pc_image_name?: string;
   user_urls?: {
     youtube?: string;
     twitter?: string;
@@ -14,19 +20,27 @@ export interface PlayerBase {
     tiktok?: string;
     instagram?: string;
     discord?: string;
+    steam?: string;
+  };
+  game?: {
+    id?: number;
+    name?: string;
   };
 }
 
 export interface PlayerCreate extends PlayerBase {
+  game_id?: number;
   gear_list_id?: number;
   pc_specs_list_id?: number;
   setup_streaming_list_id?: number;
 }
 
 export interface PlayerUpdate extends Partial<PlayerBase> {
+  game_id?: number;
   gear_list_id?: number;
   pc_specs_list_id?: number;
   setup_streaming_list_id?: number;
+
 }
 
 export interface PlayerUpdateWithGear extends Partial<PlayerBase> {
@@ -56,10 +70,39 @@ export interface PlayerUpdateWithGear extends Partial<PlayerBase> {
     power_supply_id?: number | null;
     case_id?: number | null;
   };
+  custom_product_reletion?: CustomProductReletionSimple[];
+}
+
+export interface CustomProductReletionSimple {
+  id?: number;
+  user_id?: number;
+  original_name?: string;
+  product_id?: number;
+  custom_name?: string;
+  pozition?: string;
+  data?: string;
+  high_image_url?: string;
+  low_image_url?: string;
+}
+
+export interface CustomProductReletion {
+  create_list?: {
+    product_id: number;
+    original_name: string;
+    custom_name?: string;
+    pozition: string;
+    data: string;
+  }[];
+  update_list?: {
+    id: number;
+    custom_name: string;
+  }[];
+  delete_list?: string[];
 }
 
 export interface PlayerRead extends PlayerBase {
   id: number;
+  country?: Country;
   gear_list_id?: number;
   pc_specs_list_id?: number;
   setup_streaming_list_id?: number;
@@ -73,6 +116,8 @@ export interface PlayerWithRelations extends PlayerRead {
   setup_streaming_list?: any;
   skins: any[];
   product_usage_logs: ProductUsageLog[];
+  custom_product_reletion?: CustomProductReletionSimple[];
+  game?: GameBase;
 }
 
 export interface ProductUsageLog {
