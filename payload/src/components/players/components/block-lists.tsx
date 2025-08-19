@@ -2,15 +2,15 @@
 
 import { CardBox } from "./card-box"
 import Link from 'next/link'
-import { useEffect } from "react"
 import { CardBoxSkin } from "./card-box-skin"
 
 interface BlockListsProps {
   title: string;
   info: any;
+  custProducts?: any;
 }
 
-export const BlockLists = ({ title, info }: BlockListsProps) => { 
+export const BlockLists = ({ title, info, custProducts }: BlockListsProps) => { 
   
   const getItemsFromSection = () => {
     const items: any[] = []
@@ -26,6 +26,21 @@ export const BlockLists = ({ title, info }: BlockListsProps) => {
       if (info.storage) items.push({ ...info.storage, category: 'Storage', type: 'pc_specs' })
       if (info.power_supply) items.push({ ...info.power_supply, category: 'Power Supply', type: 'pc_specs' })
       if (info.case) items.push({ ...info.case, category: 'Case', type: 'pc_specs' })
+
+      if (Array.isArray(custProducts) && custProducts.length > 0) {
+        custProducts.forEach(cp => {
+          if (!cp) return
+          items.push({
+            ...cp,
+            id: cp.product_id ?? cp.id,
+            category: cp.custom_name || 'Custom',
+            display_name: cp.original_name || cp.custom_name,
+            name: cp.original_name || cp.custom_name,
+            low_image_url: cp.low_image_url || '',
+            type: 'pc_specs',
+          })
+        })
+      }
     }
     
     if (title === 'Gear') {
@@ -49,12 +64,14 @@ export const BlockLists = ({ title, info }: BlockListsProps) => {
         if (skin) items.push({ ...skin, category: 'Skin', type: 'skins' })
       })
     }
-    
+    if (title === 'PC Image') {
+      items.push({ ...info, category: 'PC Image', type: 'pc_image', pc_image_name: info.pc_image_name, pc_image: info.pc_image })
+    }
     return items
   }
 
   const items = getItemsFromSection()
-
+  console.log(items)
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
       <h2 className="text-lg font-bold mb-4">{title}</h2>

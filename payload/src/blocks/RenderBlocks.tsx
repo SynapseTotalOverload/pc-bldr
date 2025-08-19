@@ -21,6 +21,8 @@ import { Testimonial19Component } from '@/blocks/Testimonial19/Component'
 import { Feature253Component } from '@/blocks/Feature253/Component'
 import { ApiPlayerListComponent } from './ApiPlayerList'
 import { DiagramBrandBlock } from './DiagramBrand/Component'
+import { ApiTeamListComponent } from './ApiTeamList'
+import { ApiGamesListComponent } from './ApiGamesList'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -32,6 +34,8 @@ const blockComponents = {
   featureList: FeatureListBlock,
   apiCardList: ApiCardListBlock,
   apiPlayerList: ApiPlayerListComponent,
+  apiTeamList: ApiTeamListComponent,
+  apiGamesList: ApiGamesListComponent,
   whyWorkWithUs: WhyWorkWithUs,
   heroMeteor: HeroMeteorComponent,
   integration2: Integration2Component,

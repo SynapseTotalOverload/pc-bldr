@@ -56,48 +56,53 @@ export function SelectListProductNew({
     const [usage_start_datetime, setUsageStartDatetime] = useState<string>(selectedDate || "");
     const [isDateManuallyChanged, setIsDateManuallyChanged] = useState(false);
 
-    const formatDateForInput = (dateString: string) => {
-        if (!dateString) return "";
-        try {
-            const date = new Date(dateString);
-            return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
-        } catch (error) {
-            console.error('Error formatting date for input:', error);
-            return "";
-        }
-    };
+    // const formatDateForInput = (dateString: string) => {
+    //     if (!dateString) return "";
+    //     try {
+    //         const date = new Date(dateString);
+    //         return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
+    //     } catch (error) {
+    //         console.error('Error formatting date for input:', error);
+    //         return "";
+    //     }
+    // };
 
-    useEffect(() => {
-        if (!selectedDate && createdDate) {
-            const formattedDate = formatDateForInput(createdDate);
-            setUsageStartDatetime(formattedDate);
-            onValueChange(value, formattedDate);
-        }
-    }, [createdDate, selectedDate, value, onValueChange]);
+    // useEffect(() => {
+    //     if (!selectedDate && createdDate) {
+    //         const formattedDate = formatDateForInput(createdDate);
+    //         setUsageStartDatetime(formattedDate);
+    //         onValueChange(value, formattedDate);
+    //     }
+    // }, [createdDate, selectedDate, value, onValueChange]);
 
-    useEffect(() => {
-        if (value !== 'none' && usageProductLogs && usageProductLogs.length > 0 && !isDateManuallyChanged) {
-            const matchingLog = usageProductLogs.find(log => log.product_id.toString() === value);
-            if (matchingLog) {
-                const formattedDate = formatDateForInput(matchingLog.usage_start_datetime);
-                setUsageStartDatetime(formattedDate);
-                onValueChange(value, formattedDate);
-            }
-        }
-    }, [value, usageProductLogs, onValueChange, isDateManuallyChanged]);
+    // useEffect(() => {
+    //     if (value !== 'none' && usageProductLogs && usageProductLogs.length > 0 && !isDateManuallyChanged) {
+    //         const matchingLog = usageProductLogs.find(log => log.product_id.toString() === value);
+    //         if (matchingLog) {
+    //             const formattedDate = formatDateForInput(matchingLog.usage_start_datetime);
+    //             setUsageStartDatetime(formattedDate);
+    //             onValueChange(value, formattedDate);
+    //         }
+    //     }
+    // }, [value, usageProductLogs, onValueChange, isDateManuallyChanged]);
 
     const getProductDisplayInfo = (product: ProductRead | any) => {
-        if (product && 'name' in product && !('title' in product)) {
-            return {
-                title: product.display_name || product.name,
-            };
+        if (!product) {
+            return { title: "" };
         }
-        
-        const baseInfo = {
-            title: product.display_name || product.title,
-        };
 
-        return baseInfo;
+        let rawTitle: any = null;
+        if (product.display_name) {
+            rawTitle = product.display_name;
+        } else if (product.title) {
+            rawTitle = product.title;
+        } else if (product.name) {
+            rawTitle = product.name;
+        }
+
+        const title = typeof rawTitle === "string" ? rawTitle : (rawTitle?.name ?? JSON.stringify(rawTitle));
+
+        return { title };
     };
 
     const fetchProducts = async (page: number = 1, search: string = "") => {
@@ -163,7 +168,6 @@ export function SelectListProductNew({
     };
     
 
-    // Initialize data when user first interacts with select
     const initializeData = () => {
         if (!isInitialized) {
             setIsInitialized(true);
@@ -207,9 +211,11 @@ export function SelectListProductNew({
             if (usageProductLogs && usageProductLogs.length > 0 && !isDateManuallyChanged) {
                 const matchingLog = usageProductLogs.find(log => log.product_id.toString() === newValue);
                 if (matchingLog) {
-                    const formattedDate = formatDateForInput(matchingLog.usage_start_datetime);
-                    setUsageStartDatetime(formattedDate);
-                    onValueChange(newValue, formattedDate);
+                    // const formattedDate = formatDateForInput(matchingLog.usage_start_datetime);
+                    // setUsageStartDatetime(formattedDate);
+                    setUsageStartDatetime(new Date().toISOString().split('T')[0]);
+                    // onValueChange(newValue, formattedDate);
+                    onValueChange(newValue, new Date().toISOString().split('T')[0]);
                     return;
                 }
             }
@@ -277,7 +283,7 @@ export function SelectListProductNew({
                     <SelectTrigger className="w-full">
                         {activeProduct ? (
                             <span className="text-sm font-medium">
-                                {(activeProduct as any).display_name || (activeProduct as any).name || activeProduct.title}
+                                {getProductDisplayInfo(activeProduct).title}
                             </span>
                         ) : (
                             <span className="text-muted-foreground">{placeholder}</span>
@@ -362,7 +368,7 @@ export function SelectListProductNew({
                         )}
                     </SelectContent>
                 </Select>
-                {activeProduct !== null && (
+                {/* {activeProduct !== null && (
                 <div className="space-y-1">
                     <Label htmlFor="usage_start_datetime" className="text-sm">
                         Usage Start Date
@@ -384,7 +390,7 @@ export function SelectListProductNew({
                         required={true}
                     />
                 </div>
-                )}
+                )} */}
             </div>
         </div>
     )

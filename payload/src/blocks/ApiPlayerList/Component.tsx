@@ -76,13 +76,11 @@ export const ApiPlayerList: React.FC<ApiPlayerListProps> = ({
         params.query = searchQuery
       }
 
-      console.log(params)
 
       const response = await playersService.getPlayers(params)
       setPlayers(response.items || [])
       setTotalItems(response.total || 0)
       setTotalPages(Math.ceil((response.total || 0) / itemsPerPage))
-      console.log(response)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch players')
     } finally {

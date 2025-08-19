@@ -6,12 +6,14 @@ from typing import List, Optional
 
 from app.models.player import Player
 from app.models.gear_list import GearList
+from app.models.games import Game
 from app.models.pc_specs_list import PCSpecsList
 from app.models.setup_streaming_list import SetupStreamingList
+from app.models.countries import Country
 from app.models.skin import Skin
 from app.models.product import Product
 from app.models.player_skins import PlayerSkin
-from app.models.product_usage_log import ProductUsageLog
+from app.models.custom_product_reletion import CustomProductReletion
 from app.schemas.product_usage_log import ProductUsageLogCreate, ProductUsageLogUpdate
 from app.schemas.player import PlayerCreate, PlayerUpdate, PlayerUpdateWithGear, SkinUpdate
 from app.schemas.gear_list import GearListCreate
@@ -22,6 +24,7 @@ from app.crud.pc_specs_list import pc_specs_list_crud
 from app.crud.setup_streaming_list import setup_streaming_list_crud
 from app.crud.product_usage_log import product_usage_log_crud
 import logging
+from app.models.team import Team
 
 logger = logging.getLogger(__name__)
 
@@ -106,6 +109,16 @@ class CRUDPlayer:
     def create(self, db: Session, *, obj_in: PlayerCreate) -> Player:
         """Create a new player"""
         create_data = obj_in.model_dump(exclude_unset=True)
+        # Validate foreign keys
+        if "game_id" in create_data and create_data["game_id"]:
+            if not db.get(Game, create_data["game_id"]):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Game with id {create_data['game_id']} does not exist"
+                )
+        # Map country_id -> country FK column
+        if "country_id" in create_data:
+            create_data["country"] = create_data.pop("country_id")
         
         # Create player object
         db_obj = Player(**create_data)
@@ -154,7 +167,8 @@ class CRUDPlayer:
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.microphone).joinedload(Product.category),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.webcam).joinedload(Product.category),
                 joinedload(Player.skins),
-                joinedload(Player.player_skins).joinedload(PlayerSkin.skin).joinedload(Skin.category)
+                joinedload(Player.custom_products),
+                joinedload(Player.country_obj)
             )
         )
         return db.scalar(stmt)
@@ -200,7 +214,8 @@ class CRUDPlayer:
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.chair).joinedload(Product.category),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.microphone).joinedload(Product.category),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.webcam).joinedload(Product.category),
-                joinedload(Player.skins)
+                joinedload(Player.skins),
+                joinedload(Player.country_obj),
             )
         )
         return db.scalar(stmt)
@@ -245,31 +260,35 @@ class CRUDPlayer:
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.chair),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.microphone),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.webcam),
-                joinedload(Player.skins)
+                joinedload(Player.skins),
+                joinedload(Player.custom_products),
+                joinedload(Player.country_obj)
             )
         )
         
         # Apply filters
         if team:
-            stmt = stmt.where(Player.team.ilike(f"%{team}%"))
-            count_stmt = count_stmt.where(Player.team.ilike(f"%{team}%"))
-        
+            stmt = stmt.join(Team, Player.team_id == Team.id).where(Team.name.ilike(f"%{team}%"))
+            count_stmt = count_stmt.join(Team, Player.team_id == Team.id).where(Team.name.ilike(f"%{team}%"))
+
         if country:
-            stmt = stmt.where(Player.country.ilike(f"%{country}%"))
-            count_stmt = count_stmt.where(Player.country.ilike(f"%{country}%"))
-        
-        if query:
-            stmt = stmt.where(
-                (Player.player_name.ilike(f"%{query}%")) |
-                (Player.name.ilike(f"%{query}%")) |
-                (Player.team.ilike(f"%{query}%")) |
-                (Player.country.ilike(f"%{query}%"))
+            stmt = stmt.join(Country, Player.country == Country.id).where(
+                (Country.name.ilike(f"%{country}%")) | (Country.iso_code.ilike(f"%{country}%"))
             )
-            count_stmt = count_stmt.where(
+            count_stmt = count_stmt.join(Country, Player.country == Country.id).where(
+                (Country.name.ilike(f"%{country}%")) | (Country.iso_code.ilike(f"%{country}%"))
+            )
+
+        if query:
+            stmt = stmt.join(Team, Player.team_id == Team.id, isouter=True).where(
                 (Player.player_name.ilike(f"%{query}%")) |
                 (Player.name.ilike(f"%{query}%")) |
-                (Player.team.ilike(f"%{query}%")) |
-                (Player.country.ilike(f"%{query}%"))
+                (Team.name.ilike(f"%{query}%"))
+            )
+            count_stmt = count_stmt.join(Team, Player.team_id == Team.id, isouter=True).where(
+                (Player.player_name.ilike(f"%{query}%")) |
+                (Player.name.ilike(f"%{query}%")) |
+                (Team.name.ilike(f"%{query}%"))
             )
         
         total = db.scalar(count_stmt)
@@ -282,7 +301,8 @@ class CRUDPlayer:
         """Get players by team"""
         stmt = (
             select(Player)
-            .where(Player.team.ilike(f"%{team}%"))
+            .join(Team, Player.team_id == Team.id)
+            .where(Team.name.ilike(f"%{team}%"))
             .options(
                 joinedload(Player.gear_list).joinedload(GearList.monitor),
                 joinedload(Player.gear_list).joinedload(GearList.mouse),
@@ -301,16 +321,22 @@ class CRUDPlayer:
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.chair),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.microphone),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.webcam),
-                joinedload(Player.skins)
+                joinedload(Player.skins),
+                joinedload(Player.custom_products),
+                joinedload(Player.country_obj)
             )
         )
         return db.scalars(stmt).unique().all()
 
     def get_by_country(self, db: Session, *, country: str) -> List[Player]:
-        """Get players by country"""
+        """Get players by country name or iso_code"""
         stmt = (
             select(Player)
-            .where(Player.country.ilike(f"%{country}%"))
+            .join(Country, Player.country == Country.id)
+            .where(
+                (Country.name.ilike(f"%{country}%")) |
+                (Country.iso_code.ilike(f"%{country}%"))
+            )
             .options(
                 joinedload(Player.gear_list).joinedload(GearList.monitor),
                 joinedload(Player.gear_list).joinedload(GearList.mouse),
@@ -329,7 +355,9 @@ class CRUDPlayer:
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.chair),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.microphone),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.webcam),
-                joinedload(Player.skins)
+                joinedload(Player.skins),
+                joinedload(Player.custom_products),
+                joinedload(Player.country_obj)
             )
         )
         return db.scalars(stmt).unique().all()
@@ -339,6 +367,12 @@ class CRUDPlayer:
         update_data = obj_in.model_dump(exclude_unset=True)
         
         # Validate foreign keys if provided
+        if "game_id" in update_data and update_data["game_id"]:
+            if not db.get(Game, update_data["game_id"]):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Game with id {update_data['game_id']} does not exist"
+                )
         if "gear_list_id" in update_data and update_data["gear_list_id"]:
             gear_list = db.get(GearList, update_data["gear_list_id"])
             if not gear_list:
@@ -610,14 +644,31 @@ class CRUDPlayer:
         """Update player and related gear lists"""
         print("obj_in", obj_in)
         update_data = obj_in.model_dump(exclude_unset=True)
-        
-        # Extract gear list, pc specs list, setup streaming list, and skins updates
-        gear_list_update = update_data.pop("gear_list", None)
-        pc_specs_list_update = update_data.pop("pc_specs_list", None)
-        setup_streaming_list_update = update_data.pop("setup_streaming_list", None)
-        skins_update = update_data.pop("skins", None)
+        # Extract skins update separately for later processing
+        skins_update = obj_in.skins
+        if "country_id" in update_data:
+            update_data["country"] = update_data.pop("country_id")
+        # Current date for usage tracking / logs
+        date_now = date.today()
+
+        # Remove nested relational update keys to prevent assigning raw dicts to relationship attributes
+        # Comment: These relations are processed separately below via their respective CRUD handlers.
+        for relation_key in [
+            "gear_list",
+            "pc_specs_list",
+            "setup_streaming_list",
+            "skins",
+            "custom_product_reletion",
+        ]:
+            update_data.pop(relation_key, None)
         
         # Validate foreign keys if provided
+        if "game_id" in update_data and update_data["game_id"]:
+            if not db.get(Game, update_data["game_id"]):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Game with id {update_data['game_id']} does not exist"
+                )
         if "gear_list_id" in update_data and update_data["gear_list_id"]:
             gear_list = db.get(GearList, update_data["gear_list_id"])
             if not gear_list:
@@ -662,8 +713,6 @@ class CRUDPlayer:
             gear_list_crud.update_by_model(db=db, db_obj=db_obj.gear_list, obj_in=obj_in.gear_list)
             great_list_obj = obj_in.gear_list
             print("great_list_obj", great_list_obj.model_dump())
-            date_now = date.today()
-
             self._process_gear_list_changes(db, great_list_obj, db_obj.id, date_now)
 
 
@@ -698,6 +747,65 @@ class CRUDPlayer:
             setup_streaming_list_obj = obj_in.setup_streaming_list
             self._process_setup_streaming_changes(db, setup_streaming_list_obj, db_obj.id, date_now)
 
+
+       
+        if obj_in.custom_product_reletion:
+            cust_rel = obj_in.custom_product_reletion
+
+            # Handle creations
+            if cust_rel.create_list:
+                for cp in cust_rel.create_list:
+                    cp_data = cp.model_dump(exclude_unset=True)
+                    usage_start = cp_data.pop("data", None)
+                    cp_data["user_id"] = db_obj.id  # ensure relation to current player
+                    # Persist relation
+                    new_rel = CustomProductReletion(**cp_data)
+                    db.add(new_rel)
+
+                    # Create corresponding usage log if we have start date
+                    product_usage_log_crud.create_log(
+                        db=db,
+                        obj_in=ProductUsageLogCreate(
+                            user_id=db_obj.id,
+                            product_id=cp.product_id,
+                            usage_start_datetime=usage_start or date_now,
+                        )
+                    )
+
+            # Handle updates
+            if cust_rel.update_list:
+                for cp in cust_rel.update_list:
+                    existing_cp = db.query(CustomProductReletion).filter(
+                        CustomProductReletion.id == cp.id,
+                        CustomProductReletion.user_id == db_obj.id
+                    ).first()
+                    if existing_cp:
+                        if cp.custom_name is not None:
+                            existing_cp.custom_name = cp.custom_name
+                        if cp.low_image_url is not None:
+                            existing_cp.low_image_url = cp.low_image_url
+                        if cp.high_image_url is not None:
+                            existing_cp.high_image_url = cp.high_image_url
+
+            # Handle deletions
+            if cust_rel.delete_list:
+                for cp_id in cust_rel.delete_list:
+                    existing_cp = db.query(CustomProductReletion).filter(
+                        CustomProductReletion.id == cp_id,
+                        CustomProductReletion.user_id == db_obj.id
+                    ).first()
+                    if existing_cp:
+                        db.delete(existing_cp)
+
+                        # close usage log
+                        product_usage_log_crud.update_data_end_usage_log(
+                            db=db,
+                            obj_in=ProductUsageLogUpdate(
+                                user_id=db_obj.id,
+                                product_id=existing_cp.product_id,
+                                usage_end_datetime=date_now,
+                            )
+                        )
 
         # Update skins if provided
         if skins_update is not None:

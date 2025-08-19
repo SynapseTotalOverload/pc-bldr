@@ -5,6 +5,56 @@ import { Edit, Trash2, Eye, Copy } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 import { LazyLoadImage } from "react-lazy-load-image-component"
+import { useEffect, useRef, useState } from "react"
+import { useFile } from "@/hooks/useFile"
+import { Skeleton } from "@/components/ui/skeleton"
+
+function PlayerImage({ url, alt }: { url: string; alt: string }) {
+  const { imageUrl, fetch, loading } = useFile()
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const [shouldLoad, setShouldLoad] = useState(false)
+
+  useEffect(() => {
+    if (!url) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldLoad(true)
+            observer.disconnect()
+          }
+        })
+      },
+      { rootMargin: "150px" }
+    )
+    if (wrapperRef.current) observer.observe(wrapperRef.current)
+    return () => observer.disconnect()
+  }, [url])
+
+  useEffect(() => {
+    if (shouldLoad && url) {
+      fetch({ url })
+    }
+  }, [shouldLoad, url])
+
+  if (!url) return null
+
+  return (
+    <div ref={wrapperRef} className="w-10 h-10">
+      {(loading || !imageUrl) && <Skeleton className="w-10 h-10 rounded-full" />}
+      {!loading && imageUrl && (
+        <LazyLoadImage
+          src={imageUrl}
+          alt={alt}
+          className="w-10 h-10 rounded-full object-cover"
+          effect="opacity"
+          threshold={100}
+          wrapperClassName="w-10 h-10"
+        />
+      )}
+    </div>
+  )
+}
 
 export const playersColumns: ColumnDef<PlayerWithRelations>[] = [
   {
@@ -14,19 +64,7 @@ export const playersColumns: ColumnDef<PlayerWithRelations>[] = [
       const player = row.original
       return (
         <div className="flex items-center gap-3">
-          {player.player_img && (
-            <div className="w-10 h-10">
-              <LazyLoadImage 
-                src={player.player_img} 
-                alt={player.player_name}
-                className="w-10 h-10 rounded-full object-cover"
-                effect="opacity"
-                placeholderSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNlNWU3ZWYiLz4KPC9zdmc+"
-                threshold={100}
-                wrapperClassName="w-10 h-10"
-              />
-            </div>
-          )}
+          {player.player_img && <PlayerImage url={player.player_img} alt={player.player_name} />}
           <div className="flex items-center gap-2 space-between">
             <div className="font-medium">{player.player_name}</div>
             {player.name && (
@@ -52,21 +90,23 @@ export const playersColumns: ColumnDef<PlayerWithRelations>[] = [
     accessorKey: "team",
     header: "Team",
     cell: ({ row }) => {
-      const team = row.getValue("team") as string
-      return team ? (
-        <Badge variant="secondary">{team}</Badge>
+      const teamObj = row.getValue("team") as any;
+      const teamName = typeof teamObj === "string" ? teamObj : teamObj?.name;
+      return teamName ? (
+        <Badge variant="secondary">{teamName}</Badge>
       ) : (
         <span className="text-muted-foreground">-</span>
-      )
+      );
     },
   },
   {
     accessorKey: "country",
     header: "Country",
     cell: ({ row }) => {
-      const country = row.getValue("country") as string
-      return country ? (
-        <Badge variant="outline">{country}</Badge>
+      const countryObj = row.getValue("country") as any
+      const countryName = typeof countryObj === "string" ? countryObj : countryObj?.name
+      return countryName ? (
+        <Badge variant="outline">{countryName}</Badge>
       ) : (
         <span className="text-muted-foreground">-</span>
       )

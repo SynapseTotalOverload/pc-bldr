@@ -29,7 +29,11 @@ from .attributes import (
     BaseAttrsModel,
 )
 from .product_usage_log import ProductUsageLog
-
+from .custom_product_reletion import CustomProductReletion
+from .s3_file import S3File
+from .countries import Country
+from .team import Team
+from .games import Game
 __all__ = [
     "Category", 
     "Product",
@@ -59,4 +63,9 @@ __all__ = [
     "CameraAttributes",
     "HeadphonesAttributes",
     "ProductUsageLog",
+    "CustomProductReletion",
+    "S3File",
+    "Country",
+    "Team",
+    "Game",
 ]

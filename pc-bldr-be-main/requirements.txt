@@ -11,3 +11,5 @@ pydantic-settings
 beautifulsoup4
 lxml
 playwright
+boto3
+python-multipart

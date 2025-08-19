@@ -1,9 +1,52 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useRef, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { PaginationSimple } from '@/components/ui/pagination-simple'
 import { PlayerWithRelations } from '../types'
 import Link from 'next/link'
+import { useFile } from '@/hooks/useFile'
+import { Skeleton } from '@/components/ui/skeleton'
+
+function PlayerImage({ url, alt }: { url: string; alt: string }) {
+  const { imageUrl, fetch, loading } = useFile()
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const [shouldLoad, setShouldLoad] = useState(false)
+
+  useEffect(() => {
+    if (!url) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldLoad(true)
+            observer.disconnect()
+          }
+        })
+      },
+      { rootMargin: '150px' }
+    )
+    if (wrapperRef.current) observer.observe(wrapperRef.current)
+    return () => observer.disconnect()
+  }, [url])
+
+  useEffect(() => {
+    if (shouldLoad && url) {
+      fetch({ url })
+    }
+  }, [shouldLoad, url])
+
+  if (!url) return null
+
+  return (
+    <div ref={wrapperRef} className="w-20 h-20">
+      {(loading || !imageUrl) && <Skeleton className="w-20 h-20 rounded-lg" />}
+      {!loading && imageUrl && (
+        <img src={imageUrl} alt={alt} className="w-20 h-20 object-cover rounded-lg" />
+      )}
+    </div>
+  )
+}
 
 interface PlayersListProps {
   players: PlayerWithRelations[]
@@ -101,7 +144,9 @@ export const PlayersList: React.FC<PlayersListProps> = ({
             <CardHeader className="pb-4">
               <div className="flex items-start space-x-4">
                 <div className="relative">
-                  <img src={player.player_img} alt={player.player_name} className="w-20 h-20 object-cover rounded-lg" />
+                  {player.player_img && (
+                    <PlayerImage url={player.player_img} alt={player.player_name} />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <CardTitle className="text-lg font-semibold truncate">

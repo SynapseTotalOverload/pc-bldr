@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 const Page = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [error, setError] = useState<string | null>(null)
     const router = useRouter()
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -20,6 +21,7 @@ const Page = () => {
             localStorage.setItem('isAdmin', 'true')
         } else {
             console.log('Login failed')
+            setError('Invalid email or password')
         }
     }
   return (
@@ -28,7 +30,8 @@ const Page = () => {
         <form onSubmit={handleSubmit} className='flex flex-col gap-2 w-full max-w-md'>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Email' className='border border-gray-300 rounded-md p-2 mt-4' />
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' className='border border-gray-300 rounded-md p-2 mt-4' />
-            <button type="submit" className='bg-blue-500 text-white rounded-md p-2 mt-4'>Submit</button>
+            <button type="submit" className='bg-blue-500 text-white rounded-md p-2 mt-4 hover:bg-blue-600 transition-colors cursor-pointer'>Submit</button>
+            {error && <p className='text-red-500'>{error}</p>}
         </form>
     </div>
   )

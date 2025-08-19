@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -219,7 +219,9 @@ interface FormData {
   rating: string;
   brand: string;
   model: string;
-  [key: string]: string | number;
+  high_image_url?: string | File;
+  low_image_url?: string | File;
+  [key: string]: string | number | File | undefined;
 }
 
 export function AddNewProduct({
@@ -233,7 +235,7 @@ export function AddNewProduct({
   isAccessoriesPage = false
 }: {
   activeCategory: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories, 
-  onHandleSubmit: (data: FormData) => void,
+  onHandleSubmit: (data: FormData) => void | Promise<void>,
   open?: boolean,
   data?: Partial<FormData>,
   onOpenChange?: (open: boolean) => void,
@@ -246,12 +248,27 @@ export function AddNewProduct({
   const [isSubmitAttempted, setIsSubmitAttempted] = useState(false);
   const { toast } = useToast();
 
-  // Use external open state if provided, otherwise use internal state
   const isOpen = open !== undefined ? open : internalOpen;
   const setIsOpen = onOpenChange || setInternalOpen;
 
-  // Determine if we're editing an existing product
   const isEditing = !!data && !!productId;
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleUploadButtonClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file);
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+  };
 
   const form = useForm<FormData>({
     mode: 'onChange', 
@@ -263,11 +280,12 @@ export function AddNewProduct({
       rating: '',
       brand: '',
       model: '',
+      high_image_url: '',
+      low_image_url: '',
       ...data,
     },
   });
 
-  // Update selected category when activeCategory prop changes
   useEffect(() => {
     if (!isEditing) {
       setSelectedCategory(activeCategory);
@@ -275,12 +293,10 @@ export function AddNewProduct({
     }
   }, [activeCategory, form, isEditing]);
 
-  // Reset form when dialog opens/closes or when data changes
   useEffect(() => {
     if (!isOpen) {
       setIsSubmitAttempted(false); 
       
-      // Reset to default empty state
       const defaultFormData = {
         category: activeCategory,
         asin: '',
@@ -289,6 +305,8 @@ export function AddNewProduct({
         rating: '',
         brand: '',
         model: '',
+        high_image_url: '',
+        low_image_url: '',
       };
       
       form.reset(defaultFormData);
@@ -296,7 +314,6 @@ export function AddNewProduct({
     } else {
       setIsSubmitAttempted(false); 
       
-      // If opening in edit mode, populate with product data
       if (isEditing && data) {
         const convertedData = convertProductReadToFormData(data);
         const formDataWithDefaults = {
@@ -307,12 +324,13 @@ export function AddNewProduct({
           rating: '',
           brand: '',
           model: '',
+          high_image_url: '',
+          low_image_url: '',
           ...convertedData,
         };
         
         form.reset(formDataWithDefaults);
         
-        // Update category if it was detected from product data
         if (convertedData.category && convertedData.category !== activeCategory) {
           setSelectedCategory(convertedData.category);
         }
@@ -320,7 +338,6 @@ export function AddNewProduct({
     }
   }, [isOpen, activeCategory, form, data, isEditing]);
 
-  // Update form when data prop changes (for editing mode)
   useEffect(() => {
     if (data && isOpen && isEditing) {
       const convertedData = convertProductReadToFormData(data);
@@ -332,12 +349,13 @@ export function AddNewProduct({
         rating: '',
         brand: '',
         model: '',
+        high_image_url: '',
+        low_image_url: '',
         ...convertedData,
       };
       
       form.reset(formDataWithDefaults);
       
-      // Update category if it was detected from product data
       if (convertedData.category && convertedData.category !== activeCategory) {
         setSelectedCategory(convertedData.category);
       }
@@ -393,7 +411,6 @@ export function AddNewProduct({
     
     if (!productData) return {};
 
-    // Determine category from category.id or fallback to activeCategory
     let categoryKey: keyof ProductTypeMapNames | keyof ProductTypeMapNamesAccessories = activeCategory;
     if (productData.category?.id) {
       const detectedCategory = getCategoryKeyById(productData.category.id) || getCategoryKeyByIdAccessories(productData.category.id);
@@ -402,7 +419,6 @@ export function AddNewProduct({
       }
     }
 
-    // Start with base fields
     const formData: Partial<FormData> = {
       category: categoryKey,
       asin: productData.asin || '',
@@ -411,18 +427,14 @@ export function AddNewProduct({
       rating: productData.rating ? productData.rating.toString() : '',
     };
 
-    // Add attributes from attrs object
     if (productData.attrs) {
-      // Basic attrs that are common for all categories
       if (productData.attrs.brand) formData.brand = productData.attrs.brand;
       if (productData.attrs.model) formData.model = productData.attrs.model;
 
-      // Add all other attrs fields
       Object.keys(productData.attrs).forEach(key => {
         if (key !== 'type' && key !== 'brand' && key !== 'model') {
           const value = productData.attrs[key];
           if (value !== undefined && value !== null) {
-            // Convert numbers to strings for form inputs
             formData[key] = typeof value === 'number' ? value.toString() : value;
           }
         }
@@ -440,12 +452,10 @@ export function AddNewProduct({
     for (const field of fields) {
       const value = data[field.name];
       
-      // Skip empty optional fields
       if (!field.required && (!value || value.toString().trim() === '')) {
         continue;
       }
 
-      // If field has a value, convert and validate its type
       if (value !== undefined && value !== null && value.toString().trim() !== '') {
         const stringValue = value.toString().trim();
         
@@ -461,7 +471,6 @@ export function AddNewProduct({
               variant: "destructive",
             });
           } else {
-            // Successfully converted to number
             convertedData[field.name] = numValue;
           }
         } else if (field.type === 'integer') {
@@ -484,17 +493,14 @@ export function AddNewProduct({
               variant: "destructive",
             });
           } else {
-            // Successfully converted to integer
             convertedData[field.name] = intValue;
           }
         } else if (field.type === 'text') {
-          // Keep as string, but log the conversion
           convertedData[field.name] = stringValue;
         }
       }
     }
 
-    // Also validate basic fields (asin, title, price, rating)
     if (data.price && data.price.toString().trim() !== '') {
       const priceValue = parseFloat(data.price.toString());
       if (isNaN(priceValue)) {
@@ -541,16 +547,18 @@ export function AddNewProduct({
     setIsSubmitAttempted(true);
     
     try {
-      // Convert and validate data types
       const convertedData = convertAndValidateTypes(data);
       
-      // For accessories, ensure model field is present (set to empty string if not provided)
       if (isAccessoriesPage && !convertedData.model) {
         convertedData.model = '';
       }
-      
-      // Call the parent handler with converted data
-      onHandleSubmit(convertedData);
+
+      if (selectedFile) {
+        convertedData.high_image_url = selectedFile;
+        convertedData.low_image_url = selectedFile; 
+      }
+
+      await onHandleSubmit(convertedData);
 
       toast({
         title: "Success",
@@ -572,7 +580,6 @@ export function AddNewProduct({
     setIsSubmitAttempted(true);
     console.log("Form validation errors:", errors);
     
-    // Show toast with first error
     const firstError = Object.values(errors)[0] as any;
     if (firstError?.message) {
       toast({
@@ -642,12 +649,10 @@ export function AddNewProduct({
         rules={{
           required: field.required ? `${field.label} is required` : false,
                       validate: (value) => {
-              // Skip validation for empty optional fields
               if (!field.required && (!value || value.toString().trim() === '')) {
                 return true;
               }
               
-              // Validate if field has value
               if (value && value.toString().trim() !== '') {
                 if (field.type === 'number') {
                   const numValue = parseFloat(value.toString());
@@ -680,7 +685,7 @@ export function AddNewProduct({
                   type="number"
                   placeholder={field.placeholder}
                   {...formField}
-                  value={formField.value ?? ''}
+                  value={typeof formField.value === 'string' || typeof formField.value === 'number' ? formField.value : ''}
                   onChange={(e) => formField.onChange(e.target.value)}
                   step="0.1"
                   min={0}
@@ -695,7 +700,7 @@ export function AddNewProduct({
                   type="number"
                   placeholder={field.placeholder}
                   {...formField}
-                  value={formField.value ?? ''}
+                  value={typeof formField.value === 'string' || typeof formField.value === 'number' ? formField.value : ''}
                   onChange={(e) => formField.onChange(e.target.value)}
                   step="1"
                   min={0}
@@ -709,7 +714,7 @@ export function AddNewProduct({
                 <Input
                   placeholder={field.placeholder}
                   {...formField}
-                  value={formField.value ?? ''}
+                  value={typeof formField.value === 'string' || typeof formField.value === 'number' ? formField.value : ''}
                   className={
                     fieldState.error || 
                     (isSubmitAttempted && field.required && (!formField.value || formField.value.toString().trim() === ''))
@@ -810,7 +815,7 @@ export function AddNewProduct({
                 <CardTitle>Basic Information</CardTitle>
                 <CardDescription>General product details</CardDescription>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4">
+              <CardContent className="grid grid-cols-4 gap-2">
                 <FormField
                   control={form.control}
                   name="title"
@@ -943,6 +948,25 @@ export function AddNewProduct({
                     </FormItem>
                   )}
                 />
+                <div className="col-span-3 flex items-center gap-2">
+                  {/* hidden file input */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                  <Button type="button" onClick={handleUploadButtonClick}>
+                    Upload Image
+                  </Button>
+                  {selectedFile && previewUrl && (
+                    <div className="flex items-center gap-2">
+                      <img src={previewUrl} alt="selected" className="h-10 w-10 object-cover rounded" />
+                      <span className="text-xs break-all max-w-[120px] line-clamp-1" title={selectedFile.name}>{selectedFile.name}</span>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
 

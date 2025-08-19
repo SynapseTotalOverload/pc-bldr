@@ -33,6 +33,8 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { ApiTeamList } from '../../blocks/ApiTeamList/config'
+import { ApiGamesList } from '../../blocks/ApiGamesList/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -88,7 +90,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, FeatureCard, FeatureList, ApiCardList, ApiPlayerList, WhyWorkWithUs, HeroMeteor, Integration2, Feature242, Feature157, Feature251, Testimonial19, Feature253, DiagramBrand],
+              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, FeatureCard, FeatureList, ApiCardList, ApiPlayerList, ApiTeamList, ApiGamesList, WhyWorkWithUs, HeroMeteor, Integration2, Feature242, Feature157, Feature251, Testimonial19, Feature253, DiagramBrand],
               required: true,
               admin: {
                 initCollapsed: true,

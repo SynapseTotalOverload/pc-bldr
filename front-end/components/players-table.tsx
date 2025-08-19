@@ -27,16 +27,8 @@ import { Input } from "@/components/ui/input"
 import { PlayerWithRelations } from "@/types/players-base"
 import { AddEditPlayerDialog } from "@/models/dialogs/add-edit-player"
 import { PlayerDetailsDialog } from "@/models/dialogs/player-details-dialog"
-import { useToast } from "@/hooks/use-toast"
 import { PlayerCreate, PlayerUpdate } from "@/types/players-base"
 import { Search } from "lucide-react"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   Pagination,
   PaginationContent,
@@ -54,7 +46,6 @@ interface PlayersTableProps {
   onAddPlayer: (data: PlayerCreate) => Promise<void>
   onEditPlayer: (id: number, data: PlayerUpdate) => Promise<void>
   onDeletePlayer: (id: number) => Promise<void>
-  // Add pagination props
   pagination: {
     total: number
     skip: number
@@ -91,8 +82,6 @@ export function PlayersTable({
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerWithRelations | null>(null)
   
-  const { toast } = useToast()
-
   const table = useReactTable({
     data,
     columns: columns.map(col => {
@@ -164,11 +153,7 @@ export function PlayersTable({
         await onEditPlayer(selectedPlayer.id, data as PlayerUpdate)
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : `Failed to ${mode} player`,
-        variant: "destructive",
-      })
+      console.log(error)
       throw error
     }
   }
@@ -176,16 +161,8 @@ export function PlayersTable({
   const handleConfirmDelete = async (playerId: number) => {
     try {
       await onDeletePlayer(playerId)
-      toast({
-        title: "Success",
-        description: "Player deleted successfully!",
-      })
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete player",
-        variant: "destructive",
-      })
+      console.log(error)
     }
   }
 

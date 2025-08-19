@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ApiResponse, ApiParams, ProductUsageGraphByIdParams, BrandUsageGraphResponse, ProductUsageBrandGraphParams, BrandsResponse } from './types'
+import { ApiResponse, ApiParams, ProductUsageGraphByIdParams, BrandUsageGraphResponse, ProductUsageBrandGraphParams, BrandsResponse, TeamResponse, GetTeamParams, GameResponse, GetGameParams, Games } from './types'
 
 const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:8000'
 
@@ -195,6 +195,39 @@ export class ApiService {
     const response = await this.fetchData(url);
     return response;
   }
+
+  async getFile(params: { key?: string; url?: string }) {
+    const search = new URLSearchParams()
+    if (params.key) search.append('key', params.key)
+    if (params.url) search.append('url', params.url)
+    const endpoint = `files?${search.toString()}`
+    const url = `${this.baseUrl}${endpoint}`
+
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new ApiError(`File download error`, response.status)
+    }
+    return response.blob()
+  }
+
+
+  async getTeams(params: GetTeamParams) {
+    return this.fetchData<TeamResponse>(`teams`, params)
+  }
+
+  async getTeam(id: number) {
+    return this.fetchData(`teams/${id}`)
+  }
+
+
+  async getGames(params: GetGameParams) {
+    return this.fetchData<Games>(`games`, params)
+  }
+
+  async getGame(id: number) {
+    return this.fetchData(`games/${id}`)
+  }
 }
+
 
 export const apiService = new ApiService() 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -15,15 +15,19 @@ import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { PlayerCreate, PlayerUpdate, PlayerWithRelations } from "@/types/players-base"
-import { useToast } from "@/hooks/use-toast"
-import { createPCSpecsList, updatePCSpecsList } from "@/lib/pc-specs-lists-api"
-import { createGearList, updateGearList } from "@/lib/gear-lists-api"
-import { createSetupStreamingList, updateSetupStreamingList } from "@/lib/setup-streaming-lists-api"
+import { CustomProductReletion, CustomProductReletionSimple, PlayerCreate, PlayerUpdate, PlayerWithRelations } from "@/types/players-base"
 import { SelectListProductNew } from '@/components/ui/select-list-product-new'
-import { SkinRead, SkinReadWithAttributes } from "@/lib/skins-api"
+import { SkinReadWithAttributes } from "@/lib/skins-api"
 import { SelectSkinList } from "@/components/ui/select-skin-list"
-
+import { SelectCustProducts } from "@/components/ui/select-cust-products"
+import { useFile } from "@/hooks/useFile"
+import { useCountries } from "@/hooks/useCountries"
+import { Country } from "@/types/country"
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select"
+import { useTeam } from "@/hooks/useTeam"
+import { useGames } from "@/hooks/useGames"
+import { GameBase } from "@/types/game-base"
+import { TeamRead } from "@/types/team"
 
 interface AddEditPlayerDialogProps {
   open: boolean
@@ -44,11 +48,13 @@ export function AddEditPlayerDialog({
     player_name: "",
     player_img: "",
     team: "",
-    country: "",
+    country_id: undefined,
     name: "",
     birthday: undefined,
     info: "",
-    note: ""
+    note: "",
+    pc_image: "",
+    pc_image_name: ""
   })
   const [selectedCpuId, setSelectedCpuId] = useState<string>("none")
   const [selectedCpuDate, setSelectedCpuDate] = useState<string>("")
@@ -69,6 +75,8 @@ export function AddEditPlayerDialog({
   const [pcSpecsListId, setPcSpecsListId] = useState<number | null>(null)
   const [selectedSkins, setSelectedSkins] = useState<SkinReadWithAttributes[]>([])
 
+  const [selectedCustProducts, setSelectedCustProducts] = useState<CustomProductReletionSimple[]>([])
+  const [finaliCustProducts, setFinaliCustProducts] = useState<CustomProductReletion>()
 
   const [selectedHeadsetId, setSelectedHeadsetId] = useState<string>("none")
   const [selectedHeadsetDate, setSelectedHeadsetDate] = useState<string>("")
@@ -90,68 +98,158 @@ export function AddEditPlayerDialog({
   const [selectedCameraId, setSelectedCameraId] = useState<string>("none")
   const [selectedCameraDate, setSelectedCameraDate] = useState<string>("")
 
-
-
   const [gearListId, setGearListId] = useState<number | null>(null)
   const [setupStreamingListId, setSetupStreamingListId] = useState<number | null>(null)
 
   const [loading, setLoading] = useState(false)
+  const [checkPlayerImg, setCheckPlayerImg] = useState(false)
+  // Player avatar
+  const [playerFileImg, setPlayerFileImg] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [selectedCountryId, setSelectedCountryId] = useState<number | null>(null)
+  const [selectedCountryObj, setSelectedCountryObj] = useState<Country | null>(null)
+  const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const [countrySelectOpen, setCountrySelectOpen] = useState(false)
+
+  const { countries, loading: countriesLoading, error: countriesError, loadMore, pagination, fetchCountries } = useCountries({
+    skip: 0,
+    limit: 25,
+    query: "",
+  }, { autoFetch: false })
+
+  const handleCountrySelectOpenChange = (open: boolean) => {
+    setCountrySelectOpen(open)
+    if (open && countries.length === 0) {
+      fetchCountries()
+    }
+  }
+
+  useEffect(() => {
+    if (!countrySelectOpen) return
+    if (!loadMoreRef.current) return
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        loadMore()
+      }
+    }, {
+      root: loadMoreRef.current.parentElement?.parentElement ?? null,
+      threshold: 1.0,
+    })
+    observer.observe(loadMoreRef.current)
+    return () => {
+      observer.disconnect()
+    }
+  }, [countrySelectOpen, loadMore, pagination])
+
+  useEffect(() => {
+    if (selectedCountryId && !selectedCountryObj) {
+      const obj = countries.find(c => c.id === selectedCountryId) || null
+      if (obj) setSelectedCountryObj(obj)
+    }
+  }, [countries, selectedCountryId, selectedCountryObj])
+
+  const [pcFileImg, setPcFileImg] = useState<File | null>(null)
+  const [pcPreviewUrl, setPcPreviewUrl] = useState<string | null>(null)
+
+  const { upload, remove } = useFile()
+
+  const avatarInputRef = useRef<HTMLInputElement>(null)
+  const pcInputRef = useRef<HTMLInputElement>(null)
+
+  const handleUploadAvatarClick = () => {
+    avatarInputRef.current?.click()
+  }
+
+  const handleUploadPcClick = () => {
+    pcInputRef.current?.click()
+  }
+
+  const handleAvatarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    setPlayerFileImg(file || null)
+    if (file) setPreviewUrl(URL.createObjectURL(file))
+  }
+
+  const handlePcFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    setPcFileImg(file || null)
+    if (file) setPcPreviewUrl(URL.createObjectURL(file))
+  }
+
+  const uploadFileAndGetUrl = async (file: File): Promise<string | undefined> => {
+    try {
+      const record = await upload(file)
+      return record.url
+    } catch (err) {
+      console.error('Image upload failed', err)
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+      if (pcPreviewUrl) URL.revokeObjectURL(pcPreviewUrl)
+    }
+  }, [previewUrl, pcPreviewUrl])
   
   const urlFormSchema = z.object({
-    player_img: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
     url_youtube: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
     url_twitter: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
     url_twitch: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
     url_tiktok: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
     url_instagram: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
     url_discord: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+    url_steam: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
   })
   type UrlFormData = z.infer<typeof urlFormSchema>
 
   const urlForm = useForm<UrlFormData>({
     resolver: zodResolver(urlFormSchema),
     defaultValues: {
-      player_img: '',
       url_youtube: '',
       url_twitter: '',
       url_twitch: '',
       url_tiktok: '',
       url_instagram: '',
       url_discord: '',
+      url_steam: '',
     },
   })
 
-  const { toast } = useToast()
 
   useEffect(() => {
     if (open && player && mode === 'edit') {
       setFormData({
         player_name: player.player_name || "",
         player_img: player.player_img || "",
-        team: player.team || "",
-        country: player.country || "",
+        team: (typeof player.team === "string" ? player.team : (player.team as any)?.name) || "",
+        country_id: player.country_id || undefined,
         name: player.name || "",
         birthday: player.birthday || undefined,
         info: player.info || "",
         note: player.note || "",
+        pc_image_name: player.pc_image_name || "",
+        pc_image: player.pc_image || "",
         user_urls: player.user_urls || {
           youtube: "",
           twitter: "",
           twitch: "",
           tiktok: "",
           instagram: "",
-          discord: ""
+          discord: "",
+          steam: ""
         }
       })
+      setPcPreviewUrl(player.pc_image || null)
       console.log("player", player)
       urlForm.reset({
-        player_img: player.player_img || '',
         url_youtube: player.user_urls?.youtube || '',
         url_twitter: player.user_urls?.twitter || '',
         url_twitch: player.user_urls?.twitch || '',
         url_tiktok: player.user_urls?.tiktok || '',
         url_instagram: player.user_urls?.instagram || '',
         url_discord: player.user_urls?.discord || '',
+        url_steam: player.user_urls?.steam || '',
       })
       
       if (player.pc_specs_list) {
@@ -320,16 +418,32 @@ export function AddEditPlayerDialog({
         setSelectedCameraId("none")
         setSelectedCameraDate("")
       }
+      setSelectedCustProducts(player?.custom_product_reletion || [])
+      setSelectedCountryId(player?.country_id || null)
+      setSelectedCountryObj(player?.country || null)
+      setSelectedTeamId((player.team as any)?.id ?? null)
+      setSelectedTeamObj(typeof player.team === "object" ? (player.team as any) : null)
+
+      if ((player as any)?.game_id) {
+        setSelectedGameId((player as any).game_id)
+      }
+
+      if ((player as any)?.game) {
+        setSelectedGameObj((player as any).game)
+      }
+
     } else if (open && mode === 'add') {
       setFormData({
         player_name: "",
         player_img: "",
         team: "",
-        country: "",
+        country_id: undefined,
         name: "",
         birthday: undefined,
         info: "",
-        note: ""
+        note: "",
+        pc_image_name: "",
+        pc_image: ""
       })
       setPcSpecsListId(null)
       setSelectedCpuId("none")
@@ -349,13 +463,13 @@ export function AddEditPlayerDialog({
       setSelectedCaseId("none")
       setSelectedCaseDate("")
       urlForm.reset({
-        player_img: '',
         url_youtube: '',
         url_twitter: '',
         url_twitch: '',
         url_tiktok: '',
         url_instagram: '',
         url_discord: '',
+        url_steam: '',
       })
 
       setGearListId(null)
@@ -380,34 +494,62 @@ export function AddEditPlayerDialog({
       setSelectedMicrophoneDate("")
       setSelectedCameraId("none")
       setSelectedCameraDate("")
+
+      setSelectedCustProducts([])
+      setSelectedCountryId(null)
+      setSelectedCountryObj(null)
+      setSelectedGameId(null)
+      setSelectedGameObj(null)
     }
   }, [player, mode, open])
+
+  const { teams, loading: teamsLoading, pagination: teamsPagination, fetchTeams } = useTeam()
+  const { games: gamesList, pagination: gamesPagination, fetchGames } = useGames()
+
+  const [selectedGameId, setSelectedGameId] = useState<number | null>(null)
+  const [selectedGameObj, setSelectedGameObj] = useState<GameBase | null>(null)
+  const [gameSelectOpen, setGameSelectOpen] = useState(false)
+
+  const handleGameSelectOpenChange = (open: boolean) => {
+    setGameSelectOpen(open)
+    if (open && gamesList.length === 0) {
+      fetchGames({ skip: 0, limit: 25 })
+    }
+  }
+
+  useEffect(() => {
+    if (selectedGameId && !selectedGameObj) {
+      const obj = gamesList.find(g => g.id === selectedGameId) || null
+      if (obj) setSelectedGameObj(obj)
+    }
+  }, [gamesList, selectedGameId, selectedGameObj])
+
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null)
+  const [selectedTeamObj, setSelectedTeamObj] = useState<TeamRead | null>(null)
+  const [teamSelectOpen, setTeamSelectOpen] = useState(false)
+
+  const handleTeamSelectOpenChange = (open: boolean) => {
+    setTeamSelectOpen(open)
+    if (open && teams.length === 0) {
+      fetchTeams({ skip: 0, limit: 25 })
+    }
+  }
+
+  useEffect(() => {
+    if (selectedTeamId && !selectedTeamObj) {
+      const obj = teams.find(t => t.id === selectedTeamId) || null
+      if (obj) setSelectedTeamObj(obj)
+    }
+  }, [teams, selectedTeamId, selectedTeamObj])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
     try {
-      // Validate required fields
       if (mode === 'add' && (!formData.player_name || formData.player_name.trim().length === 0)) {
         throw new Error('Player Name is required')
       }
 
-      // Validate URL fields with RHF/Zod (as in Skins dialog)
-      const valid = await urlForm.trigger()
-      if (!valid) {
-        throw new Error('Please correct invalid URLs')
-      }
-
-      const urlValues = urlForm.getValues()
-      const user_urls = {
-        youtube: urlValues.url_youtube || '',
-        twitter: urlValues.url_twitter || '',
-        twitch: urlValues.url_twitch || '',
-        tiktok: urlValues.url_tiktok || '',
-        instagram: urlValues.url_instagram || '',
-        discord: urlValues.url_discord || ''
-      }
       const pcSpecsListData = {
         id: pcSpecsListId || undefined,
         cpu: {
@@ -539,25 +681,67 @@ export function AddEditPlayerDialog({
         }
       }
 
+      const valid = await urlForm.trigger()
+      if (!valid) {
+        throw new Error('Please correct invalid URLs')
+      }
+      const urlValues = urlForm.getValues()
+
+      const user_urls = {
+        youtube: urlValues.url_youtube || '',
+        twitter: urlValues.url_twitter || '',
+        twitch: urlValues.url_twitch || '',
+        tiktok: urlValues.url_tiktok || '',
+        instagram: urlValues.url_instagram || '',
+        discord: urlValues.url_discord || '',
+        steam: urlValues.url_steam || ''
+      }
+
+      if (playerFileImg) {
+        if (player?.player_img) {
+          try {
+            await remove({ url: player?.player_img })
+          } catch (err) {
+            console.error('Failed to delete previous image', err)
+          }
+        }
+        const url = await uploadFileAndGetUrl(playerFileImg)
+        if (url) formData.player_img = url
+      }
+
+      if (pcFileImg) {
+        if (player?.pc_image) {
+          try {
+            await remove({ url: player.pc_image })
+          } catch (err) {
+            console.error('Failed to delete previous PC image', err)
+          }
+        }
+        const pcUrl = await uploadFileAndGetUrl(pcFileImg)
+        if (pcUrl) formData.pc_image = pcUrl
+      }
+
+
+      const { country_id: _omitCountryId, team: _omitTeam, game_id: _omitGameId, ...pureFormData } = formData
 
       const playerData = {
-        ...formData,
-        player_img: (urlValues.player_img || '').toString(),
+        ...pureFormData,
+        country_id: selectedCountryId || undefined,
         user_urls: user_urls,
         pc_specs_list_id: pcSpecsListId || undefined,
+        team_id: selectedTeamId || undefined,
+        game_id: selectedGameId || undefined,
         gear_list_id: gearListId || undefined,
         setup_streaming_list_id: setupStreamingListId || undefined,
         gear_list: gearListData,
         pc_specs_list: pcSpecsListData,
         setup_streaming_list: setupStreamingListData,
         skins: selectedSkins,
+        custom_product_reletion: finaliCustProducts,
       }
 
       await onSave(playerData, mode)
-      toast({
-        title: "Success",
-        description: mode === 'add' ? "Player created successfully!" : "Player updated successfully!",
-      })
+      console.log("Player saved successfully!")
       onOpenChange(false)
     } catch (error) {
       console.log("Error", error)
@@ -571,10 +755,6 @@ export function AddEditPlayerDialog({
       ...prev,
       [field]: field === 'birthday' && value === '' ? undefined : value
     }))
-
-    if (field === 'player_img') {
-      urlForm.setValue('player_img', value ?? '')
-    }
   }
 
   const handleOpenChange = (open: boolean) => {
@@ -622,51 +802,100 @@ export function AddEditPlayerDialog({
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="player_img" className="text-left">
+              <Label htmlFor="player_img" className="text-left flex items-center gap-2">
                 Image URL
               </Label>
-              <FormField
-                control={urlForm.control}
-                name="player_img"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <FormControl>
-                      <Input
-                        id="player_img"
-                        placeholder="https://example.com/image.jpg"
-                        value={field.value || ''}
-                        onChange={(e) => {
-                          field.onChange(e)
-                          handleInputChange('player_img', e.target.value)
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <div className="col-span-3 flex items-center gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={avatarInputRef}
+                    className="hidden"
+                    onChange={handleAvatarFileChange}
+                  />
+                  <Button type="button" onClick={handleUploadAvatarClick}>
+                    Upload Image
+                  </Button>
+                  {playerFileImg && previewUrl && (
+                    <div className="flex items-center gap-2">
+                      <img src={previewUrl} alt="selected" className="h-10 w-10 object-cover rounded" />
+                      <span className="text-xs break-all max-w-[120px] line-clamp-1" title={playerFileImg.name}>{playerFileImg.name}</span>
+                    </div>
+                  )}
+                </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="team" className="text-left">
-                Team
-              </Label>
-              <Input
-                id="team"
-                value={formData.team}
-                onChange={(e) => handleInputChange("team", e.target.value)}
-                className="col-span-3"
-              />
+              <Label className="text-left">Team</Label>
+              <div className="col-span-3">
+                <Select
+                  value={selectedTeamId?.toString() || "none"}
+                  onValueChange={(value) => {
+                    if (value && value !== "none") {
+                      const id = parseInt(value)
+                      setSelectedTeamId(id)
+                      const obj = teams.find(t => t.id === id) || null
+                      setSelectedTeamObj(obj)
+                      setFormData(prev => ({ ...prev, team: obj?.name || "" }))
+                    } else {
+                      setSelectedTeamId(null)
+                      setSelectedTeamObj(null)
+                      setFormData(prev => ({ ...prev, team: "" }))
+                    }
+                  }}
+                  onOpenChange={handleTeamSelectOpenChange}
+                >
+                  <SelectTrigger className="w-full">
+                    {selectedTeamObj ? (
+                      <span className="text-sm font-medium">{selectedTeamObj.name}</span>
+                    ) : (
+                      <span className="text-muted-foreground">Select Team</span>
+                    )}
+                  </SelectTrigger>
+                  <SelectContent className="max-h-96">
+                    <SelectItem value="none">Not selected</SelectItem>
+                    {teams.map((t: TeamRead) => (
+                      <SelectItem key={t.id} value={t.id.toString()}>
+                        {t.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="country" className="text-left">
-                Country
-              </Label>
-              <Input
-                id="country"
-                value={formData.country}
-                onChange={(e) => handleInputChange("country", e.target.value)}
-                className="col-span-3"
-              />
+              <Label className="text-left">Game</Label>
+              <div className="col-span-3">
+                <Select
+                  value={selectedGameId?.toString() || "none"}
+                  onValueChange={(value) => {
+                    if (value && value !== "none") {
+                      const id = parseInt(value)
+                      setSelectedGameId(id)
+                      const obj = gamesList.find(g => g.id === id) || null
+                      setSelectedGameObj(obj)
+                    } else {
+                      setSelectedGameId(null)
+                      setSelectedGameObj(null)
+                    }
+                  }}
+                  onOpenChange={handleGameSelectOpenChange}
+                >
+                  <SelectTrigger className="w-full">
+                    {selectedGameObj ? (
+                      <span className="text-sm font-medium">{selectedGameObj.name}</span>
+                    ) : (
+                      <span className="text-muted-foreground">Select Game</span>
+                    )}
+                  </SelectTrigger>
+                  <SelectContent className="max-h-96">
+                    <SelectItem value="none">Not selected</SelectItem>
+                    {gamesList.map((g: GameBase) => (
+                      <SelectItem key={g.id} value={g.id!.toString()}>{g.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="birthday" className="text-left">
@@ -706,71 +935,55 @@ export function AddEditPlayerDialog({
                 placeholder="Notes about the player..."
               />
             </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="url_youtube" className="text-left">
-                YouTube URL
+              <Label htmlFor="pc_image_name" className="text-left">
+                PC Image Name
+              </Label>
+              <Input id="pc_image_name" value={formData.pc_image_name} onChange={(e) => handleInputChange("pc_image_name", e.target.value)} className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="pc_image" className="text-left">
+                PC Image
+              </Label>
+              <div className="col-span-3 flex items-center gap-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={pcInputRef}
+                  className="hidden"
+                  onChange={handlePcFileChange}
+                />
+                <Button type="button" onClick={handleUploadPcClick}>
+                  Upload PC Image
+                </Button>
+                {pcPreviewUrl && (
+                  <div className="flex items-center gap-2">
+                    <img src={pcPreviewUrl} alt="selected" className="h-10 w-10 object-cover rounded" />
+                    <span className="text-xs break-all max-w-[120px] line-clamp-1" title={formData.pc_image_name}>{formData.pc_image_name}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <hr className="my-2" />
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="url_discord" className="text-left">
+                Discord URL
               </Label>
               <FormField
                 control={urlForm.control}
-                name="url_youtube"
+                name="url_discord"
                 render={({ field }) => (
                   <FormItem className="col-span-3">
                     <FormControl>
-                      <Input id="url_youtube" placeholder="https://www.youtube.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                      <Input id="url_discord" placeholder="https://discord.gg/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
-              <Label htmlFor="url_twitter" className="text-left">
-                Twitter URL
-              </Label>
-              <FormField
-                control={urlForm.control}
-                name="url_twitter"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <FormControl>
-                      <Input id="url_twitter" placeholder="https://x.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Label htmlFor="url_twitch" className="text-left">
-                Twitch URL
-              </Label>
-              <FormField
-                control={urlForm.control}
-                name="url_twitch"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <FormControl>
-                      <Input id="url_twitch" placeholder="https://www.twitch.tv/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Label htmlFor="url_tiktok" className="text-left">
-                TikTok URL
-              </Label>
-              <FormField
-                control={urlForm.control}
-                name="url_tiktok"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <FormControl>
-                      <Input id="url_tiktok" placeholder="https://www.tiktok.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <Label htmlFor="url_instagram" className="text-left">
                 Instagram URL
               </Label>
@@ -786,17 +999,75 @@ export function AddEditPlayerDialog({
                   </FormItem>
                 )}
               />
-
-              <Label htmlFor="url_discord" className="text-left">
-                Discord URL
+              <Label htmlFor="url_steam" className="text-left">
+                Steam URL
               </Label>
               <FormField
-                control={urlForm.control}
-                name="url_discord"
+                name="url_steam"
                 render={({ field }) => (
                   <FormItem className="col-span-3">
                     <FormControl>
-                      <Input id="url_discord" placeholder="https://discord.gg/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                      <Input id="url_steam" placeholder="https://steamcommunity.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Label htmlFor="url_tiktok" className="text-left">
+                TikTok URL
+              </Label>
+              <FormField
+                control={urlForm.control}
+                name="url_tiktok"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input id="url_tiktok" placeholder="https://www.tiktok.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Label htmlFor="url_twitch" className="text-left">
+                Twitch URL
+              </Label>
+              <FormField
+                control={urlForm.control}
+                name="url_twitch"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input id="url_twitch" placeholder="https://www.twitch.tv/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Label htmlFor="url_twitter" className="text-left">
+                Twitter URL
+              </Label>
+              <FormField
+                control={urlForm.control}
+                name="url_twitter"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input id="url_twitter" placeholder="https://x.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Label htmlFor="url_youtube" className="text-left">
+                YouTube URL
+              </Label>
+              <FormField
+                control={urlForm.control}
+                name="url_youtube"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input id="url_youtube" placeholder="https://www.youtube.com/..." value={field.value || ''} onChange={(e) => field.onChange(e)} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -926,6 +1197,17 @@ export function AddEditPlayerDialog({
             )}
           </div>
           {mode === 'edit' && (
+            <div>
+              <Label htmlFor="info" className="text-left font-bold">
+                Custom Product Reletion
+              </Label>
+              <SelectCustProducts 
+                onCustProductsChange={setFinaliCustProducts}
+                selectedCustProducts={selectedCustProducts}
+              />
+            </div>
+          )}
+          {mode === 'edit' && (
           <div>
             <Label htmlFor="info" className="text-left font-bold">
                 Gear List
@@ -1019,6 +1301,7 @@ export function AddEditPlayerDialog({
             </div>
           </div>
           )}
+    
           {mode === 'edit' && (
           <div>
             <Label htmlFor="info" className="text-left font-bold">
@@ -1077,9 +1360,6 @@ export function AddEditPlayerDialog({
                 Skins
               </Label>
               <SelectSkinList 
-                label="Skins"
-                placeholder="Select skins"
-                searchPlaceholder="Search skins..."
                 onSkinsChange={setSelectedSkins}
                 selectedSkins={player?.skins || []}
             />

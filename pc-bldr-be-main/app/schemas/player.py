@@ -5,21 +5,27 @@ from .gear_list import GearListRead, GearListWithProducts, GearListWithSimplePro
 from .pc_specs_list import PCSpecsListRead, PCSpecsListWithProducts, PCSpecsListWithSimpleProducts, PCSpecsListUpdate
 from .setup_streaming_list import SetupStreamingListRead, SetupStreamingListWithProducts, SetupStreamingListWithSimpleProducts, SetupStreamingListUpdate
 from .skin import SkinRead
+from .game import GameRead
 from .product_usage_log import ProductUsageLogWithProduct, ProductUsageLogSimple
-
+from .custom_product_reletion import CustomProductReletion, CustomProductReletionCreate, CustomProductReletionUpdate, CustomProductReletionDelete, CustomProductReletionRequest, CustomProductReletionSimple
+from .country import CountryRead
+from .team import TeamShort
     
 
 
 class PlayerBase(BaseModel):
     player_name: str = Field(..., min_length=1, max_length=255)
     player_img: Optional[str] = None
-    team: Optional[str] = Field(None, max_length=255)
-    country: Optional[str] = Field(None, max_length=100)
+    team_id: Optional[int] = None  # foreign key to Team
+    game_id: Optional[int] = None  # foreign key to Game
+    country_id: Optional[int] = None  # numeric FK
     name: Optional[str] = Field(None, max_length=255)  # Full name
     birthday: Optional[date] = None
     info: Optional[str] = None
     note: Optional[str] = None
     user_urls: Optional[dict[str, str]] = None
+    pc_image: Optional[str] = None
+    pc_image_name: Optional[str] = None
     
     @field_validator('birthday', mode='before')
     @classmethod
@@ -37,6 +43,13 @@ class PlayerCreate(PlayerBase):
     pc_specs_list_id: Optional[int] = None
     setup_streaming_list_id: Optional[int] = None
     
+    @field_validator('game_id')
+    @classmethod
+    def validate_game_id(cls, v):
+        if v == 0:
+            return None
+        return v
+    
     @field_validator('gear_list_id', 'pc_specs_list_id', 'setup_streaming_list_id')
     @classmethod
     def validate_foreign_keys(cls, v):
@@ -51,8 +64,9 @@ class PlayerCreate(PlayerBase):
 class PlayerUpdate(BaseModel):
     player_name: Optional[str] = Field(None, min_length=1, max_length=255)
     player_img: Optional[str] = None
-    team: Optional[str] = Field(None, max_length=255)
-    country: Optional[str] = Field(None, max_length=100)
+    team_id: Optional[int] = None  # foreign key to Team
+    game_id: Optional[int] = None
+    country_id: Optional[int] = None
     name: Optional[str] = Field(None, max_length=255)
     birthday: Optional[date] = None
     info: Optional[str] = None
@@ -61,6 +75,8 @@ class PlayerUpdate(BaseModel):
     gear_list_id: Optional[int] = None
     pc_specs_list_id: Optional[int] = None
     setup_streaming_list_id: Optional[int] = None
+    pc_image: Optional[str] = None
+    pc_image_name: Optional[str] = None
     
     @field_validator('player_name')
     @classmethod
@@ -112,12 +128,15 @@ class SkinUpdate(BaseModel):
         from_attributes = True
 
 
+
+
 class PlayerUpdateWithGear(BaseModel):
     # Player fields
     player_name: Optional[str] = Field(None, min_length=1, max_length=255)
     player_img: Optional[str] = None
-    team: Optional[str] = Field(None, max_length=255)
-    country: Optional[str] = Field(None, max_length=100)
+    team_id: Optional[int] = None  # foreign key to Team
+    game_id: Optional[int] = None
+    country_id: Optional[int] = None
     name: Optional[str] = Field(None, max_length=255)
     birthday: Optional[date] = None
     info: Optional[str] = None
@@ -126,6 +145,8 @@ class PlayerUpdateWithGear(BaseModel):
     gear_list_id: Optional[int] = None
     pc_specs_list_id: Optional[int] = None
     setup_streaming_list_id: Optional[int] = None
+    pc_image: Optional[str] = None
+    pc_image_name: Optional[str] = None
     
     # Gear list update fields
     gear_list: Optional[GearListUpdate] = None
@@ -138,6 +159,8 @@ class PlayerUpdateWithGear(BaseModel):
     
     # Skins update fields
     skins: Optional[List[SkinUpdate]] = None
+
+    custom_product_reletion: Optional[CustomProductReletionRequest] = None
     
     @field_validator('player_name')
     @classmethod
@@ -153,7 +176,7 @@ class PlayerUpdateWithGear(BaseModel):
             return None
         return v
     
-    @field_validator('gear_list_id', 'pc_specs_list_id', 'setup_streaming_list_id')
+    @field_validator('gear_list_id', 'pc_specs_list_id', 'setup_streaming_list_id', 'team_id')
     @classmethod
     def validate_foreign_keys(cls, v):
         if v == 0:
@@ -164,11 +187,16 @@ class PlayerUpdateWithGear(BaseModel):
         from_attributes = True
 
 
+# --- Player Read schemas ---
+
 class PlayerRead(PlayerBase):
     id: int
+    team: Optional[TeamShort] = None
+    game: Optional[GameRead] = None
     gear_list_id: Optional[int] = None
     pc_specs_list_id: Optional[int] = None
     setup_streaming_list_id: Optional[int] = None
+    country: Optional["CountryRead"] = None
     created_at: datetime
     updated_at: datetime
     
@@ -243,17 +271,22 @@ class PlayerSkinCreate(BaseModel):
         from_attributes = True
 
 
+
+
 class PlayerWithRelations(BaseModel):
     id: int
     player_name: str
     player_img: Optional[str] = None
-    team: Optional[str] = None
-    country: Optional[str] = None
+    team: Optional[TeamShort] = None
+    game: Optional[GameRead] = None
+    country: Optional["CountryRead"] = None
     name: Optional[str] = None
     birthday: Optional[date] = None
     info: Optional[str] = None
     note: Optional[str] = None
     user_urls: Optional[dict[str, str]] = None
+    pc_image: Optional[str] = None
+    pc_image_name: Optional[str] = None
     created_at: datetime
     updated_at: datetime
     gear_list: Optional[GearListWithSimpleProducts] = None
@@ -261,6 +294,7 @@ class PlayerWithRelations(BaseModel):
     setup_streaming_list: Optional[SetupStreamingListWithSimpleProducts] = None
     skins: List[PlayerSkinRead] = []
     product_usage_logs: List[ProductUsageLogSimple] = []
+    custom_product_reletion: Optional[List[CustomProductReletionSimple]] = None
     
     @classmethod
     def from_player(cls, player, product_usage_logs=None):
@@ -271,13 +305,16 @@ class PlayerWithRelations(BaseModel):
             'id': player.id,
             'player_name': player.player_name,
             'player_img': player.player_img,
-            'team': player.team,
-            'country': player.country,
+            'team': TeamShort.model_validate(player.team) if getattr(player, 'team', None) else None,
+            'game': GameRead.model_validate(player.game_obj) if getattr(player, 'game_obj', None) else None,
+            'country': CountryRead.model_validate(player.country_obj) if player.country_obj else None,
             'name': player.name,
             'birthday': player.birthday,
             'info': player.info,
             'note': player.note,
             'user_urls': player.user_urls,
+            'pc_image': player.pc_image,
+            'pc_image_name': player.pc_image_name,
             'created_at': player.created_at,
             'updated_at': player.updated_at,
             'gear_list': GearListWithSimpleProducts.from_gearlist(player.gear_list),
@@ -285,6 +322,9 @@ class PlayerWithRelations(BaseModel):
             'setup_streaming_list': SetupStreamingListWithSimpleProducts.from_setupstreaminglist(player.setup_streaming_list),
             'skins': [PlayerSkinRead.from_player_skin(player_skin) for player_skin in player.player_skins] if player.player_skins else [],
             'product_usage_logs': [ProductUsageLogSimple.from_usage_log(log) for log in product_usage_logs] if product_usage_logs else [],
+            'custom_product_reletion': [
+                CustomProductReletionSimple.model_validate(cp) for cp in player.custom_products
+            ] if player.custom_products else []
         }
         return cls(**data)
     
@@ -317,3 +357,13 @@ class PlayerSkinsResponse(BaseModel):
     
     class Config:
         from_attributes = True 
+
+# Resolve forward references between TeamWithPlayers and PlayerWithRelations
+from .team import TeamWithPlayers  # Comment: Import inside module end to avoid circular import issues
+
+# Comment: Rebuild TeamWithPlayers now that PlayerWithRelations is defined
+TeamWithPlayers.model_rebuild() 
+
+# --- Rebuild GameWithPlayers forward refs now that PlayerWithRelations is defined ---
+from .game import GameWithPlayers  # noqa: E402
+GameWithPlayers.model_rebuild() 

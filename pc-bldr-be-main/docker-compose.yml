@@ -54,7 +54,8 @@ services:
 
       
   app:
-    image: fe65abcc0f4f
+    build: 
+      context: .
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
