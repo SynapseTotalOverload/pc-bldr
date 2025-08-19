@@ -110,6 +110,8 @@ class CRUDPlayer:
     def create(self, db: Session, *, obj_in: PlayerCreate) -> Player:
         """Create a new player"""
         create_data = obj_in.model_dump(exclude_unset=True)
+        # Extract stickers first so they are not treated as plain columns
+        sticker_ids = create_data.pop("sticker_ids", None)
         # Validate foreign keys
         if "game_id" in create_data and create_data["game_id"]:
             if not db.get(Game, create_data["game_id"]):
@@ -126,7 +128,12 @@ class CRUDPlayer:
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
-        
+
+        # Attach stickers if provided
+        if sticker_ids is not None:
+            # Re-use CRUD helper to ensure validation logic is consistent
+            self.set_player_stickers(db=db, player_id=db_obj.id, sticker_ids=sticker_ids)
+
         # Return player with all relations loaded
         stmt = (
             select(Player)
@@ -168,6 +175,7 @@ class CRUDPlayer:
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.microphone).joinedload(Product.category),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.webcam).joinedload(Product.category),
                 joinedload(Player.skins),
+                joinedload(Player.stickers),
                 joinedload(Player.custom_products),
                 joinedload(Player.country_obj)
             )
