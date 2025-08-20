@@ -6,13 +6,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useFile } from '@/hooks/useFile';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';      
 import { Textarea } from '@/components/ui/textarea';
+import { SelectStickerList } from '@/components/ui/select-sticker-list'
 
 
 export function AddEditTeam({
@@ -40,15 +41,6 @@ export function AddEditTeam({
 
   const originalData = team;
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const handleUploadButtonClick = () => {
-    fileInputRef.current?.click()
-  }
-
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
   const urlSchema = z.object({
     discord: z.string().url('Invalid URL').optional().or(z.literal('')),
     instagram: z.string().url('Invalid URL').optional().or(z.literal('')),
@@ -63,6 +55,7 @@ export function AddEditTeam({
     name: z.string().min(1, 'Team name is required'),
     description: z.string().optional(),
     socila_media_links: urlSchema,
+    sticker_ids: z.array(z.number()).optional(),
   });
 
   type TeamFormData = z.infer<typeof formSchema>;
@@ -72,6 +65,7 @@ export function AddEditTeam({
     defaultValues: {
       name: '',
       description: '',
+      sticker_ids: [],
       socila_media_links: {
         discord: '',
         instagram: '',
@@ -100,6 +94,7 @@ export function AddEditTeam({
       form.reset({
         name: (team as any).name || '',
         description: (team as any).description || '',
+        sticker_ids: (team as any).stickers?.map((s: any) => s.id) || [],
         socila_media_links: {
           discord: sm.discord || '',
           instagram: sm.instagram || '',
@@ -137,8 +132,14 @@ export function AddEditTeam({
       description: data.description,
       logo: (originalData as any)?.logo || '',
       jerseys_img: (originalData as any)?.jerseys_img || '',
+      sticker_ids: data.sticker_ids,
       socila_media_links: data.socila_media_links,
     };
+
+    if (isEditing) {
+      payload.stickers = payload.sticker_ids;
+      delete payload.sticker_ids;
+    }
 
     if (logoFile) {
       if (isEditing && originalData && (originalData as any).logo) {
@@ -304,6 +305,14 @@ export function AddEditTeam({
 
             <Card>
               <CardContent className="grid-cols-1 gap-2 p-4">
+                {/* Sticker selection */}
+                <SelectStickerList
+                  selectedIds={form.watch('sticker_ids') || []}
+                  onChange={(ids)=>form.setValue('sticker_ids', ids, { shouldDirty: true })}
+                />
+
+                <Separator className="my-4" />
+
                 <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="discord" className="text-left">
                 Discord URL

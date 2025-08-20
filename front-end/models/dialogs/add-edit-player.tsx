@@ -28,6 +28,8 @@ import { useTeam } from "@/hooks/useTeam"
 import { useGames } from "@/hooks/useGames"
 import { GameBase } from "@/types/game-base"
 import { TeamRead } from "@/types/team"
+import { SelectStickerList } from "@/components/ui/select-sticker-list"
+import { StickersBase } from "@/types/stickers-base"
 
 interface AddEditPlayerDialogProps {
   open: boolean
@@ -100,6 +102,7 @@ export function AddEditPlayerDialog({
 
   const [gearListId, setGearListId] = useState<number | null>(null)
   const [setupStreamingListId, setSetupStreamingListId] = useState<number | null>(null)
+  const [selectedStickers, setSelectedStickers] = useState<StickersBase[]>([])
 
   const [loading, setLoading] = useState(false)
   const [checkPlayerImg, setCheckPlayerImg] = useState(false)
@@ -432,6 +435,23 @@ export function AddEditPlayerDialog({
         setSelectedGameObj((player as any).game)
       }
 
+      if (player?.stickers) {
+        // Handle both array of objects and array of IDs
+        if (Array.isArray(player.stickers) && player.stickers.length > 0) {
+          if (typeof player.stickers[0] === 'object' && player.stickers[0]?.id) {
+            // Array of sticker objects
+            setSelectedStickers(player.stickers as StickersBase[])
+          } else {
+            // Array of IDs - create minimal objects
+            setSelectedStickers(player.stickers.map(id => ({ id } as StickersBase)))
+          }
+        } else {
+          setSelectedStickers([])
+        }
+      } else {
+        setSelectedStickers([])
+      }
+
     } else if (open && mode === 'add') {
       setFormData({
         player_name: "",
@@ -500,6 +520,7 @@ export function AddEditPlayerDialog({
       setSelectedCountryObj(null)
       setSelectedGameId(null)
       setSelectedGameObj(null)
+      setSelectedStickers([])
     }
   }, [player, mode, open])
 
@@ -737,9 +758,13 @@ export function AddEditPlayerDialog({
         pc_specs_list: pcSpecsListData,
         setup_streaming_list: setupStreamingListData,
         skins: selectedSkins,
+        stickers: selectedStickers.map(s => s.id!),
         custom_product_reletion: finaliCustProducts,
       }
 
+      console.log("Saving player with stickers:", selectedStickers)
+      console.log("Stickers IDs to be sent:", selectedStickers.map(s => s.id!))
+      console.log("Player data:", playerData)
       await onSave(playerData, mode)
       console.log("Player saved successfully!")
       onOpenChange(false)
@@ -1365,6 +1390,24 @@ export function AddEditPlayerDialog({
             />
             </div>
           )}
+          <div>
+            <Label htmlFor="info" className="text-left font-bold">
+              Stickers
+            </Label>
+            <SelectStickerList 
+              onChange={(ids) => {
+                // Convert IDs to sticker objects from the current stickers state
+                const selectedStickersData = ids.map(id => {
+                  // Find sticker in the accumulated stickers from the component
+                  // If not found, create a minimal object with just the ID
+                  return { id } as StickersBase
+                })
+                setSelectedStickers(selectedStickersData)
+              }}
+              selectedIds={selectedStickers.map(s => s.id!)}
+              s_type="player"
+            />
+          </div>
           <DialogFooter className="flex-shrink-0 border-t pt-4 mt-4">
             <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
               Cancel

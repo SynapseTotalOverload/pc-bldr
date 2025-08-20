@@ -97,14 +97,6 @@ export default function Skins() {
         }
     };
 
-    useEffect(() => {
-        const isAdmin = localStorage.getItem('isAdmin')
-        if (!isAdmin) {
-          router.push('/auth');
-        }
-      }, [router]);
-
-    // Create custom columns with edit functionality
     const customSkinsColumns: ColumnDef<SkinRead>[] = [
       ...skinsColumns.filter(col => col.id !== 'actions'),
       {
@@ -140,11 +132,7 @@ export default function Skins() {
     ];
 
   return (
-    <div>
-      <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
-      <div className="z-10 w-full items-center justify-between font-mono text-sm">
-        <MainMenu />
-
+    <>
         <CategoryButtons
           selectedCategory={categoryIdToString(selectedCategory)}
           onSelectCategory={(category) => {
@@ -182,8 +170,6 @@ export default function Skins() {
             </div>
           </div>
 
-      </div>
-
       <AddNewSkins 
         open={isState('addNewSkin')}
         onOpenChange={(value)=>{changeState('addNewSkin', value)}}
@@ -208,7 +194,6 @@ export default function Skins() {
         confirmText="Delete"
         cancelText="Cancel"
       />
-    </main>
-    </div>
+    </>
   )
 }

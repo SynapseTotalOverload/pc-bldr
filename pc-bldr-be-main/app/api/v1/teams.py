@@ -39,7 +39,13 @@ class TeamPlayersByGame(BaseModel):
 @router.post("/", response_model=TeamRead, status_code=status.HTTP_201_CREATED)
 def create_team(*, db: Session = Depends(get_db), team_in: TeamCreate) -> TeamRead:
     team = team_crud.create(db=db, obj_in=team_in)
-    return team  # pydantic conversion via from_attributes
+    
+    # Populate sticker_ids from stickers
+    team_data = TeamRead.model_validate(team)
+    if team.stickers:
+        team_data.sticker_ids = [sticker.id for sticker in team.stickers]
+    
+    return team_data
 
 
 # Return typed response
@@ -53,8 +59,14 @@ def read_teams(
 ):
     items_models, total = team_crud.get_multi(db=db, skip=skip, limit=limit, query=query)
 
-    # Convert SQLAlchemy models -> Pydantic
-    items = [TeamRead.model_validate(team) for team in items_models]
+    # Convert SQLAlchemy models -> Pydantic and populate sticker_ids
+    items = []
+    for team in items_models:
+        team_data = TeamRead.model_validate(team)
+        # Populate sticker_ids from stickers
+        if team.stickers:
+            team_data.sticker_ids = [sticker.id for sticker in team.stickers]
+        items.append(team_data)
     current_page = (skip // limit) + 1
     total_pages = (total + limit - 1) // limit if total else 1
     pagination = PaginationSchema(
@@ -73,7 +85,13 @@ def get_team(*, db: Session = Depends(get_db), team_id: int) -> TeamWithPlayers:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Team not found")
     players = team_crud.get_players(db=db, team_id=team_id)
     players_with_rel = [PlayerWithRelations.from_player(p) for p in players]
-    return TeamWithPlayers.model_validate({**team.__dict__, "players": players_with_rel})
+    
+    # Create team data with players and populate sticker_ids
+    team_data = {**team.__dict__, "players": players_with_rel}
+    if team.stickers:
+        team_data["sticker_ids"] = [sticker.id for sticker in team.stickers]
+    
+    return TeamWithPlayers.model_validate(team_data)
 
 
 @router.put("/{team_id}", response_model=TeamRead)
@@ -82,7 +100,13 @@ def update_team(*, db: Session = Depends(get_db), team_id: int, team_in: TeamUpd
     if not team:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Team not found")
     team = team_crud.update(db=db, db_obj=team, obj_in=team_in)
-    return team
+    
+    # Populate sticker_ids from stickers
+    team_data = TeamRead.model_validate(team)
+    if team.stickers:
+        team_data.sticker_ids = [sticker.id for sticker in team.stickers]
+    
+    return team_data
 
 
 @router.delete("/{team_id}", response_model=TeamRead)
@@ -90,7 +114,13 @@ def delete_team(*, db: Session = Depends(get_db), team_id: int) -> TeamRead:
     team = team_crud.remove(db=db, id_=team_id)
     if not team:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Team not found")
-    return team
+    
+    # Populate sticker_ids from stickers
+    team_data = TeamRead.model_validate(team)
+    if team.stickers:
+        team_data.sticker_ids = [sticker.id for sticker in team.stickers]
+    
+    return team_data
 
 
 @router.post("/{team_id}/players/{player_id}", response_model=PlayerWithRelations)
@@ -177,7 +207,13 @@ def add_stickers_to_team_batch(
         team = team_crud.add_stickers_batch(db=db, team_id=team_id, sticker_ids=stickers_data.sticker_ids)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-    return TeamRead.model_validate(team)
+    
+    # Populate sticker_ids from stickers
+    team_data = TeamRead.model_validate(team)
+    if team.stickers:
+        team_data.sticker_ids = [sticker.id for sticker in team.stickers]
+    
+    return team_data
 
 
 @router.delete("/{team_id}/stickers/batch", response_model=TeamRead)
@@ -192,7 +228,13 @@ def remove_stickers_from_team_batch(
         team = team_crud.remove_stickers_batch(db=db, team_id=team_id, sticker_ids=stickers_data.sticker_ids)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-    return TeamRead.model_validate(team)
+    
+    # Populate sticker_ids from stickers
+    team_data = TeamRead.model_validate(team)
+    if team.stickers:
+        team_data.sticker_ids = [sticker.id for sticker in team.stickers]
+    
+    return team_data
 
 
 @router.post("/{team_id}/stickers/{sticker_id}", response_model=TeamRead)
@@ -206,7 +248,13 @@ def add_sticker_to_team(
         team = team_crud.add_sticker(db=db, team_id=team_id, sticker_id=sticker_id)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-    return TeamRead.model_validate(team)
+    
+    # Populate sticker_ids from stickers
+    team_data = TeamRead.model_validate(team)
+    if team.stickers:
+        team_data.sticker_ids = [sticker.id for sticker in team.stickers]
+    
+    return team_data
 
 
 @router.delete("/{team_id}/stickers/{sticker_id}", response_model=TeamRead)
@@ -220,4 +268,10 @@ def remove_sticker_from_team(
         team = team_crud.remove_sticker(db=db, team_id=team_id, sticker_id=sticker_id)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-    return TeamRead.model_validate(team)
+    
+    # Populate sticker_ids from stickers
+    team_data = TeamRead.model_validate(team)
+    if team.stickers:
+        team_data.sticker_ids = [sticker.id for sticker in team.stickers]
+    
+    return team_data

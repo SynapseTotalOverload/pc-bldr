@@ -26,7 +26,8 @@ import {
   Gamepad2,
   Camera,
   Mic,
-  MousePointer
+  MousePointer,
+  Sticker
 } from 'lucide-react'
 
 interface PlayerDetailsDialogProps {
@@ -255,6 +256,54 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
     )
   }
 
+  const renderStickers = () => {
+    if (!player.stickers || player.stickers.length === 0) return null
+    console.log('player.stickers', player.stickers);
+
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sticker className="h-5 w-5" />
+            Stickers Collection
+          </CardTitle>
+          <CardDescription>Stickers owned by the player</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {player.stickers.map((sticker) => (
+              <div key={sticker.id} className="flex items-center gap-2 p-2 border rounded">
+                {sticker.image_url && (
+                  <LazyImage 
+                    url={sticker.image_url} 
+                    alt={sticker.name}
+                    className="w-8 h-8 rounded object-cover"
+                    skeletonClass="w-8 h-8 rounded"
+                  />
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm truncate">
+                    {sticker.name}
+                  </div>
+                  {sticker.s_type && (
+                    <div className="text-xs text-muted-foreground">
+                      {sticker.s_type}
+                    </div>
+                  )}
+                </div>
+                {sticker.rarety && (
+                  <Badge variant="outline" className="text-xs">
+                    {sticker.rarety}
+                  </Badge>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -381,6 +430,9 @@ export function PlayerDetailsDialog({ player, open, onOpenChange }: PlayerDetail
 
           {/* Skins */}
           {renderSkins()}
+
+          {/* Stickers */}
+          {renderStickers()}
         </div>
 
         <div className="flex justify-end pt-4">

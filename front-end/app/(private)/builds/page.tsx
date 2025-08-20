@@ -125,14 +125,7 @@ export default function Builds() {
     setPage(newPage);
     refetchWithOptions(queryParams);
   };
-
-  useEffect(() => {
-    const isAdmin = localStorage.getItem('isAdmin')
-    if (!isAdmin) {
-      router.push('/auth');
-    }
-  }, [router]);
-
+    
   const columns = createBuildColumns({
     onEdit: handleEdit,
     onDelete: handleDelete,
@@ -151,8 +144,7 @@ export default function Builds() {
   }
 
   return (
-    <div className="p-4 mx-auto py-6 space-y-6">
-      <MainMenu />
+    <>
       <div className="flex justify-end">
         <Button 
           variant="default"
@@ -219,6 +211,6 @@ export default function Builds() {
         onOpenChange={setViewDialogOpen}
         build={viewingBuild}
       />
-    </div>
+    </>
   );
 }

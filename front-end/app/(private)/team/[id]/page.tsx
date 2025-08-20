@@ -4,8 +4,6 @@ import { useGames } from "@/hooks/useGames"
 import { TeamRead } from "@/types/team"
 import { useEffect, useRef, useState, useMemo } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { ArrowLeftIcon } from "lucide-react"
-import { ThemeToggle } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useFile } from "@/hooks/useFile"
@@ -151,26 +149,17 @@ export default function TeamPage() {
     }, [shouldLoadJerseys, team?.jerseys_img])
 
     useEffect(() => {
-        const isAdmin = localStorage.getItem('isAdmin')
-        if (!isAdmin) {
-          router.push('/auth');
+        console.log('Team data:', team)
+        if (team?.stickers) {
+            console.log('Team stickers:', team.stickers)
+            console.log('Stickers count:', team.stickers.length)
         }
-      }, [router]);
-
-    useEffect(() => {
-        console.log(team)
     },[team])
 
     if (loading) return <div className="flex items-center justify-center h-screen">Loading...</div>
 
     return (
-        <main className="bg-background flex flex-col items-center justify-between p-4">
-            <div className="flex gap-4 justify-start w-full pb-4">
-                <Button className="cursor-pointer" onClick={() => router.back()}>
-                    <ArrowLeftIcon className="h-4 w-4" />
-                </Button>
-                <ThemeToggle />
-            </div>
+        <>
             <div className="w-full">
                 <div className="flex items-center p gap-4 justify-between">
                     <h1 className="text-2xl font-bold">Team Page {team?.name}</h1>
@@ -240,6 +229,61 @@ export default function TeamPage() {
                                     </div>
                                 </div>
                             )}
+
+                            {/* Team Stickers */}
+                            <div>
+                                <div className="flex items-center justify-between">
+                                    <h1 className="text-2xl font-bold">
+                                        Team Stickers 
+                                        {team.stickers && team.stickers.length > 0 && (
+                                            <span className="text-sm font-normal text-muted-foreground ml-2">
+                                                ({team.stickers.length})
+                                            </span>
+                                        )}
+                                    </h1>
+                                    <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        onClick={() => {
+                                            // TODO: Implement sticker editing modal
+                                            console.log('Edit team stickers clicked')
+                                        }}
+                                    >
+                                        Edit Stickers
+                                    </Button>
+                                </div>
+                                {team.stickers && team.stickers.length > 0 ? (
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-3">
+                                        {team.stickers.map((sticker) => (
+                                            <div key={sticker.id} className="flex flex-col items-center gap-2 p-3 border rounded-lg hover:shadow-md transition-shadow">
+                                                {sticker.image_url && (
+                                                    <div className="w-16 h-16">
+                                                        <LazyLoadImage
+                                                            src={sticker.image_url}
+                                                            alt={sticker.name}
+                                                            className="w-16 h-16 object-cover rounded-md border"
+                                                            effect="opacity"
+                                                            threshold={100}
+                                                        />
+                                                    </div>
+                                                )}
+                                                <div className="text-center">
+                                                    <div className="font-medium text-sm truncate max-w-[120px]">
+                                                        {sticker.name}
+                                                    </div>
+                                                    {sticker.s_type && (
+                                                        <div className="text-xs text-muted-foreground">
+                                                            {sticker.s_type}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-muted-foreground text-sm mt-3">No stickers assigned to this team yet.</p>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}
@@ -276,6 +320,6 @@ export default function TeamPage() {
                     ))}
                 </div>
             </div>
-    </main>
+        </>
     )
 }

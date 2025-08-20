@@ -77,13 +77,6 @@ export default function GamePage() {
         if (shouldLoadIcon && game?.icon) fetchIcon({ url: game.icon })
       }, [shouldLoadIcon, game?.icon])
 
-    useEffect(() => {
-        const isAdmin = localStorage.getItem('isAdmin')
-        if (!isAdmin) {
-          router.push('/auth');
-        }
-      }, [router]);
-
     if (loading) return <div className="flex items-center justify-center h-screen">Loading...</div>
 
     return (
@@ -92,7 +85,6 @@ export default function GamePage() {
                 <Button className="cursor-pointer" onClick={() => router.back()}>
                     <ArrowLeftIcon className="h-4 w-4" />
                 </Button>
-                <ThemeToggle />
             </div>
             <div className="w-full">
                 <div className="flex items-center p gap-4 justify-between">

@@ -33,6 +33,7 @@ export interface PlayerCreate extends PlayerBase {
   gear_list_id?: number;
   pc_specs_list_id?: number;
   setup_streaming_list_id?: number;
+  stickers?: any[];
 }
 
 export interface PlayerUpdate extends Partial<PlayerBase> {
@@ -40,7 +41,7 @@ export interface PlayerUpdate extends Partial<PlayerBase> {
   gear_list_id?: number;
   pc_specs_list_id?: number;
   setup_streaming_list_id?: number;
-
+  stickers?: any[];
 }
 
 export interface PlayerUpdateWithGear extends Partial<PlayerBase> {
@@ -71,6 +72,7 @@ export interface PlayerUpdateWithGear extends Partial<PlayerBase> {
     case_id?: number | null;
   };
   custom_product_reletion?: CustomProductReletionSimple[];
+  stickers?: number[];  // Add stickers field for updating player stickers
 }
 
 export interface CustomProductReletionSimple {
@@ -115,6 +117,7 @@ export interface PlayerWithRelations extends PlayerRead {
   pc_specs_list?: any;
   setup_streaming_list?: any;
   skins: any[];
+  stickers?: any[];
   product_usage_logs: ProductUsageLog[];
   custom_product_reletion?: CustomProductReletionSimple[];
   game?: GameBase;

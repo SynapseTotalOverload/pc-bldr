@@ -31,6 +31,11 @@ interface SkinsTableProps<TData, TValue> {
   }
   onPageChange: (page: number) => void
   renderActions?: () => React.ReactNode
+  /** Custom column ids mapping to card sections */
+  imageColumnId?: string
+  primaryInfoColumnIds?: string[]
+  secondaryInfoColumnIds?: string[]
+  actionsColumnId?: string
 }
 
 export function SkinsTable<TData, TValue>({
@@ -44,12 +49,15 @@ export function SkinsTable<TData, TValue>({
   pagination,
   onPageChange,
   renderActions,
+  imageColumnId = "image_file",
+  primaryInfoColumnIds = ["name"],
+  secondaryInfoColumnIds = [],
+  actionsColumnId = "actions",
 }: SkinsTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [localSearchValue, setLocalSearchValue] = useState(searchValue)
   const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
-  // Debounce search functionality
   const debouncedSearch = useCallback((value: string) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
@@ -121,46 +129,55 @@ export function SkinsTable<TData, TValue>({
               className="border rounded-lg p-4 hover:shadow-md transition-shadow"
             >
               <div className="flex gap-4">
-                {/* First column - Image */}
+                {/* Image section */}
                 <div className="flex-shrink-0">
-                  {row.getVisibleCells().map((cell) => {
-                    if (cell.column.id === 'image_file') {
-                      return (
-                        <div key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </div>
-                      )
-                    }
-                    return null
-                  })}
-                </div>
-                
-                {/* Second column - Information */}
-                <div className="flex-1">
-                  {row.getVisibleCells().map((cell) => {
-                    if (cell.column.id === 'name') {
-                      return (
-                        <div key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </div>
-                      )
-                    }
-                    return null
-                  })}
+                  {row
+                    .getVisibleCells()
+                    .filter((cell) => cell.column.id === imageColumnId)
+                    .map((cell) => (
+                      <div key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </div>
+                    ))}
                 </div>
 
-                {/* Third column - Actions */}
+                {/* Info section */}
+                <div className="flex-1 space-y-0.5">
+                  {/* primary lines */}
+                  {row
+                    .getVisibleCells()
+                    .filter((cell) => primaryInfoColumnIds.includes(cell.column.id as string))
+                    .map((cell) => (
+                      <div key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </div>
+                    ))}
+
+                  {/* secondary lines */}
+                  {secondaryInfoColumnIds.length > 0 && (
+                    <div className="text-sm text-muted-foreground space-y-0.5">
+                      {row
+                        .getVisibleCells()
+                        .filter((cell) => secondaryInfoColumnIds.includes(cell.column.id as string))
+                        .map((cell) => (
+                          <div key={cell.id}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Actions section */}
                 <div className="flex-shrink-0">
-                  {row.getVisibleCells().map((cell) => {
-                    if (cell.column.id === 'actions') {
-                      return (
-                        <div key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </div>
-                      )
-                    }
-                    return null
-                  })}
+                  {row
+                    .getVisibleCells()
+                    .filter((cell) => cell.column.id === actionsColumnId)
+                    .map((cell) => (
+                      <div key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>

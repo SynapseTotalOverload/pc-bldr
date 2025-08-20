@@ -765,13 +765,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     end_date: endDate,
     product_id: Number(id)
   });
-  
-  useEffect(() => {
-    const isAdmin = localStorage.getItem('isAdmin')
-    if (!isAdmin) {
-      router.push('/auth');
-    }
-  }, [router]);
 
   useEffect(() => {
     refetch();

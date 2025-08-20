@@ -1,5 +1,5 @@
 from typing import List, Tuple, Optional
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select, func
 
 from app.models.team import Team
@@ -12,11 +12,16 @@ class CRUDTeam:
     """CRUD operations for Team model"""
 
     def get(self, db: Session, id_: int) -> Optional[Team]:
-        return db.get(Team, id_)
+        stmt = select(Team).options(joinedload(Team.stickers)).where(Team.id == id_)
+        team = db.scalar(stmt)
+        if team and not hasattr(team, '_stickers_loaded'):
+            db.refresh(team, attribute_names=['stickers'])
+            team._stickers_loaded = True
+        return team
 
     def get_multi(self, db: Session, *, skip: int = 0, limit: int = 100, query: str | None = None) -> Tuple[List[Team], int]:
         count_stmt = select(func.count()).select_from(Team)
-        stmt = select(Team).offset(skip).limit(limit)
+        stmt = select(Team).options(joinedload(Team.stickers)).offset(skip).limit(limit)
 
         if query:
             ilike = f"%{query}%"
@@ -25,7 +30,14 @@ class CRUDTeam:
 
         stmt = stmt.order_by(Team.name)
         total = db.scalar(count_stmt)
-        items = db.scalars(stmt).all()
+        items = db.scalars(stmt).unique().all()
+        
+        # Ensure stickers are loaded for each team
+        for team in items:
+            if not hasattr(team, '_stickers_loaded'):
+                db.refresh(team, attribute_names=['stickers'])
+                team._stickers_loaded = True
+        
         return items, total
 
     def set_team_stickers(self, db: Session, *, team_id: int, sticker_ids: List[int]):
@@ -47,6 +59,9 @@ class CRUDTeam:
         team.stickers = stickers
         db.commit()
         db.refresh(team)
+        # Refresh stickers relationship and mark as loaded
+        db.refresh(team, attribute_names=['stickers'])
+        team._stickers_loaded = True
         return team
 
     def create(self, db: Session, *, obj_in: TeamCreate) -> Team:
@@ -58,17 +73,23 @@ class CRUDTeam:
         db.refresh(db_obj)
         if sticker_ids:
             self.set_team_stickers(db=db, team_id=db_obj.id, sticker_ids=sticker_ids)
+        # Refresh stickers after creation and mark as loaded
+        db.refresh(db_obj, attribute_names=['stickers'])
+        db_obj._stickers_loaded = True
         return db_obj
 
     def update(self, db: Session, *, db_obj: Team, obj_in: TeamUpdate) -> Team:
         update_data = obj_in.model_dump(exclude_unset=True)
-        stickers_ids = update_data.pop("stickers", None)
+        sticker_ids = update_data.pop("sticker_ids", None)
         for field, value in update_data.items():
             setattr(db_obj, field, value)
         db.commit()
         db.refresh(db_obj)
-        if stickers_ids is not None:
-            self.set_team_stickers(db=db, team_id=db_obj.id, sticker_ids=stickers_ids)
+        if sticker_ids is not None:
+            self.set_team_stickers(db=db, team_id=db_obj.id, sticker_ids=sticker_ids)
+        # Refresh stickers after update and mark as loaded
+        db.refresh(db_obj, attribute_names=['stickers'])
+        db_obj._stickers_loaded = True
         return db_obj
 
     def remove(self, db: Session, *, id_: int) -> Optional[Team]:
@@ -99,8 +120,16 @@ class CRUDTeam:
         return player
 
     def get_players(self, db: Session, *, team_id: int) -> List[Player]:
-        stmt = select(Player).where(Player.team_id == team_id)
-        return db.scalars(stmt).all()
+        stmt = select(Player).options(joinedload(Player.stickers)).where(Player.team_id == team_id)
+        players = db.scalars(stmt).unique().all()
+        
+        # Ensure stickers are loaded for each player
+        for player in players:
+            if not hasattr(player, '_stickers_loaded'):
+                db.refresh(player, attribute_names=['stickers'])
+                player._stickers_loaded = True
+        
+        return players
 
     # Sticker association helpers
     def add_sticker(self, db: Session, *, team_id: int, sticker_id: int):
@@ -116,6 +145,9 @@ class CRUDTeam:
             team.stickers.append(sticker)
             db.commit()
             db.refresh(team)
+            # Refresh stickers relationship and mark as loaded
+            db.refresh(team, attribute_names=['stickers'])
+            team._stickers_loaded = True
         return team
 
     def remove_sticker(self, db: Session, *, team_id: int, sticker_id: int):
@@ -129,6 +161,9 @@ class CRUDTeam:
             team.stickers.remove(sticker)
             db.commit()
             db.refresh(team)
+            # Refresh stickers relationship and mark as loaded
+            db.refresh(team, attribute_names=['stickers'])
+            team._stickers_loaded = True
         return team
 
     def add_stickers_batch(self, db: Session, *, team_id: int, sticker_ids: list[int]):
@@ -148,6 +183,9 @@ class CRUDTeam:
             team.stickers.extend(new_stickers)
             db.commit()
             db.refresh(team)
+            # Refresh stickers relationship and mark as loaded
+            db.refresh(team, attribute_names=['stickers'])
+            team._stickers_loaded = True
         return team
 
     def remove_stickers_batch(self, db: Session, *, team_id: int, sticker_ids: list[int]):
@@ -160,6 +198,9 @@ class CRUDTeam:
                 team.stickers.remove(st)
         db.commit()
         db.refresh(team)
+        # Refresh stickers relationship and mark as loaded
+        db.refresh(team, attribute_names=['stickers'])
+        team._stickers_loaded = True
         return team
 
 

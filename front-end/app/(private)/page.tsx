@@ -27,7 +27,6 @@ import { useRouter } from 'next/navigation';
 import { ErrorModal } from '@/components/ui/error-modal';
 import WarningModal from '@/models/dialogs/warning-modal';
 import { useFile } from '@/hooks/useFile';
-import { MainMenu } from '@/components/ui/menu';
 
 
 const ProductImage: React.FC<{ url?: string | null; alt?: string }> = ({ url, alt = '' }) => {
@@ -135,13 +134,6 @@ export default function Home() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<number | null>(null);
   const [productToDeleteUrl, setProductToDeleteUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    const isAdmin = localStorage.getItem('isAdmin')
-    if (!isAdmin) {
-      router.push('/auth');
-    }
-  }, [router]);
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
@@ -346,9 +338,7 @@ export default function Home() {
   ];
 
   return (
-    <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
-      <div className="z-10 w-full items-center justify-between font-mono text-sm">
-        <MainMenu />
+    <>
 
         <CategoryButtons
           selectedCategory={selectedCategory}
@@ -385,7 +375,7 @@ export default function Home() {
         )}
 
         {error && <div className="mt-4 text-red-500">Error: {error}</div>}
-      </div>
+
       <AddNewProduct
         data={selectedProduct ? selectedProduct as unknown as Partial<FormData> : undefined}
         activeCategory={selectedCategory}
@@ -412,6 +402,6 @@ export default function Home() {
         confirmText="Delete"
         cancelText="Cancel"
       />
-    </main>
+    </>
   );
 }

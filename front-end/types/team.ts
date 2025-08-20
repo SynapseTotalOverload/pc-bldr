@@ -1,4 +1,5 @@
 import { PlayerBase } from './players-base'
+import { StickersBase } from './stickers-base'
 
 export interface TeamCreate {
     name: string
@@ -6,6 +7,7 @@ export interface TeamCreate {
     logo: string
     jerseys_img: string
     socila_media_links: string
+    sticker_ids: number[]
 }
 
 export interface TeamUpdate {
@@ -14,6 +16,7 @@ export interface TeamUpdate {
     logo: string
     jerseys_img: string
     socila_media_links: string
+    sticker_ids: number[]
 }
 
 export interface TeamRead {
@@ -24,6 +27,8 @@ export interface TeamRead {
     jerseys_img: string
     socila_media_links: string[]
     players: PlayerBase[]
+    sticker_ids: number[]
+    stickers: StickersBase[] // Make stickers required to match backend schema
 }
 
 export interface TeamsResponse {

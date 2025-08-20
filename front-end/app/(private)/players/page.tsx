@@ -7,7 +7,6 @@ import { usePlayers } from "@/hooks/usePlayers";
 import { PlayerCreate, PlayerUpdate } from "@/types/players-base";
 import { useFile } from "@/hooks/useFile";
 import WarningModal from "@/models/dialogs/warning-modal";
-import { MainMenu } from "@/components/ui/menu";
 
 export default function Players() {
     const router = useRouter()
@@ -26,17 +25,6 @@ export default function Players() {
         removePlayer, 
         pagination 
     } = usePlayers()
-
-    useEffect(() => {
-        const isAdmin = localStorage.getItem('isAdmin')
-        if (!isAdmin) {
-          router.push('/auth');
-        } else {
-          fetchPlayers({ limit: 10 })
-        }
-      }, [router]);
-
-    
 
   const handleAddPlayer = async (data: PlayerCreate) => {
     await addPlayer(data)
@@ -107,10 +95,7 @@ export default function Players() {
   }
 
   return (
-    <div>
-      <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
-        <div className="z-10 w-full items-center justify-between font-mono text-sm">
-          <MainMenu />
+    <>
           <div className="mt-8 w-full">
             <div className="inner-white-glow rounded-2xl p-8 shadow-2xl">
               <PlayersTable
@@ -132,8 +117,7 @@ export default function Players() {
               />
             </div>
           </div>
-        </div>
-      </main>
+
 
       <WarningModal
         isOpen={isDeleteModalOpen}
@@ -149,6 +133,6 @@ export default function Players() {
         confirmText="Delete"
         cancelText="Cancel"
       />
-    </div>
+    </>
   )
 }

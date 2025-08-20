@@ -23,7 +23,6 @@ import { HoverEffect } from "@/components/ui/motion-card";
 import { AddNewProduct } from "@/models/dialogs/add-new-product";
 import { ErrorModal } from "@/components/ui/error-modal";
 import WarningModal from "@/models/dialogs/warning-modal";
-import { MainMenu } from "@/components/ui/menu";
   
 
 const ProductImage: React.FC<{ url?: string | null; alt?: string }> = ({ url, alt = "" }) => {
@@ -326,17 +325,8 @@ export default function Accessories() {
     } as ColumnDef<ProductRead>
   ];
 
-    useEffect(() => {
-        const isAdmin = localStorage.getItem('isAdmin')
-        if (!isAdmin) {
-          router.push('/auth');
-        }
-      }, [router]);
-
     return (
-      <main className="bg-background flex min-h-screen flex-col items-center justify-between p-4">
-        <div className="z-10 w-full items-center justify-between font-mono text-sm">
-          <MainMenu />
+    <>
 
           <CategoryButtons
             isAccessories={1}
@@ -405,7 +395,6 @@ export default function Accessories() {
           />
 
           {error && <div className="mt-4 text-red-500">Error: {error}</div>}
-        </div>
-      </main>
+        </>
     )
 }

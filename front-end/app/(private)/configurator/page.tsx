@@ -156,20 +156,8 @@ export default function Configurator() {
     await debouncedRefetch();
   };
 
-  useEffect(() => {
-    const isAdmin = localStorage.getItem('isAdmin')
-    if (!isAdmin) {
-      router.push('/auth');
-    }
-  }, [router]);
   return (
-    <div className="bg-background flex h-screen flex-col items-center justify-center gap-4">
-      <div className="absolute top-4 left-4 flex items-center gap-4">
-        <Button className="cursor-pointer" onClick={() => router.back()}>
-          <ArrowLeftIcon className="h-4 w-4" />
-        </Button>
-        <ThemeToggle />
-      </div>
+    <>
       <div className="grid h-screen grid-cols-1 xl:grid-cols-2 gap-4 px-4 py-12">
         <div className="flex h-full flex-col gap-4">  
           <BudgetSelector budget={budget} onBudgetChange={handleBudgetChange} />
@@ -200,6 +188,6 @@ export default function Configurator() {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -30,6 +30,8 @@ class TeamCreate(TeamBase):
                 raise ValueError('sticker_ids cannot contain duplicates')
         return v
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class TeamUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=255)
@@ -37,16 +39,16 @@ class TeamUpdate(BaseModel):
     logo: Optional[str] = None
     jerseys_img: Optional[str] = None
     socila_media_links: Optional[Dict[str, str]] = None
-    stickers: Optional[List[int]] = None
+    sticker_ids: Optional[List[int]] = None
 
-    @field_validator('stickers')
+    @field_validator('sticker_ids')
     @classmethod
-    def validate_stickers(cls, v):
+    def validate_sticker_ids(cls, v):
         if v is not None:
             if not v:
-                raise ValueError('stickers cannot be empty')
+                raise ValueError('sticker_ids cannot be empty')
             if len(set(v)) != len(v):
-                raise ValueError('stickers list cannot contain duplicates')
+                raise ValueError('sticker_ids list cannot contain duplicates')
         return v
 
     model_config = ConfigDict(from_attributes=True)
@@ -55,6 +57,7 @@ class TeamUpdate(BaseModel):
 class TeamRead(TeamBase):
     id: int
     stickers: List[StickerRead] = []
+    sticker_ids: List[int] = []  # Add sticker_ids field for frontend compatibility
     created_at: Optional[datetime] = None  # not in model but common pattern
     updated_at: Optional[datetime] = None  # placeholder in case added later
 

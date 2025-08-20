@@ -668,6 +668,7 @@ class CRUDPlayer:
             "setup_streaming_list",
             "skins",
             "custom_product_reletion",
+            "stickers",  # Add stickers to prevent SQLAlchemy relationship assignment errors
         ]:
             update_data.pop(relation_key, None)
         
