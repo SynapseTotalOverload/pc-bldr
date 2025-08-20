@@ -110,8 +110,10 @@ class CRUDPlayer:
     def create(self, db: Session, *, obj_in: PlayerCreate) -> Player:
         """Create a new player"""
         create_data = obj_in.model_dump(exclude_unset=True)
+
         # Extract stickers first so they are not treated as plain columns
         sticker_ids = create_data.pop("sticker_ids", None)
+
         # Validate foreign keys
         if "game_id" in create_data and create_data["game_id"]:
             if not db.get(Game, create_data["game_id"]):
@@ -175,7 +177,9 @@ class CRUDPlayer:
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.microphone).joinedload(Product.category),
                 joinedload(Player.setup_streaming_list).joinedload(SetupStreamingList.webcam).joinedload(Product.category),
                 joinedload(Player.skins),
+
                 joinedload(Player.stickers),
+
                 joinedload(Player.custom_products),
                 joinedload(Player.country_obj)
             )
